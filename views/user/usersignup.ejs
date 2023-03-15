@@ -1,0 +1,57 @@
+<div class="container register" style="height: auto;">
+    <div class="row">
+        <div class="col-md-3 register-left">
+            <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt=""/>
+            <h3>Welcome</h3>
+        </div>
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading">signup</h3>
+                    <div class="row register-form">
+                       
+                        <div class="col-md-6">
+                          <form action="/signup" method="post">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" class="form-control" placeholder="username *" value=""  onkeyup="validateName()" />
+                                <span id="name-error" class="validation-label" style="color: red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="password"  name="password" class="form-control" placeholder="Password *" value="" onkeyup="validatePassword()" />
+                                <span id="password-error" class="validation-label" style="color: red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="conformpassword"  class="form-control"  placeholder="Confirm Password *" value="" onkeyup="validatePassword2()" />
+                                <span id="conformpassword-error" class="validation-label" style="color: red;"></span>
+                            </div>
+                           
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Your Email *" value="" onkeyup="validateEmail()" />
+                                <span id="email-error" class="validation-label" style="color: red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" minlength="10" maxlength="10" name="Phonenumber" id="Phonenumber" class="form-control" placeholder="Your Phone *" value="" onkeyup="validatemobilenumber()" />
+                                <span id="mobile-error" class="validation-label" style="color: red;"></span>
+                            </div>
+                            <div class="form-group">
+                            </div>
+                            
+                            <!-- <input type="submit" class="btnRegister"  value="Register"/> -->
+                            <button type="submit" class="btnRegister" onclick="return validateForm()" >signup</button>
+                            <span id="submit-error" class="validation-label" style="color: red;"></span>
+                            <!-- <a href="#" type="submit" class="btn btn-primary" style="margin-left: 12em; margin-top: 1em;">signup</a> -->
+                        </form>
+                        </div>
+                    
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/javascripts/signupvalidation.js"></script>

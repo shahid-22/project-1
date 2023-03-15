@@ -1,0 +1,55 @@
+<div class="container register">
+    <div class="row" style="height: 29em;">
+        <div class="col-md-3 register-left">
+            <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt=""/>
+            <h3>Welcome</h3>
+        </div>
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading">login</h3>
+                    <div class="row register-form">
+                        <div class="col-md-9 ">
+                            <form action="/login" method="post">
+                              <div class="form-group">
+                                  <!-- <label for="email">enter your email</label> -->
+                                  <input type="email"  id="email" class="form-control" name="email" placeholder="Your Email *" value=""  onkeyup="validateEmail()" />
+                                  <span id="email-error" class="validation-label" style="color: red;"></span>
+                              </div>
+                              <div class="form-group">
+                                  <!-- <label for="email">enter your password</label> -->
+                                  <input type="password" id="password" class="form-control" name="password" placeholder="Password *" value="" onkeyup="validatePassword()" />
+                                  <span id="password-error" class="validation-label" style="color: red;"></span>
+                              </div>
+                              <% if(loginErr){%>
+                                <p id="login-error" class="error text-danger"><%=loginErr%></p>
+                            <% }%>
+                            <script>
+                               setTimeout(() => {
+                                document.querySelector('#login-error').style.display='none'
+                               },3000);
+                            </script>
+                            
+
+                              <button type="submit" class="btn btn-primary">login</button>
+                              <div class="d-flex justify-content-center links">
+                              <a href="/signup">create account?</a>
+                              </div>
+                              <div class="d-flex justify-content-center">
+                                  <a href="#">Forgot your password?</a>
+                              </div>
+                              <p class="  d-flex justify-content-center">or</p>
+                              <a href="#" class="d-flex justify-content-center">login with otp</a>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="/javascripts/signupvalidation.js"></script>

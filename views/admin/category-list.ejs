@@ -1,0 +1,58 @@
+<!-- <div class="container">
+        <div class="d-flex align-items-end flex-column" style="height: 200px;">
+            <div class="mt-3 d-flex  "><a href="/admin/addcategory" class="btn btn-success ">Add category</a>
+        </div>
+
+        <table class="table mt-3" style="background-color: white;">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">index</th>
+                <th scope="col">Categort Name</th>
+                <th scope="col">option</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i < category.length; i++) { %>
+                    <tr>
+                        
+                        <th scope="row"><%=i+1%></th>
+                        <td><%=category[i].categoryname%></td>
+                        <td><a href="#" class="btn btn-danger">unList</a></td>
+                    </tr>
+                <% } %>    
+            </tbody>
+          </table>
+</div> -->
+<section class="container">
+    <div class="d-flex align-items-end flex-column" style="height: 200px;">
+      <div class="mt-5 d-flex  "><a href="/admin/addcategory" class="btn btn-success ">Add Category</a>
+      </div>
+    </div>
+    <div style=" background-color:white; margin-left: 2em;" class="my-3 m-3">
+      <div class="container mt-2" style="margin-top:100px;">
+       <div class="row">
+          <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                    <th scope="col">index</th>
+                    <th scope="col">Categort Name</th>
+                    <th scope="col">option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < category.length; i++) { %>
+                    <tr>
+                        
+                        <th scope="row"><%=i+1%></th>
+                        <td><%=category[i].categoryname%></td>
+                        <td><a href="#" class="btn btn-danger">unList</a></td>
+                    </tr>
+                <% } %>    
+              </tbody>
+            </table>
+       </div>
+      </div>
+      </div>
+      
+    
+    </section>

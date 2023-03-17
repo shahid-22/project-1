@@ -1,30 +1,27 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-6 mt-3">
-            <h2 class="fw-bold">ADD PRODUCTS</h2>
-            <form action="/admin/add-product" style="margin-top: 2em;" method="post"  enctype="multipart/form-data">
+            <h2 class="fw-bold">EDIT PRODUCTS</h2>
+            <form action="/admin/editproduct" style="margin-top: 2em;" method="post"  enctype="multipart/form-data">
                 <div class="form-group">
                     <input type="text"  id="productname" class="form-control" name="productname" placeholder="Product Name *" value=""  />
                 </div>
                 <div class="form-group">
                     <select name="categoryname" class="form-control">
                         <option value="">select category</option>
-                        <% for(let i =0;i< category.length;i++){ %>
-                            <option value="<%=category[i]._id %>"><%= category[i].categoryname %></option>
-                            <% } %>
+                       
+                            <option value="">hiii</option>
+                            
                     </select>
                 </div>
                 <div class="form-group">
                     <select name="brandname" class="form-control">
                         <option value="">select brand</option>
-                        <% for(let i =0;i< branddata.length;i++){ %>
-                            <option value="<%= branddata[i]._id %>"><%=  branddata[i].brandname %></option>
-                            <% } %>
+                        
+                            <option value="">nike</option>
+                      
                     </select>
                 </div>
-                <!-- <div class="form-group">
-                    <input type="text"  id="" class="form-control" name="Brand" placeholder="Brand *" value=""  />
-                </div> -->
                 <div class="form-group">
                     <!-- <input type="text"  id="" class="form-control" name="description" placeholder="description*" value=""  /> -->
                     <textarea id="" class="form-control" name="description" placeholder="description*" value="" ></textarea>

@@ -1,6 +1,7 @@
 const adminHelpers = require("../helpers/admin-helpers");
 const productHelpers=require("../helpers/product-helpers")
 const categoryHelpers=require("../helpers/category-helper")
+const BrandHelpers=require("../helpers/Brandhelpers")
 const db=require('../config/connection')
 const collection=require('../config/collection');
 
@@ -65,18 +66,27 @@ module.exports={
     },
     renderproductview:(req,res)=>{
         productHelpers.findproducts().then((products)=>{
+        console.log("koiiiiiiiiiiiii");
         console.log(products);
         res.render('admin/product-view',{layout:"adminlayout",products})
         })
     },
-    renderaddproduct:(req,res)=>{
-        res.render('admin/add-product',{layout:"adminlayout"})
+    renderaddproduct:async(req,res)=>{
+        let branddata= await BrandHelpers.findbranddate()
+        categoryHelpers.findcategory().then((category)=>{
+        console.log(category);
+        res.render('admin/add-product',{layout:"adminlayout",category,branddata})
+        })
     },
     postaddproduct:(req,res)=>{
-        productHelpers.productdata(req.body).then((response)=>{
+        console.log(req.body);
+        console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+        console.log(req.files);
+        let images=req.files
+        productHelpers.productdata(req.body,images).then((response)=>{
         console.log(response);
         })
-        res.redirect("/admin/add-product")
+        res.redirect("/admin/add-product")   
     },
     rendercategory:(req,res)=>{
         categoryHelpers.findcategory().then((category)=>{
@@ -88,9 +98,38 @@ module.exports={
     },
     postaddcategory:(req,res)=>{
        categoryHelpers.getcategorydata(req.body).then((response)=>{
-        console.log(response);
+       console.log(response);
        })
         res.redirect('/admin/addcategory')
+    },
+    renderbrandlist:async(req,res)=>{
+        let brands= await BrandHelpers.findbranddate()
+        res.render('admin/brand-list',{layout:"adminlayout",brands})
+    },
+    postbrandlist:async (req,res)=>{
+       await BrandHelpers.addbranddata(req.body)
+       res.redirect('/admin/Brand')
+    },
+    unlistcategory:async(req,res)=>{
+        try{
+            let categoryId=req.params.id
+            console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+            console.log(categoryId);
+            await categoryHelpers.deletecategory(categoryId)
+            res.redirect('/admin/category')
+        }catch(err){
+            console.log(err);
+        }
+    },
+    editproduct:async(req,res)=>{
+        const productId=req.params.id
+        let [products, categories, brands] = await Promise.all([
+            productHelpers.findsingleproductdata(productId),
+            categoryHelpers.findAll(),
+            BrandHelpers.findbranddate()
+          ])
+    
+        res.render('admin/edit-product',{layout:"adminlayout"})
     }
 
 }

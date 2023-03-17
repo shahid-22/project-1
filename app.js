@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const expressEjsLayouts = require('express-ejs-layouts');
 const nocache = require("nocache");
+const dotenv=require('dotenv').config()
 const session = require('express-session');
 const db = require('./config/connection');
 

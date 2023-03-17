@@ -45,7 +45,13 @@
                         
                         <th scope="row"><%=i+1%></th>
                         <td><%=category[i].categoryname%></td>
-                        <td><a href="#" class="btn btn-danger">unList</a></td>
+                        <td> 
+                          <% if(category[i].status){%>
+                          <a href="/admin/unlistcategory/<%= category[i]._id %>" class="btn btn-success">List...</a>
+                          <% }else{%>
+                            <a href="/admin/unlistcategory/<%= category[i]._id %>"class="btn btn-danger">unList</a>
+                            <%}%>
+                        </td>
                     </tr>
                 <% } %>    
               </tbody>

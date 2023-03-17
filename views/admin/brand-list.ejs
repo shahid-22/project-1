@@ -1,0 +1,62 @@
+<section class="container">
+    <div class="d-flex align-items-end flex-column" style="height: 200px;">
+      <div class="mt-5 d-flex  ">
+     <button class="btn btn-success "  data-toggle="modal" data-target="#Mylargemodal">Add Brand</button>
+      </div>
+    </div>
+    <div style=" background-color:white; margin-left: 2em;" class="my-3 m-3">
+      <div class="container mt-2" style="margin-top:100px;">
+       <div class="row">
+          <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                    <th scope="col">index</th>
+                    <th scope="col">brand Name</th>
+                    <th scope="col">option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < brands.length; i++) { %>
+                    <tr> 
+                        <th scope="row"><%=i+1%></th>
+                        <td><%=brands[i].brandname%></td>
+                        <td><a href="#" class="btn btn-danger">delete</a></td>
+                    </tr>  
+                    <% } %>   
+              </tbody>
+            </table>
+       </div>
+      </div>
+      </div>
+      
+    
+    </section>
+
+
+                <!-- .modal -->
+	<div class="modal fade" id="Mylargemodal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content" style="background-color: rgb(173, 231, 241);">
+				<div class="modal-header" style="justify-content: center;">
+					<h4 style="color: black; font-size: medium;">add brand</h4>                                                          
+				</div> 
+                <form action="/admin/Brand" method="post">
+                   <div class="modal-body">
+                       <input type="text"  id="brandname" class="form-control" name="brandname" placeholder="brand Name *" value=""  onkeyup="validatebrand()"  />
+                       <span id="name-error" class="validation-label" style="color: red;"></span>
+				   </div>  
+				   <div class="modal-footer">
+				   	<button type="button" class="btn btn-default" data-dismiss="modal">
+				   		Close
+				   	</button>
+                       <button type="submit" class="btn btn-primary"  onclick="return validateForm()">Submit</button>     
+                       <span id="submit-error" class="validation-label" style="color: red;"></span>                           
+				   </div>
+                </form>
+			</div>                                                                       
+		</div>                                      
+	</div>                              
+    <!----------------------end modal-->
+    <script type="text/javascript" src="/javascripts/brandvalidation.js"></script>
+
+  

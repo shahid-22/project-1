@@ -2,42 +2,48 @@
     <div class="row">
         <div class="col-lg-6 mt-3">
             <h2 class="fw-bold">EDIT PRODUCTS</h2>
-            <form action="/admin/editproduct" style="margin-top: 2em;" method="post"  enctype="multipart/form-data">
+            <form action="/admin/editproduct/<%= products[0]._id%>" style="margin-top: 2em;" method="post" enctype="multipart/form-data"  >
                 <div class="form-group">
-                    <input type="text"  id="productname" class="form-control" name="productname" placeholder="Product Name *" value=""  />
+                    <input type="text"  id="productname" class="form-control" name="productname"  value="<%=products[0].productname%>"  />
                 </div>
                 <div class="form-group">
                     <select name="categoryname" class="form-control">
-                        <option value="">select category</option>
-                       
-                            <option value="">hiii</option>
-                            
+                        <option value="<%=products[0].categorydetails[0]._id %>"><%=products[0].categorydetails[0].categoryname%></option>
+                        <% for(let i =0;i< categories.length;i++){ %>
+                            <option value="<%=categories[i]._id%>"><%=categories[i].categoryname%></option>
+                            <% } %>
                     </select>
                 </div>
                 <div class="form-group">
                     <select name="brandname" class="form-control">
-                        <option value="">select brand</option>
-                        
-                            <option value="">nike</option>
-                      
+                        <option value="<%=products[0].branddetails[0]._id%>"><%=products[0].branddetails[0].brandname%></option>
+                        <% for(let i =0;i< brands.length;i++){ %>
+                            <option value="<%=brands[i]._id%>"><%=brands[i].brandname%></option>
+                            <% } %>
                     </select>
                 </div>
                 <div class="form-group">
                     <!-- <input type="text"  id="" class="form-control" name="description" placeholder="description*" value=""  /> -->
-                    <textarea id="" class="form-control" name="description" placeholder="description*" value="" ></textarea>
+                    <textarea id="" class="form-control" name="description"  value="" ><%=products[0].description%></textarea>
                 </div>
                 <div class="form-group">
-                    <input type="number"  id="" class="form-control" name="price" placeholder="price *" value=""  />
+                    <input type="number"  id="" class="form-control" name="price"  value="<%=products[0].price%>"  />
                 </div>
                 <div class="form-group">
-                    <input type="number"  id="" class="form-control" name="quantity" placeholder="quantity *" value=""  />
+                    <input type="number"  id="" class="form-control" name="quantity"  value="<%=products[0].quantity%>"  />
+                </div>
+                <div class="form-group">
+                    currentimages<br>
+                    <% for(let i =0;i< products[0].imagesurl.length;i++){ %>
+                        <img src="<%= products[0].imagesurl[i] %>" style="width: 80px; height: 80px;">
+                        <% } %>
                 </div>
                  <div class="form-group">
                     <label for="image" class="form-label">Image</label>
                     <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
                 </div>
                  <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">update</button>
                 </div>
             </form>
         </div>

@@ -32,9 +32,15 @@
                         <td><%=products[i].price %></td>
                         <td><%=products[i].quantity %></td>
                          <td><a href="/admin/editproduct/<%= products[i]._id%>" class="btn btn-primary">EDIT</a></td>
-                         <td><a href="#" class="btn btn-danger">DELETE</a></td>
+
+
+                         <td><button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#myModal<%=products[i]._id %>">DELETE</button></td>
+                       
                          <td><img src="<%= products[i].imagesurl[0] %>" style="height: 50px;width: 50px;"></td>
+                          
+                        
                     </tr>
+                   
                     <% } %>
             </tbody>
           </table>
@@ -44,3 +50,25 @@
     
   
   </section>
+
+  <% for(var i=0; i < products.length; i++) { %>
+    <!-- Modal--->
+    <div class="modal fade" id="myModal<%=products[i]._id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="justify-content: center;">
+            <h4 class="modal-title" id="myModalLabel" >alert</h4>
+          </div>
+          <div class="modal-body">
+            <p>do you want to delete this item ?</p>
+    
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a href="/admin/deleteproduct/<%=products[i]._id%>"  class="btn btn-danger">DELETE</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-----------------modal end -->
+  <% } %>

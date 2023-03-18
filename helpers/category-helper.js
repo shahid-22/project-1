@@ -42,6 +42,11 @@ module.exports={
       findAll:async()=>{
         let categories= await db.get().collection(collection.CATEGORY_COLLECTION).find().toArray();
         return categories
+      },
+      editcategory:async(categoryId,categoryname)=>{
+        await db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id:new ObjectId(categoryId)},{
+          $set:{categoryname}
+        })
       }
 
 }

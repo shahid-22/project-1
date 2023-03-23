@@ -23,6 +23,16 @@
             </tbody>
           </table>
 </div> -->
+<%if(alreadyexistError){%>
+ <p id="error" style="color: red;font-size: larger;"><%=alreadyexistError%></p>
+<%}%>
+<script>
+  const error=document.getElementById("error")
+  setTimeout(()=>{
+error.style.display='none';
+},3000);
+
+</script>
 <section class="container">
     <div class="d-flex align-items-end flex-column" style="height: 200px;">
       <div class="mt-5 d-flex  "><a href="/admin/addcategory" class="btn btn-success ">Add Category</a>
@@ -48,9 +58,9 @@
                         <td><%=category[i].categoryname%></td>
                         <td> 
                           <% if(category[i].status){%>
-                          <a href="/admin/unlistcategory/<%= category[i]._id %>" class="btn btn-success">List...</a>
+                          <a href="/admin/unlistcategory/<%= category[i]._id %>" class="btn btn-danger">unlist</a>
                           <% }else{%>
-                            <a href="/admin/unlistcategory/<%= category[i]._id %>"class="btn btn-danger">unList</a>
+                            <a href="/admin/unlistcategory/<%= category[i]._id %>"class="btn btn-success">List...</a>
                             <%}%>
                         </td>
                         <td><button class="btn btn-primary "  data-toggle="modal" data-target="#Mylargemodal<%= category[i]._id %>">EDIT</button></td>
@@ -68,7 +78,7 @@
                   <!-- .modal -->
 	<div class="modal fade" id="Mylargemodal<%= category[i]._id %>">
 		<div class="modal-dialog modal-lg">
-			<div class="modal-content" style="background-color: rgb(173, 231, 241);">
+			<div class="modal-content" style="background-color: rgba(161, 174, 174, 0.844);">
 				<div class="modal-header" style="justify-content: center;">
 					<h4 style="color: black; font-size: medium;">add brand</h4>                                                          
 				</div> 

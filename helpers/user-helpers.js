@@ -37,9 +37,14 @@ module.exports={
                         resolve({status:false});
                     }
                 })
+            
             }else{
                 resolve({status:false});
             }
         })
+    },
+    findAll:async()=>{
+      const products=db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).toArray()
+      return products
     }
 }

@@ -12,6 +12,10 @@ module.exports={
         return brands
 
     },
+    findlistedbrand:async()=>{
+        const brand=await db.get().collection(collection.BRAND_COLLECTION).find({islisted:true}).toArray()
+        return brand
+    },
     unlistbrand:async(brandId)=>{
     let brandlist= await db.get().collection(collection.BRAND_COLLECTION).findOne({_id:new ObjectId(brandId)})
     if(brandlist.islisted){
@@ -32,5 +36,9 @@ module.exports={
         await db.get().collection(collection.BRAND_COLLECTION).updateOne({_id:new ObjectId(brandId)},{
             $set:{brandname}
           })
+    },
+    brandalreadyexist:async(brandname)=>{
+        let brandalreadyexict=await db.get().collection(collection.BRAND_COLLECTION).findOne({brandname:brandname})
+        return brandalreadyexict
     }
 }

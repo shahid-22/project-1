@@ -16,19 +16,19 @@ module.exports={
         }
     },
     renderuserview:(req,res)=>{
-        if(req.session.adminloggedIn){
+        
             adminHelpers.getuserdata().then((users)=>{
             res.render('admin/user-view',{layout:"adminlayout",users})
         }) 
-        }else{
-           res.redirect('/admin/adminlogin') 
-        }
+        
     },
     blockuser:async(req,res)=>{
         try{
         let userId=req.params.id
         console.log(userId);
         await adminHelpers.changeuserstatus(userId)
+        req.session.loggedIn=false
+        req.session.userName=null
         res.redirect('/admin/user-view')
     }catch(err){
         console.log(err);
@@ -67,21 +67,18 @@ module.exports={
     },
     renderproductview:(req,res)=>{
         productHelpers.findproducts().then((products)=>{
-        console.log("koiiiiiiiiiiiii");
         // console.log(products);
         res.render('admin/product-view',{layout:"adminlayout",products})
         })
     },
     renderaddproduct:async(req,res)=>{
-        let branddata= await BrandHelpers.findbranddate()
-        categoryHelpers.findcategory().then((category)=>{
-        // console.log(category);
+        let branddata= await BrandHelpers.findlistedbrand()
+        let category=await categoryHelpers.listedcategory()
         res.render('admin/add-product',{layout:"adminlayout",category,branddata})
-        })
+       
     },
     postaddproduct:(req,res)=>{
         console.log(req.body);
-        console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
         console.log(req.files);
         let images=req.files
         productHelpers.productdata(req.body,images).then((response)=>{
@@ -89,32 +86,46 @@ module.exports={
         })
         res.redirect("/admin/add-product")   
     },
-    rendercategory:(req,res)=>{
+    rendercategory:async(req,res)=>{
+        let alreadyexistError=await req.query.message ?? ""
         categoryHelpers.findcategory().then((category)=>{
-        res.render('admin/category-list',{layout:"adminlayout",category})  
+        res.render('admin/category-list',{layout:"adminlayout",category,alreadyexistError})  
         })
     },
     renderaddcategory:(req,res)=>{
+
         res.render('admin/add-category',{layout:"adminlayout"})
     },
-    postaddcategory:(req,res)=>{
-       categoryHelpers.getcategorydata(req.body).then((response)=>{
-       console.log(response);
+    postaddcategory:async(req,res)=>{
+        let{categoryname}=req.body
+        const catogoryalreadyexist=await categoryHelpers.categoryalreadyexist(categoryname)
+        if(catogoryalreadyexist){
+        res.redirect('/admin/addcategory')
+        }else{
+        categoryHelpers.getcategorydata(req.body).then((response)=>{
+        console.log(response);
        })
         res.redirect('/admin/addcategory')
+    }
     },
     renderbrandlist:async(req,res)=>{
+        let alreadyexistError=await req.query.message ?? ""
         let brands= await BrandHelpers.findbranddate()
-        res.render('admin/brand-list',{layout:"adminlayout",brands})
+        res.render('admin/brand-list',{layout:"adminlayout",brands,alreadyexistError})
     },
     postbrandlist:async (req,res)=>{
-       await BrandHelpers.addbranddata(req.body)
-       res.redirect('/admin/Brand')
+            let {brandname}=req.body
+            const brandalreadtexist=await BrandHelpers.brandalreadyexist(brandname)
+        if(brandalreadtexist){
+            res.redirect('/admin/Brand')
+        }else{
+           await BrandHelpers.addbranddata(req.body)
+           res.redirect('/admin/Brand')
+        }
     },
     unlistcategory:async(req,res)=>{
         try{
             let categoryId=req.params.id
-            console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
             console.log(categoryId);
             await categoryHelpers.deletecategory(categoryId)
             res.redirect('/admin/category')
@@ -124,7 +135,7 @@ module.exports={
     },
     rendereditproduct:async(req,res)=>{
         const productId=req.params.id
-        let [products, categories, brands] = await Promise.all([
+            let [products, categories, brands] = await Promise.all([
             productHelpers.findsingleproductdata(productId),
             categoryHelpers.findAll(),
             BrandHelpers.findbranddate()
@@ -139,10 +150,8 @@ module.exports={
             let imagess=req.files
             console.log(req.body);
         let {productname,description,categoryname,brandname,price,quantity} = req.body
-        console.log("koiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         console.log(imagess);
         const imagesurl=[]
-        console.log("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmhhiiiiiiiii");
         console.log(imagess);
     
         for(let i=0;i<imagess.length;i++){
@@ -161,34 +170,43 @@ module.exports={
         }
     },
     deleteproduct:async(req,res)=>{
-     const productId=req.params.id
-     console.log("noooooooooooooooooooooooooooooooooooo");
-     console.log(productId);
-     await productHelpers.deleteproduct(productId)
-     res.redirect('/admin/productview')
+        const productId=req.params.id
+        console.log(productId);
+        await productHelpers.delete(productId)
+        res.redirect('/admin/productview')
     },
     editcategory:async(req,res)=>{
-        const categoryId=req.params.id
-        const{categoryname}=req.body
-        await categoryHelpers.editcategory(categoryId,categoryname)
-        res.redirect('/admin/category')
-
+        let{categoryname}=req.body
+        const catogoryalreadyexist=await categoryHelpers.categoryalreadyexist(categoryname)
+        if(catogoryalreadyexist){
+             res.redirect('/admin/category?message=already exist')
+        }else{
+            const categoryId=req.params.id
+            const{categoryname}=req.body
+            await categoryHelpers.editcategory(categoryId,categoryname)
+            res.redirect('/admin/category')
+        }
     },
     unlistbrand:async(req,res)=>{
-        try{
+      try{
         let brandId=req.params.id
         await BrandHelpers.unlistbrand(brandId)
         res.redirect('/admin/Brand')
-        }catch(err){
+      }catch(err){
             console.log(err);
-        }
+      }
     },
     editbrand:async(req,res)=>{
         let  brandId=req.params.id
         console.log(brandId);
         const{brandname}=req.body
+        const brandalreadtexist=await BrandHelpers.brandalreadyexist(brandname)
+        if(brandalreadtexist){
+            res.redirect('/admin/Brand?message=already exist')
+        }else{
         await BrandHelpers.editbrand(brandId,brandname)
         res.redirect('/admin/Brand')
+        }
 
     }
 

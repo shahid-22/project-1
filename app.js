@@ -33,6 +33,7 @@ app.use(function (req, res, next) {
 });
 
 
+
 //Database connection
 db.connect((err)=>{
   if(err){
@@ -61,4 +62,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+// module.exports = app;
+app.listen(3000)

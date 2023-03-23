@@ -29,12 +29,12 @@ module.exports={
     findproducts:()=>{
         return new Promise((resolve,reject)=>{
         db.get().collection(collection.PRODUCT_COLLECTION).aggregate([
-            {
-                $match:{
-                    isdeleted:{$ne:true}
-                }
+            // {
+            //     $match:{
+            //         isdeleted:{$ne:true}
+            //     }
 
-            },
+            // },
             {
                 $lookup:{
                     from: "category",
@@ -111,6 +111,32 @@ module.exports={
             }
         })
      
+    },
+    findcategoryproduct:async(catrgoryId)=>{
+        let product=await db.get().collection(collection.PRODUCT_COLLECTION).find({categoryname:new ObjectId(catrgoryId)}).toArray();
+        return product;
+    },
+    findbrandproduct:async(brandId)=>{
+        let brandproduct=await db.get().collection(collection.PRODUCT_COLLECTION).find({brandname:new ObjectId(brandId)}).toArray();
+        return brandproduct;
+    },
+    delete:async(productId)=>{
+        let productstaus= await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:new ObjectId(productId)})
+        console.log("saaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        console.log(productstaus);
+        if(productstaus.isdeleted){
+            await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:new ObjectId(productId)},{
+                $set:{
+                    isdeleted:false
+                }
+            })
+        }else{
+            await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:new ObjectId(productId)},{
+                $set:{
+                    isdeleted:true
+                }
+            }) 
+        }
     }
 
 

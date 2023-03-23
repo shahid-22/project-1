@@ -39,8 +39,8 @@
             <div class="col-xl-6 col-lg-7">
                 <nav class="header__menu">
                     <ul>
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="./shop.html">Shop</a></li>
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/shopepage">Shop</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="dropdown">
                                 <li><a href="./product-details.html">Product Details</a></li>
@@ -52,10 +52,10 @@
                         <li><a href="./contact.html">Contact</a></li>
                       
                         <li>
-                            <%if (locals.user){%>
+                            <%if (locals.userName){%>
                                 <a href="#">account</a>
                                 <ul class="dropdown">
-                                    <li><a href="#"><%=user.name%></a></li> 
+                                    <li><a href="#"><%=userName%></a></li> 
                                     <li><a href="/logout">logout</a></li>  
                                 </ul>
                             <%}else{%>
@@ -78,7 +78,7 @@
                         <li><a href="#"><span class="icon_heart_alt"></span>
                             <div class="tip">2</div>
                         </a></li>
-                        <li><a href="#"><span class="icon_bag_alt"></span>
+                        <li><a href="/cart"><span class="icon_bag_alt"></span>
                             <div class="tip">2</div>
                         </a></li>
                     </ul>

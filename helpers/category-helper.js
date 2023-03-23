@@ -6,7 +6,7 @@ module.exports={
     getcategorydata:(categorydata)=>{
         return new Promise((resolve,reject)=>{
             console.log(categorydata);
-            categorydata.status=false;
+            categorydata.status=true;
             db.get().collection(collection.CATEGORY_COLLECTION).insertOne(categorydata).then((data)=>{
                 console.log(data);
                 resolve(data)
@@ -21,9 +21,13 @@ module.exports={
             })
             })
     },
+    listedcategory:async()=>{
+      const category=await db.get().collection(collection.CATEGORY_COLLECTION).find({status:true}).toArray()
+      return category
+
+    },
     deletecategory:async(categoryId)=>{
-        console.log(categoryId);
-        console.log("mmmmmmmmmmmmm");
+        console.log(categoryId);  
         let categorystatus= await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:new ObjectId(categoryId)})
        if(categorystatus.status){
         await  db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id:new ObjectId(categoryId)},{
@@ -47,6 +51,11 @@ module.exports={
         await db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id:new ObjectId(categoryId)},{
           $set:{categoryname}
         })
+      },
+      categoryalreadyexist:async(categoryname)=>{
+        const categorydataalreadyexist=await db.get().collection(collection.CATEGORY_COLLECTION).findOne({categoryname:categoryname})
+        return categorydataalreadyexist
+
       }
 
 }

@@ -1,0 +1,257 @@
+ <!-- Breadcrumb Begin -->
+ <div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <a href="/cart"><i class="fa fa-shopping-cart"></i>cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h6 class="coupon__link"><a data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-dark" style="color: white;">Add Address</a></h6>
+            </div>
+        </div>
+        <!-- <form action="#" class="checkout__form"> -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- <h5>Your Address</h5> -->
+                    <div class="row">
+                        <!------address-->
+                        <table class="table mt-3">
+                            <thead>
+                              <tr>
+                                <th scope="col">Select</th>
+                                <th scope="col" style="text-align: center;">Select  Shipping Address</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            <%for(var j = 0;j< user.length;j++){%>
+                                <tr>
+                                  <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;" value="<%=user[j].address._id%>" checked></th>
+                                  <td><span><b> Name :  </b> <%= user[j].address.firstName%> <%= user[j].address.lastName%>,</span><br>
+                                  <span><b> Address :  </b> <%= user[j].address.address %>,<%= user[j].address.city%>,<%= user[j].address.district%>,<%= user[j].address. pincode%>(po),</span><br>
+                                  <span><b> Phone :  </b> <%= user[j].address.phone%></span>
+
+                                  </td>
+                                 
+                                </tr>
+    
+                           <% }%>
+                              
+                            </tbody>
+                          </table>
+                        <!------endaddress-->
+                        <div class="col-lg-12">
+                           
+                        </div>
+                       
+                        <div class="col-lg-6">
+                            <div class="checkout__form__checkbox">
+                            </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__order">
+                            <h5>Your order</h5>
+                            <div class="checkout__order__product">
+                                <ul>
+                                    <li>
+                                        <span class="top__text">Product</span>
+                                        <span class="top__text__right">Sub Total</span>
+                                    </li>
+                                    <% for(var i=0; i < cartproductdetails.length; i++) { %>
+                                    <li><%=cartproductdetails[i]. productdetails.productname%><b style="margin-left:1em;">x</b><%=cartproductdetails[i]. products.quantity%><span><%=cartproductdetails[i].subTotal%></span></li>
+                                    
+                                    <% } %>
+                                </ul>
+                            </div>
+                            <div class="checkout__order__total">
+                                <ul>
+                                    <!-- <li>Subtotal <span>$ 750.0</span></li> -->
+                                    <li>Total <span><%=totalprice%></span></li>
+                                </ul>
+                            </div>
+                            <div class="checkout__order__widget">
+                                <label for="check-payment">
+                                    cash on delivery
+                                    <input type="radio" id="check-payment" name="g" >
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label for="paypal">
+                                    PayPal
+                                    <input type="radio" id="paypal" name="g" >
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <button type="submit" class="site-btn">Place oder</button>
+                        </div>
+                    </div>
+                </div>
+            <!-- </form> -->
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+    <!-- Instagram Begin -->
+    <!-- Instagram End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-7">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        cilisis.</p>
+                        <div class="footer__payment">
+                            <a href="#"><img src="img/payment/payment-1.png" alt=""></a>
+                            <a href="#"><img src="img/payment/payment-2.png" alt=""></a>
+                            <a href="#"><img src="img/payment/payment-3.png" alt=""></a>
+                            <a href="#"><img src="img/payment/payment-4.png" alt=""></a>
+                            <a href="#"><img src="img/payment/payment-5.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-5">
+                    <div class="footer__widget">
+                        <h6>Quick links</h6>
+                        <ul>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Blogs</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="footer__widget">
+                        <h6>Account</h6>
+                        <ul>
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">Orders Tracking</a></li>
+                            <li><a href="#">Checkout</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8 col-sm-8">
+                    <div class="footer__newslatter">
+                        <h6>NEWSLETTER</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Email">
+                            <button type="submit" class="site-btn">Subscribe</button>
+                        </form>
+                        <div class="footer__social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <div class="footer__copyright__text">
+                        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+                    </div>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    <!----modal-->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle"><span >Address</span></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form  action="/add-Address" method="post">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="first Name">First Name</label>
+                        <input type="text" class="form-control" name="firstName" id="firstName" placeholder="first name">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="last Name">Last Name</label>
+                        <input type="text" class="form-control" name="lastName" placeholder="last name">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputAddress">Address</label>
+                      <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputState">District</label>
+                            <select id="" class="form-control" name="district" required>
+                              <option value="">...........................select district..........................</option>
+                                    <option >Calicut</option>
+                                    <option >Malappuaram</option>
+                                    <option >Palakkad</option>
+                                    <option >Thrissur</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="inputZip">City</label>
+                          <input type="text" class="form-control" name="city">
+                        </div>
+                      </div>
+    
+    
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="forPincode">pincode</label>
+                        <input type="text" class="form-control" name="pincode">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="phone">phone</label>
+                        <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+                      </div>
+                    </div>
+    
+                     <div style="margin-left: 75%;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!----end-modal-->

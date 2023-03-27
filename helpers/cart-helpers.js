@@ -66,6 +66,30 @@ module.exports={
     }
    ]).toArray()
    return cart
+ },
+ getcartcount:async(userId)=>{
+  let count=0
+  let cart=await db.get().collection(collection.CART_COLLECTION).findOne({user:new ObjectId(userId)})
+  if(cart){
+    count=cart.products.length
+  }
+  return count
+
+ },
+ changecartproductquantity:async(cartId,proId,count)=>{
+  await db.get().collection(collection.CART_COLLECTION).updateOne({_id:new ObjectId(cartId),'products.productId':new ObjectId(proId)},{
+    $inc:{"products.$.quantity":count}
+  })
+    const res=await db.get().collection(collection.CART_COLLECTION).updateOne({_id:new ObjectId(cartId)},{
+      $pull:{products:{productId:new ObjectId(proId),quantity:0}}
+    })
+    return res;
+     
+ },
+ removecartproduct:async(userId,proId)=>{
+  await db.get().collection(collection.CART_COLLECTION).updateOne({user:new ObjectId(userId)},{
+    $pull:{products:{productId:new ObjectId(proId)}}
+  })
  }
 
 }

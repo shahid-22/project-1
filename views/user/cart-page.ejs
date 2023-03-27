@@ -46,84 +46,20 @@
                                     </div>
                                 </td>
                                 <td class="cart__price"><%=cart[i]. productdetails. price%></td>
+                                
                                 <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="<%=cart[i]. productdetails.quantity%>">
-                                    </div>
+                                    <div class="btn btn-light" onclick="changeQuantity('<%=cart[i]._id%>','<%=cart[i]. productdetails._id%>',-1,'<%=cart[i]. productdetails. price%>')">  <i class="fa fa-minus"></i></div>
+                                    <span id="<%=cart[i].productdetails._id%>" ><%=cart[i]. products.quantity%></span>
+                                    <!-- <%=cart[i]. products.quantity%> -->
+                                    <div class="btn btn-light"  onclick="changeQuantity('<%=cart[i]._id%>','<%=cart[i]. productdetails._id%>',1,'<%=cart[i]. productdetails. price%>')">  <i class="fa fa-plus"></i></div>
                                 </td>
-                                <td class="cart__total"><%=cart[i]. subTotal%></td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
+                                <td class="cart__total <%=cart[i].productdetails._id%> subTotal"><%=cart[i]. subTotal%></td>
+                                <!-- <td class="cart__close"><a href="#"> <button class="btn btn-danger">Remove</button></a> </td> -->
+                                <td class="cart__close"><a data-toggle="modal" data-target="#myModal<%=cart[i]. productdetails._id%>" class="icon_close btn btn-light"></a></td>
+                               
                             </tr>
                             <% } %>
-                            <!-- <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-2.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Zip-pockets pebbled tote briefcase</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 170.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 170.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-3.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Black jean</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 85.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 170.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-4.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Cotton Shirt</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 55.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 110.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr> -->
+                          
                         </tbody>
                     </table>
                 </div>
@@ -155,10 +91,10 @@
                 <div class="cart__total__procced">
                     <h6>Cart total</h6>
                     <ul>
-                        <li>Subtotal <span><%=totalprice%></span></li>
-                        <li>Total <span><%=totalprice%></span></li>
+                        <li>Subtotal <span class="totalamount"><%=totalprice%></span></li>
+                        <li>Total <span class="totalamount"><%=totalprice%></span></li>
                     </ul>
-                    <a href="#" class="primary-btn">Proceed to checkout</a>
+                    <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -171,3 +107,70 @@
 <!-- Instagram End -->
 
 <!-- Footer Section Begin -->
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script>
+  const changeQuantity=async(cartId,proId,count,price)=>{
+        const res=await axios({
+            method:"post",
+            url:"/change-product-quantity",
+            data:{cartId,proId,count}
+        })
+        if(res.data.status==="removed"){
+            location.reload()
+        }else{
+            let currentquantity=document.getElementById(proId)
+            // console.log(currentquantity.innerText);
+             currentquantity.innerText=parseInt(currentquantity.innerText)+parseInt(count)
+            //  console.log(currentquantity.innerText);
+            price=price.replace(/,/g, "")
+            price=price.replace('₹','')
+            console.log(price);
+            subtotal=parseInt(price)*parseInt(currentquantity.innerText)
+            // console.log(subtotal);
+            document.getElementsByClassName(proId)[0].innerText=subtotal.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+            const values=document.querySelectorAll(".subTotal")
+            console.log(values.length);
+            //nnnnnnnnnn
+            let  total = 0
+       values.forEach(subTotal=>{
+        let value = subTotal.innerText
+        value = value.replace(/,/g,"")
+        value= value.replace('₹','')
+        // console.log(value);
+        total = total+parseInt(value)
+        // console.log(total);
+       })
+       document.querySelectorAll('.totalamount').forEach(totalamount=>{
+        totalamount.innerText=total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+       }) 
+
+
+            //nnnnnnnnnn
+        }
+    }
+
+
+</script>
+<% for(var i=0; i < cart.length; i++) { %>
+<!-- Modal--->
+<div class="modal fade" id="myModal<%=cart[i]. productdetails._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="justify-content: center;">
+          <h4 class="modal-title" id="myModalLabel" >WARNING</h4>
+        </div>
+        <div class="modal-body">
+          <p> are you sure ?</p>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+         
+          <a href="/remove-cart/<%=cart[i]. productdetails._id%>"  class="btn btn-danger">yes</a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+<!-----------------modal end -->

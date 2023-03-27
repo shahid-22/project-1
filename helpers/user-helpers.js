@@ -1,6 +1,7 @@
 const db=require('../config/connection')
 const collection=require('../config/collection')
 const bcrypt = require('bcrypt');
+const { ObjectId } = require('mongodb-legacy');
 
 
 
@@ -44,7 +45,40 @@ module.exports={
         })
     },
     findAll:async()=>{
-      const products=db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).toArray()
+      const products=await db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).toArray()
       return products
+    },
+    phonenumberexist:async(phonenumber)=>{
+        console.log(phonenumber);
+        phonenumber=Number(phonenumber)
+       let phoneverify= await db.get().collection(collection.USER_COLLECTION).findOne({Phonenumber:phonenumber})
+        console.log( phoneverify);
+        return phoneverify
+    },
+    addaddrtess:async(address,userId)=>{
+        address.phone=Number(address.phone)
+        address.pincode=Number(address.pincode)
+        address._id=new ObjectId()
+        await db.get().collection(collection.USER_COLLECTION).updateOne({_id: new ObjectId(userId)},{
+            $push:{address:address}
+        })
+
+
+    },
+    findaddress:async(userId)=>{
+        const user=await db.get().collection(collection.USER_COLLECTION).aggregate([
+            {
+                $match:{_id:new ObjectId(userId)}
+            },
+            {
+                $unwind:{path:"$address"}
+            },
+            {
+              $project:{
+                address:1
+              }
+            }
+        ]).toArray()
+        return user
     }
 }

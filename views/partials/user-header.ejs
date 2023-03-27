@@ -79,7 +79,11 @@
                             <div class="tip">2</div>
                         </a></li>
                         <li><a href="/cart"><span class="icon_bag_alt"></span>
-                            <div class="tip">2</div>
+                            <%if (locals.cartcount){%>
+                            <div class="tip"><%=cartcount%></div>
+                            <%}else{%>
+                                <div class="tip">0</div>
+                                <% }%>
                         </a></li>
                     </ul>
                     <!----dropdown------->

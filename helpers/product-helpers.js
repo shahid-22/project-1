@@ -122,7 +122,6 @@ module.exports={
     },
     delete:async(productId)=>{
         let productstaus= await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:new ObjectId(productId)})
-        console.log("saaaaaaaaaaaaaaaaaaaaaaaaaaa");
         console.log(productstaus);
         if(productstaus.isdeleted){
             await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:new ObjectId(productId)},{

@@ -1,0 +1,137 @@
+
+<div class="container mt-3 ">
+<section class="vh-100 gradient-custom" style="margin-top: 2rem;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card bg-dark text-white" style="border-radius: 1rem;">
+            <div class="card-body pl-5 pr-5 text-center">
+  
+              <div class="mb-md-5 mt-md-4 pb-3">
+  
+                <h2 class="fw-bold mb-2 text-uppercase">Sign in</h2>
+  
+                
+                  <div id="sender">
+                    <p class="text-white-50 mb-5">Please enter your Mobile number to Sign in</p>
+                      <div class="form-outline form-white mb-4">
+                        <input type="text" id="number" class="form-control form-control-lg" />
+                        <label class="form-label" for="mobile">Mobile Number</label>
+                        <div id="recaptcha-container"></div>
+                      </div>
+                      <button class="mb-2 btn-primary btn-lg text-white-50" onclick="phoneAuth()">Send OTP</button>
+                  </div>
+  
+
+                
+                  <div id="verifier" style="display:none;">
+                    <div class="form-outline form-white mb-4">
+                      <input style="width:8rem;margin:0 auto;" id="OtpField" class="form-control form-control-lg" placeholder="Enter otp"/>
+                    </div>
+  
+                    <div>
+                      <button class="btn btn-primary mb-2" id="number" onclick="codeVerify()">Verify</button>
+                    </div>
+                  </div>
+                    
+                    <form action="/OTP-login" method="POST" role="form">
+  
+                      <input id="mobileNum" name="number" hidden>
+  
+                      <div id="verified" style="display:none;margin-top:2rem"> Number Verified</div>
+                      <div id="unVerified" style="display:none;margin-top:2rem"> Wrong otp</div>
+  
+                      <button class="btn btn-outline-light btn-lg m-auto" id="signInBtn" type="submit" style="display:none;">Sign in</button>
+  
+                    </form>
+                  
+  
+                  <!-- {{#if invalidUser}}
+                    <label class="form-label mt-3" style="color:white">* Invalid User</label>
+                  {{/if}}
+  
+                  {{#if blocked}}
+                    <label class="form-label mt-3" style="color:white">* User Blocked</label>
+                  {{/if}}
+  
+                  {{#if unAuthorized}}
+                    <label class="form-label mt-3" style="color:white">* Unauthorized user</label>
+                  {{/if}} -->
+  
+                <div>
+                  <p class="mt-3">Don't have an account? <a href="/signup" class="text-white-50 fw-bold">Sign Up</a></p>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!----------------authentication------------------->
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBtl_cSlYowDKzVYfSmOC8KTKUIFJxGlvA",
+        authDomain: "shoezone-74ca3.firebaseapp.com",
+        projectId: "shoezone-74ca3",
+        storageBucket: "shoezone-74ca3.appspot.com",
+        messagingSenderId: "621985172606",
+        appId: "1:621985172606:web:e181b72b2795b3511c5c2f",
+        measurementId: "G-BWMJP8SKHL"
+    };
+
+    // Initialize Firebase
+
+    firebase.initializeApp(firebaseConfig);
+    render();
+
+    function render() {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recaptcha-container");
+        recaptchaVerifier.render();
+    }
+
+//   phone authentication
+
+    function phoneAuth(){
+  const number ="+91"+document.getElementById("number").value;
+  console.log('num',number);
+  firebase.auth().signInWithPhoneNumber(number,window.recaptchaVerifier).then(function(confirmationResult){
+    window.confirmationResult = confirmationResult;
+    
+    document.getElementById('sender').style.display='none';
+    document.getElementById('verifier').style.display='block';
+  }).catch(function(error){
+    alert(error.message);
+
+  });
+}
+
+
+    function codeVerify() {
+        var code = document.getElementById('OtpField').value;
+        let number = document.getElementById('number').value;
+        console.log(number);
+        confirmationResult.confirm(code)
+        .then(function (result) {
+                document.getElementById('verified').style.display = 'block';
+                document.getElementById('unVerified').style.display = 'none';
+				document.getElementById('verifier').style.display = 'none';
+				document.getElementById('signInBtn').style.display = 'block';
+
+				document.getElementById('mobileNum').value = number;
+        })
+        .catch(function (error) {
+            document.getElementById('verified').style.display = 'none';
+                document.getElementById('unVerified').style.display = 'block';
+				document.getElementById('signInBtn').style.display = 'none';
+        });
+    }
+</script>

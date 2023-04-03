@@ -130,7 +130,7 @@
                                 <!-- <div class="label new">New</div> -->
                                 <ul class="product__hover">
                                     <li><a href="<%= products[i]. imagesurl[0]%>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                    <li><a ><span class="btn icon_heart_alt addtowishlist" data-productid="<%= products[i]._id%>"></span></a></li>
                                     <!-- <li><a data-productid="<%= products[i]._id%>"><span class="icon_bag_alt addTocart"></span></a></li>  -->
                                     <li><a ><span class=" btn icon_bag_alt addTocart" data-productid="<%= products[i]._id%>"></span></a></li> 
                                 </ul>
@@ -305,4 +305,61 @@
      }
     })
     
- </script>
+</script>
+
+<script type="text/javascript"> 
+    document.querySelectorAll('.addtowishlist').forEach(function(button){
+        button.addEventListener('click',function(event){
+         event.preventDefault()
+         //to prevent default action
+         console.log("meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+         console.log(this.dataset.productid);
+         addtowishlist(this.dataset.productid)
+ 
+     })
+
+     const addtowishlist=async(productId)=>{
+        try{
+  console.log("chiiiiiii");
+  console.log(productId);
+            const res = await axios({
+                 method:'get',
+                 url:`/addto-wishlist/${productId}` 
+             })
+
+             //-----------------
+             if(res.data.status==="success"){
+                 Toastify({
+                     text: res.data.message,
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "center", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                 }).showToast()
+             }else{
+                 // location.assign('/login')
+                 Toastify({
+                     text: "Removed",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "center", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "linear-gradient(to right, #00b09b, #e80707)",
+                     },
+                 }).showToast()
+             }
+             //-----------------
+
+
+        }catch(err){
+            console.log(err);
+        }
+     }
+    })
+</script>

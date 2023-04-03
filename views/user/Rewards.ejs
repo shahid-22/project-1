@@ -1,0 +1,151 @@
+<style>
+    body{
+
+background-color: #eee;
+}
+
+.wrapper{
+
+height: 100vh;
+}
+
+.card{
+  
+  position: relative;
+  background-color: #7B1FA2;
+  padding: 10px;
+  width: 400px;
+  border:none;
+ 
+
+}
+
+.content{
+
+z-index: 10;
+}
+
+.logo{
+
+margin-bottom: 50px;
+}
+
+
+.off{
+
+    line-height: 0px;
+}
+
+.off h1{
+
+font-size: 80px;
+}
+
+.off span{
+
+margin-right: 111px;
+}
+
+
+.plus{
+font-size: 23px;
+}
+
+.code{
+
+text-transform: uppercase;
+padding: 10px;
+background-color: #fff;
+color: red;
+font-size: 20px;
+}
+
+.cross-bg{
+
+height: 100%;
+width: 100%;
+position: absolute;
+
+background-color: #9C27B0;
+
+left: 0px;
+  top: 0px;
+  opacity: 0.4;
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+  z-index:1;
+}
+</style>
+
+<section class="product-details spad">
+    <div class="container">    
+        <h1 style="text-align: center;font-weight: 900;">Your Rewards</h1>
+        <div class="row">
+            <% for(let i=0;i< rewards.length;i++){%>
+
+          
+            <div class="col-lg-3 col-md-4 col-sm-6 " style="margin-top: -7em;" >
+                <div class="product__details__text ">
+                    <div class="wrapper d-flex justify-content-center align-items-center">
+
+                        <div class="card" >
+                  
+                  
+                          <div class="cross-bg">
+                            
+                          </div>
+                  
+                          <div class="content">
+                  
+                          <div class="logo text-right">
+                           <p style="color: black; font-weight:1000; font-family:sans-serif;">SHOE ZONE</p>
+                          </div>
+                  
+                          <div class="text-center text-uppercase text-white off">
+                  
+                  
+                            <span>Flat</span>
+                            <h1 class="mt-0"><%=rewards[i].discount%>%</h1>
+                            
+                          </div>
+                  
+                          
+                  
+                  
+                          <div class="text-center text-uppercase text-white">
+                  
+                  
+                           
+                            <h3 class="m-0" style="font-weight:500 ;font-size: small;"><%=rewards[i].coupen%></h3>
+                            
+                          </div>
+                  
+                  
+                          <div class="px-5 mb-3">
+                            
+                            <div class="code text-center mt-4">
+                  
+                            <span>Use code :<%=rewards[i].name%></span>
+                            
+                  
+                          </div>
+                  
+                          </div>
+                  
+                        </div>
+                  
+                          
+                        </div>
+                  
+                        
+                        
+                      </div>
+                      
+                </div>
+            </div>
+            
+            <% }%>
+            
+           
+        </div>    
+    </div>   
+</section>    

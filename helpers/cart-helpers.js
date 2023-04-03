@@ -90,6 +90,10 @@ module.exports={
   await db.get().collection(collection.CART_COLLECTION).updateOne({user:new ObjectId(userId)},{
     $pull:{products:{productId:new ObjectId(proId)}}
   })
+ },
+ deletecart:async(userId)=>{
+   const deletecart=await db.get().collection(collection.CART_COLLECTION).deleteOne({user:userId})
+   console.log(deletecart);
  }
 
 }

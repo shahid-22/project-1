@@ -1,0 +1,107 @@
+<div style=" background-color:white; margin-left: 2em;" class="my-3 m-3">
+  <div class="container mt-2">
+   <div class="row">
+    <div class="table-responsive"> 
+      <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">INDEX</th>
+              <th scope="col">DATE</th>
+              <th scope="col">ORDER_ID</th>
+              <!-- <th scope="col">CUSTOMER_ID</th> -->
+              <th scope="col">PAYMENT</th>
+              <th scope="col">PAYMENT STATUS</th>
+              <th scope="col">STATUS</th>
+              <th scope="col">VIEW ORDER</th>
+              <th scope="col">CHANGE STATUS</th>
+              <th scope="col">CHANGE STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i < orders.length; i++) { %>
+                  <tr>
+                      <th scope="row"><%=i+1%></th>
+                      <td><%=orders[i].date%></td>
+                      <td><%=orders[i]._id%></td>
+                      <!-- <td><%=orders[i].userId%></td> -->
+                      <!-- <td><%=orders[i].deliverydetails.firstName%><span> </span><%=orders[i].deliverydetails.lastName%></td> -->
+                      <td><%=orders[i].paymentmethod%></td>
+                      <td>
+                        <%if(orders[i].status=='delivered'){%>
+                          <b class="text-success">paid</b>
+                          <%}else{%>
+                        <%=orders[i].paymentstatus%></td>
+                         <% } %>
+                      <td><%=orders[i].status%></td>
+                      <td><a href="/admin/orderdetails/<%=orders[i]._id%>" class="btn btn-dark">details</a></td>
+                      <td>
+                        <%if(orders[i].status=='delivered'){%>
+                          <b class="text-success">delivered</b>
+                          <%}else if(orders[i].status=='cancelled'){%>
+                            <b class="text-danger">cancelled</b>
+                          <%}else{%>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#modalLoginForm<%=orders[i]._id%>" >CANCEL</button>
+                          <% } %>
+                      </td>
+                      <td>
+                        <%if(orders[i].status=='shipped'){%>
+                          <button class="btn btn-success"  onclick="changestatus('<%=orders[i]._id%>','delivered')">DELIVERED</button>
+                        <%}else if(orders[i].status=='PLACED'){%>
+                          <button class="btn btn-success"  onclick="changestatus('<%=orders[i]._id%>','shipped')">SHIP</button>
+                          <%}else if(orders[i].status=='delivered'){%>
+                            <b class="text-success">delivered</b>
+                            <%}else if(orders[i].status=='cancelled'){%>
+                              <b class="text-danger">cancelled</b>
+                        <%}%>
+                      </td>
+                  </tr>
+                  <% } %>
+          </tbody>
+        </table>
+        </div>
+   </div>
+  </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script>
+  const changestatus=async(orderId,status)=>{
+    console.log(orderId+status);
+    const res= await axios({
+      method:"post",
+      url:"/admin/changeorderstatus",
+      data:{orderId,status}
+
+    })
+    if(res.data.status ="status changed"){
+            location.reload()
+     }
+
+  }
+</script>
+
+
+<% for(var i=0; i < orders.length; i++) { %>
+  <!------------modal-->
+  <div class="modal" id="modalLoginForm<%=orders[i]._id%>" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="color: black;font-weight: 500;">Are you sure you want to cancel this item ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button class="btn btn-danger" onclick="changestatus('<%=orders[i]._id%>','cancelled')" >CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <!---------end---modal-->

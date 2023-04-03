@@ -1,0 +1,174 @@
+<div class="content">
+
+    <h1 style="text-align: center;font-weight: 900;">BANNER</h1>
+    <button type="button" class="btn btn-dark" style="margin-left: 5rem;" data-toggle="modal" data-target="#exampleModal">
+        ADD BANNER
+   </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Banner</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="/admin/banner" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text"  id="discription" class="form-control" name="bannerText" placeholder="banner description" value=""  >
+                </div>
+                <div class="form-group">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+            </form>      
+
+        </div>
+      </div>
+   
+    </div>
+  </div>
+  <!---------end---modal-->
+
+
+  <section class="container">
+    
+    <div style="background-color: white; margin-left: 2em; " class="my-3 m-3 ">
+      <div class="container mt-2" style="margin-top:100px;">
+       <div class="row">
+          <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Number </th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Edit</th>
+                  <th scope="col">Option</th>
+                  <th scope="col">image</th>
+                  <th scope="col">option</th>
+                 
+                  <!-- <th scope="col">image</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                
+                <% for(let i=0;i< banners.length;i++){%>
+                      <tr>
+                        <th scope="row"><%=i+1%></th>
+                        <td><%=banners[i].bannerText%></td>
+                        <td><a href="" class="btn btn-primary" data-toggle="modal" data-target="#banner<%=banners[i]._id%>">EDIT</a></td>
+                        <td>
+                          <% if(banners[i].ischoose){%>
+                          <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-danger">unList</a>
+                          <% }else{%>
+                            <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-success">List</a>
+                            <%}%>
+                        </td>
+                        <td>
+                          <img src="<%=banners[i].banners[0]%>" style="height: 60px;width: 120px;">
+                          <img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;">
+                        </td>
+                        <td><button class="btn btn-danger"data-toggle="modal" data-target="#modalConfirmDelete<%=banners[i]._id%>">DELETE</button></td>
+                        <!-- <td><img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;"></td> -->
+                      </tr>
+                      <%}%>
+                     
+                
+              </tbody>
+            </table>
+       </div>
+      </div>
+      </div>
+      
+    
+    </section>
+
+    <!------------------------------>
+    <!-- Modal -->
+    <% for(let i=0;i< banners.length;i++){%>
+    <div class="modal fade" id="banner<%=banners[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="exampleModalLongTitle"><b>Edit Banner</b>  </h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <form action="/admin/edit-banner/<%=banners[i]._id%>" method="post" enctype="multipart/form-data">
+              <!-- Name input -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="bannertext"><b>Banner Text</b></label>
+                <input type="text" id="bannertext" class="form-control  form-control-lg" name="bannerText" value="<%=banners[i].bannerText%>" style="color: black;"/>
+              </div>
+                  <div style="display: inline-block;">
+                    <img src="<%=banners[i].banners[0]%>" alt="" width="150">
+                    <img src="<%=banners[i].banners[1]%>" alt="" width="150">
+                  </div>
+          
+              
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="form7Example2"><b>Banner Images</b></label>
+                <input type="file" class="form-control-file" id="" name="image" style="color: black;" multiple>
+              </div>
+
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+
+            </form>
+               
+            
+          </div>
+          <!-- <div class="modal-footer">
+            
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <%}%>
+    <!------------------------------>
+
+    <!---------DELETEMODAL-->
+   <!-- Button trigger modal-->
+
+<!--Modal: modalConfirmDelete-->
+<% for(let i=0;i< banners.length;i++){%>
+<div class="modal fade" id="modalConfirmDelete<%=banners[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <!--Content-->
+    <div class="modal-content text-center">
+      <!--Header-->
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">Are you sure?</p>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+
+        <i class="fas fa-times fa-4x animated rotateIn"></i>
+
+      </div>
+
+      <!--Footer-->
+      <div class="modal-footer flex-center">
+        <a href="/admin/detetebanner/<%=banners[i]._id%>" class="btn  btn-outline-danger">Yes</a>
+        <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+<%}%>
+<!--Modal: modalConfirmDelete-->
+    <!---------DELETEMODAL-->

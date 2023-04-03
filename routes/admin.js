@@ -26,5 +26,15 @@ router.get('/editproduct/:id',adminauth.adminauth,admincontroller.rendereditprod
 router.post('/editproduct/:id',adminauth.adminauth,upload.array('image',4),admincontroller.editproduct)
 router.get('/deleteproduct/:id',adminauth.adminauth,admincontroller.deleteproduct)
 router.post('/editbrand/:id',adminauth.adminauth,admincontroller.editbrand)
-
+router.get('/orders',adminauth.adminauth,admincontroller.renderorderpage)
+router.post("/changeorderstatus",adminauth.adminauth,admincontroller.changeorderstatus)
+router.get("/orderdetails/:id",adminauth.adminauth,admincontroller.renderorderdetais)
+router.get("/banner",admincontroller.renderbannerpage)
+router.post("/banner",upload.array('image',2),admincontroller.postbanner)
+router.get("/unlistbanner/:id",admincontroller.unlistbanner)
+router.post("/edit-banner/:id",upload.array('image',4),admincontroller.posteditbanner)
+router.get("/detetebanner/:id",admincontroller.deletebanner)
+router.get("/coupen",admincontroller.rendercoupenpage)
+router.post("/add-coupon",admincontroller.addcoupen)
+router.get("/detetecoupen/:id",admincontroller.deletecoupen)
 module.exports = router;

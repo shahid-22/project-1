@@ -1,0 +1,128 @@
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-6">
+                <div class="breadcrumb__links">
+                    <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                    <span>Orders</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<section class="shop-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shop__cart__table">
+                    <% for(var i=0; i < 1; i++) { %> 
+<div class="card">
+    <div class="card-body">
+      <div class="container mb-5 mt-3">
+        <div class="row d-flex align-items-baseline">
+          <div class="col-xl-9">
+            <p style="color: #010811;font-size: 20px;">Invoice >> <strong>ID:<%=orderdetails[i]._id%></strong></p>
+          </div>
+         
+          <hr>
+        </div>
+  
+        <div class="container">
+          <div class="col-md-12">
+            <div class="text-center">
+              <i class="fab fa-mdb fa-4x ms-0" style="color:#5d9fc5 ;"></i>
+              <p class="pt-0">prooduct details</p>
+            </div>
+  
+          </div>
+  
+  
+          <div class="row">
+            <div class="col-xl-8">
+              <ul class="list-unstyled">
+                <li class="text-muted" >To: <span style="color:#2369c5;"><%=orderdetails[i].deliverydetails.firstName%><span> </span><%=orderdetails[i].deliverydetails. lastName%></span></li>
+                <li class="text-muted"><%=orderdetails[i].deliverydetails.address%>,<%=orderdetails[i].deliverydetails.city%></li>
+                <li class="text-muted"><%=orderdetails[i].deliverydetails.district%>,PIN:<%=orderdetails[i].deliverydetails.pincode%></li>
+                <li class="text-muted"><i class="fa fa-phone"></i><%=orderdetails[i].deliverydetails.phone%></li>
+              </ul>
+            </div>
+            <div class="col-xl-4">
+              <p class="text-muted">Invoice</p>
+              <ul class="list-unstyled">
+                <li class="text-muted"><i class="fa fa-circle" style="color:#1f2223 ;"></i> <span
+                    class="fw-bold">ID:</span><%=orderdetails[i]._id%></li>
+                <li class="text-muted"><i class="fa fa-circle" style="color:#1f2223 ;"></i> <span
+                    class="fw-bold">Creation Date: </span> <%=orderdetails[i].date%></li>
+                     
+                <li class="text-muted"><i class="fa fa-circle" style="color:#1f2223 ;"></i> <span
+                    class="me-1 fw-bold">Status:</span><span class="badge bg-warning text-black fw-bold">
+                        <%=orderdetails[i].status%></span></li>
+                        <% } %>
+              </ul>
+            </div>
+          </div>
+  
+          <div class="row my-2 mx-1 justify-content-center">
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">index</th>
+                    <th scope="col">name</th>
+                    <th scope="col">quantity</th>
+                    <th scope="col">price</th>
+                    <th scope="col">subtotal</th>
+                    <th scope="col">image</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i < orderdetails.length; i++) { %>  
+                  <tr>
+                    <td><%=i+1%></td>
+                    <td><%=orderdetails[i].productdetails.productname%></td>
+                    <td><%=orderdetails[i].products.quantity%></td>
+                    <td><%=orderdetails[i].productdetails.price%></td>
+                    <td><%=orderdetails[i].subTotal%></td>
+                    <td><img src="<%=orderdetails[i].productdetails.imagesurl[0] %>" style="height: 50px;width: 50px;"></td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+          </div>
+          <div class="row">
+            <div class="col-xl-8">
+  
+            </div>
+            <div class="col-xl-3">
+              <ul class="list-unstyled">
+                <!-- <li class="text-muted ms-3"><span class="text-black me-4">SubTotal</span>$1110</li> -->
+                <!-- <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Tax(15%)</span>$111</li> -->
+              </ul>
+              <p class="text-black float-start"><span class="text-black me-3"> Total Amount :</span><span
+                  style="font-size: 25px;"><%=orderdetails[0].total%></span></p>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-xl-10">
+              <p style="color: #010811; font-size: medium; font-weight: 500;">Thank you for your purchase</p>
+            </div>
+              <div class="row">
+            <!-- <a href="/orders" class="btn btn-primary text-capitalize"
+                style="background-color:#f80616 ;margin-left: 1em;">CANCEL</a> -->
+            <a href="/orders" class="btn btn-primary text-capitalize"
+                style="background-color:#1180e8 ;margin-left: 1em;">BACK</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+  </div>
+  </div>
+  </section>

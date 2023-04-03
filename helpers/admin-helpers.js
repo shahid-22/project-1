@@ -14,19 +14,18 @@ module.exports={
     },
     changeuserstatus:async(userId)=>{
       let userstatus= await db.get().collection(collection.USER_COLLECTION).findOne({_id:new ObjectId(userId)})
-     if(userstatus.isBlocked){
-      await  db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(userId)},{
-        $set:{
-          isBlocked:false
-        }
-      })
-     }else{
-      await  db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(userId)},{
-        $set:{
-          isBlocked:true
-        }
-      })
-     }
+         if(userstatus.isBlocked){
+             await  db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(userId)},{
+               $set:{
+                 isBlocked:false
+               }
+              })
+          }else{
+             await  db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(userId)},{
+              $set:{
+               isBlocked:true
+              }
+            })
+          }
     }
-   
 }

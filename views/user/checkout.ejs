@@ -21,6 +21,17 @@
                 <h6 class="coupon__link"><a data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-dark" style="color: white;">Add Address</a></h6>
             </div>
         </div>
+        <!------->
+        <!-- <div class="col-lg-6"> -->
+            <div class="discount__content">
+                <h6>Discount codes</h6>
+                <form action="">
+                    <input type="text" name="coupencode" id="coupencode"  class="coupencode" placeholder="Enter your coupon code">
+                    <button type="button" id="copenbtn"  class="site-btn btn-dark">Apply</button>
+                </form>
+            </div>
+        <!-- </div> -->
+        <!------->
         <!-- <form action="#" class="checkout__form"> -->
             <div class="row">
                 <div class="col-lg-6">
@@ -37,7 +48,7 @@
                             <tbody>
                             <%for(var j = 0;j< user.length;j++){%>
                                 <tr>
-                                  <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;" value="<%=user[j].address._id%>" checked></th>
+                                  <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;" value="<%=user[j].address._id%>" class="address"></th>
                                   <td><span><b> Name :  </b> <%= user[j].address.firstName%> <%= user[j].address.lastName%>,</span><br>
                                   <span><b> Address :  </b> <%= user[j].address.address %>,<%= user[j].address.city%>,<%= user[j].address.district%>,<%= user[j].address. pincode%>(po),</span><br>
                                   <span><b> Phone :  </b> <%= user[j].address.phone%></span>
@@ -65,36 +76,51 @@
                         <div class="checkout__order">
                             <h5>Your order</h5>
                             <div class="checkout__order__product">
-                                <ul>
-                                    <li>
-                                        <span class="top__text">Product</span>
-                                        <span class="top__text__right">Sub Total</span>
-                                    </li>
-                                    <% for(var i=0; i < cartproductdetails.length; i++) { %>
-                                    <li><%=cartproductdetails[i]. productdetails.productname%><b style="margin-left:1em;">x</b><%=cartproductdetails[i]. products.quantity%><span><%=cartproductdetails[i].subTotal%></span></li>
-                                    
-                                    <% } %>
-                                </ul>
+                                <!--------------------------->
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col">index</th>
+                                        <th scope="col">product</th>
+                                        <th scope="col">price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">total</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i=0; i < cartproductdetails.length; i++) { %>
+                                      <tr>
+                                        <th scope="row" class="productId" data-productid="<%=cartproductdetails[i]. productdetails._id%>"><%=i+1%></th>
+                                        <td><%=cartproductdetails[i]. productdetails.productname%></td>
+                                        <td><%=cartproductdetails[i]. productdetails.price%></td>
+                                        <td class="quantity" data-quantity="<%=cartproductdetails[i]. products.quantity%>"><%=cartproductdetails[i]. products.quantity%></td>
+                                        <td><%=cartproductdetails[i].subTotal%></td>
+                                      </tr>
+                                      <% } %>
+                                    </tbody>
+                                </table>
+                                <!--------------------->
                             </div>
                             <div class="checkout__order__total">
                                 <ul>
                                     <!-- <li>Subtotal <span>$ 750.0</span></li> -->
-                                    <li>Total <span><%=totalprice%></span></li>
+                                    <li>offer Price:<span id="offer">₹00,000.00</span></li>
+                                    <li>Total Amount:<span id="total"><%=totalprice%></span></li>
                                 </ul>
                             </div>
                             <div class="checkout__order__widget">
                                 <label for="check-payment">
-                                    cash on delivery
-                                    <input type="radio" id="check-payment" name="g" >
+                                    Cash on delivery
+                                    <input type="radio" id="check-payment" class="payment" value="COD"  name="g" >
                                     <span class="checkmark"></span>
                                 </label>
-                                <label for="paypal">
-                                    PayPal
-                                    <input type="radio" id="paypal" name="g" >
+                                <label for="paypal" >
+                                    razorpay
+                                    <input type="radio" id="paypal" class="payment" value="online"  name="g" >
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <button type="submit" class="site-btn">Place oder</button>
+                            <button type="submit" class="site-btn" id="placeorder">Place oder</button>
                         </div>
                     </div>
                 </div>
@@ -102,7 +128,13 @@
         </div>
     </section>
     <!-- Checkout Section End -->
-
+    <!-- <div class="discount__content">
+        <h6>Discount codes</h6>
+        <form action="">
+            <input type="text" name="coupencode" id="coupencode"  class="coupencode" placeholder="Enter your coupon code">
+            <button type="button" id="copenbtn"  class="site-btn btn-dark">Apply</button>
+        </form>
+    </div> -->
     <!-- Instagram Begin -->
     <!-- Instagram End -->
 
@@ -255,3 +287,197 @@
       </div>
 
     <!----end-modal-->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+<script>
+
+    document.getElementById("placeorder").addEventListener("click",function(event){
+        event.preventDefault()
+        console.log("hello");
+        placeorder()
+    })
+
+    placeorder=async()=>{
+        let coupencode=document.getElementById("coupencode").value
+        let total=document.getElementById("total").innerText
+        if(products && addressId && paymentMethod&& total){
+        var res= await axios({
+            method:"post",
+            url:"/place-order",
+            data:{products,addressid,paymentMethod,total,coupencode}
+        })
+        
+    }else{
+        alert("full fill all")
+    }
+
+        //-------------------------------------------
+       if(res.data.status==="success"){
+            // Swal.fire({
+            //       title: 'order placed success fully',
+            //       showClass: {
+            //        popup: 'animate_animated animate_fadeInDown'
+            //       },
+            //       hideClass: {
+            //       popup: 'animate_animated animate_fadeOutUp'
+            //       }
+            //     })
+            location.assign("/success")
+       }
+
+    }
+
+
+
+    let addressid
+    //user id -----------------
+    let addressId=document.querySelectorAll(".address")
+    addressId.forEach(function(address){
+         address.addEventListener('click',function(){
+            addressid=this.value
+            console.log(addressid);
+         })
+    })
+ //-----------------------------------
+
+ //-----product id--------------------
+    let productid=[]
+    let quantity=[]
+    document.querySelectorAll(".productId").forEach(function(product){
+        productid.push(product.dataset.productid)
+    })
+     document.querySelectorAll(".quantity").forEach(function(qnt){
+        quantity.push(qnt.dataset.quantity)
+    })
+   //------convert product and quantity in array object---------
+
+     let products=[]
+
+    for(let i=0;i<productid.length;i++){
+        product={productid:productid[i],quantity:quantity[i]}
+        products.push(product)
+    }
+    console.log(products);
+    //--------------------payment cod or online-------------------------------
+    let paymentMethod
+        document.querySelectorAll('.payment').forEach(function(payment){
+          payment.addEventListener('click',function(){
+          // console.log(this.value);
+          paymentMethod=this.value
+          console.log("pppppppppp");
+          console.log(paymentMethod);
+        })
+        })
+//------------total amount--------------------
+
+//  let total=document.querySelector("#total").innerText
+//  total=total.replace(/,/g,"")
+//  total=total.replace('₹','')
+//  total = parseInt(total)
+
+ 
+
+
+        
+</script>
+
+
+<script>
+
+const applyCoupon = async (coupencode) => {
+    try{
+        const res= await axios({
+            method:"post",
+            url:"/apply_coupen",
+            data:{coupencode}
+        })
+        console.log(res.data.status);
+        const discount=res.data.percentage
+        console.log(discount);
+        if(res.data.status=="success"){
+          //---------------------
+          Toastify({
+                     text: "Copen Is Applyed",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                 }).showToast()
+          //---------------------
+
+            isclicked=true
+        let value=document.getElementById("total").innerText
+        console.log("pppppppppppppppppppppppppppppppppp");
+        value= value.replace(/,/g,"")
+        value= value.replace('₹','')
+        value=parseInt(value)
+       let offeramount=value*(discount/100)
+       console.log(value);
+       console.log(offeramount);
+       console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+       const total=value-offeramount
+       console.log(total);
+       document.getElementById("total").innerText=total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+       document.getElementById("offer").innerText=offeramount.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+
+        }else if(res.data.status=="Nocoupen"){
+            // location.assign('/login')
+            Toastify({
+                     text: "You Have No Valid Coupen",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "red",
+                     },
+                 }).showToast()
+        }else if(res.data.status=="Expired"){
+            Toastify({
+                     text: "your coupen Expired !",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "red",
+                     },
+                 }).showToast()
+        }else if(res.data.status=="already used"){
+            Toastify({
+                     text: "already used !",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "red",
+                     },
+                 }).showToast()
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+
+var isclicked=false
+let coupenId=document.getElementById("copenbtn").addEventListener("click",function () {
+    const coupencode=document.getElementById("coupencode").value
+      console.log(coupencode);
+      if(!isclicked){
+      applyCoupon(coupencode)
+      }
+
+      })
+    
+
+</script>

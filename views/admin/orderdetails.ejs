@@ -1,0 +1,117 @@
+
+
+<section class="shop-cart spad">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shop__cart__table">
+
+<div class="card" style="background-color: #ebf0f7;">
+    <div class="card-body">
+      <div class="container mb-5 mt-3">
+        <div class="row d-flex align-items-baseline">
+          <div class="col-xl-9">
+            <p style="color: #7e8d9f;font-size: 20px;"><strong>ORDER_ID:<%=orders[0]._id%></strong></p>
+          </div>
+          <div class="col-xl-3 float-end">
+            <a class="btn btn-light text-capitalize border-0" data-mdb-ripple-color="dark"><i
+                class="fa fa-print text-primary"></i> Print</a>
+            <a class="btn btn-light text-capitalize" data-mdb-ripple-color="dark"><i
+            ></i> Export</a>
+          </div>
+          <hr>
+        </div>
+  
+        <div class="container">
+          <div class="col-md-12">
+            <div class="text-center">
+              <i class="fab fa-mdb fa-4x ms-0" style="color:#5d9fc5 ;"></i>
+            </div>
+  
+          </div>
+  
+  
+          <div class="row">
+            <div class="col-xl-8">
+              <ul class="list-unstyled">
+                <li class="text-muted">To: <span style="color:#5d9fc5 ;"><%=orders[0].deliverydetails.firstName%><span> </span><%=orders[0].deliverydetails.lastName%></span></li>
+                <li class="text-muted"><%=orders[0].deliverydetails.address%>,<%=orders[0].deliverydetails.city%></li>
+                <li class="text-muted"><%=orders[0].deliverydetails.district%></li>
+                <li class="text-muted">PIN:<%=orders[0].deliverydetails.pincode%></li>
+                <li class="text-muted"><i class="fas fa-phone" ></i><%=orders[0].deliverydetails.phone%></li>
+              </ul>
+            </div>
+            <div class="col-xl-4">
+              <p class="text-muted">Details</p>
+              <ul class="list-unstyled">
+                <li class="text-muted"><i class="fa fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Custumer:</span><%=orders[0].username%></li>
+                <li class="text-muted"><i class="fa fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Email:</span><%=orders[0].useremail%></li>
+                <li class="text-muted"><i class="fa fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Phone:</span><%=orders[0].userphonenumber%></li>
+                <li class="text-muted"><i class="fa fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Date: </span><%=orders[0].date%></li>
+                <li class="text-muted"><i class="fa fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="me-1 fw-bold">Status:</span><span class="badge bg-warning text-black fw-bold">
+                        <%=orders[0].status%></span></li>
+              </ul>
+            </div>
+          </div>
+  
+          <div class="row my-2 mx-1 justify-content-center">
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">index</th>
+                    <th scope="col">name</th>
+                    <th scope="col">quantity</th>
+                    <th scope="col">price</th>
+                    <th scope="col">image</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(let i=0;i< orders.length;i++){%>
+                  <tr>
+                    <td><%=i+1%></td>
+                    <td><%=orders[i].productdetails.productname%></td>
+                    <td><%=orders[i].products.quantity%></td>
+                    <td><%=orders[i].productdetails.price%></td>
+                    <td><img src="<%=orders[i].productdetails.imagesurl[0]%>" style="height: 50px;width: 50px;"></td>
+                  </tr>
+                  <%}%>
+                </tbody>
+              </table>
+          </div>
+          <div class="row">
+            <div class="col-xl-8">
+             
+            </div>
+            <div class="col-xl-3">
+              <ul class="list-unstyled">
+                
+              </ul>
+              <p class="text-black float-start"><span class="text-black me-3"> Total Amount:</span><span
+                  style="font-size: 25px;"><%=orders[0].total%></span></p>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-xl-10">
+              <p>---------></p>
+            </div>
+            <div class="col-xl-2">
+              <a href="#" class="btn" style="background-color: black; color: white;">Back</a>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+
+                </div>
+                </div>
+                </div>
+                </div>
+                </section>

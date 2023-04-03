@@ -49,19 +49,20 @@
                                 <li><a href="./blog-details.html">Blog Details</a></li>
                             </ul>
                         </li>
-                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="/orders">Orders</a></li>
                       
                         <li>
                             <%if (locals.userName){%>
                                 <a href="#">account</a>
                                 <ul class="dropdown">
-                                    <li><a href="#"><%=userName%></a></li> 
+                                    <li><a href="/profile"><%=userName%></a></li> 
+                                    <li><a href="/Rewards">Rewards</a></li> 
                                     <li><a href="/logout">logout</a></li>  
                                 </ul>
                             <%}else{%>
                                 <a href="#">account</a>
                             <ul class="dropdown">
-                                <li><a href="#">person</a></li> 
+                                <li><a>person</a></li> 
                                 <li><a href="/login">login</a></li>  
                             </ul>
                            <% }%>
@@ -75,7 +76,7 @@
                     
                     <ul class="header__right__widget">
                         <li><span class="icon_search search-switch"></span></li>
-                        <li><a href="#"><span class="icon_heart_alt"></span>
+                        <li><a href="/wishlist"><span class="icon_heart_alt"></span>
                             <div class="tip">2</div>
                         </a></li>
                         <li><a href="/cart"><span class="icon_bag_alt"></span>

@@ -49,10 +49,8 @@ module.exports={
       return products
     },
     phonenumberexist:async(phonenumber)=>{
-        console.log(phonenumber);
         phonenumber=Number(phonenumber)
        let phoneverify= await db.get().collection(collection.USER_COLLECTION).findOne({Phonenumber:phonenumber})
-        console.log( phoneverify);
         return phoneverify
     },
     addaddrtess:async(address,userId)=>{
@@ -80,5 +78,30 @@ module.exports={
             }
         ]).toArray()
         return user
+    },
+    findOneaddress:async(userId,addressId)=>{
+        const address=await db.get().collection(collection.USER_COLLECTION).aggregate([
+            {
+                $match:{_id:new ObjectId(userId)}
+            },
+            {
+                $unwind:{path:"$address"}
+            },
+            {
+               $match:{ "address._id":new ObjectId(addressId)} 
+            },
+            {
+                $project:{
+                    address:1,
+                    _id:0
+                }
+            }
+        ]).toArray()
+        return address
+
+    },
+    finduser:async(userId)=>{
+       const userdetails=await db.get().collection(collection.USER_COLLECTION).findOne({_id:new ObjectId(userId)})
+       return userdetails
     }
 }

@@ -1,6 +1,46 @@
+<!------------------------------banner slider--------------------------------------->
+<div id="demo" class="carousel slide" data-ride="carousel">
+
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+      <li data-target="#demo" data-slide-to="0" class="active"></li>
+      <li data-target="#demo" data-slide-to="1"></li>
+      <li data-target="#demo" data-slide-to="2"></li>
+    </ul>
+  
+    <!-- The slideshow -->
+
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="<%=banners.banners[0]%>" alt="Los Angeles" style="width: 100%; height: 40em;">
+      </div>
+      <div class="carousel-item">
+          <img src="<%=banners.banners[1]%>" alt="New York" style="width: 100%; height: 40em;">
+        </div>
+                     
+    </div>
+
+  
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo" data-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+  
+  </div>
+  <!----------------------------------------banner slider------------------------------------------------------------>
+  
+
 <!----------banner start-->
+
 <!-- <section class="banner set-bg" data-setbg="img/banner/banner-1.jpg"> -->
-<section class="banner set-bg" data-setbg="img/categories/banner.jpg">
+    
+        <!-- <section class="banner set-bg" data-setbg="<%=banners.banners[0]%>">
+  
+    <section class="banner set-bg" data-setbg="img/banner/banner-1.jpg">
+   
     <div class="container">
         <div class="row">
             <div class="col-xl-7 col-lg-8 m-auto">
@@ -8,7 +48,7 @@
                     <div class="banner__item">
                         <div class="banner__text">
                             <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
+                            <h1><%=banners.bannerText%></h1>
                             <a href="#">Shop now</a>
                         </div>
                     </div>
@@ -30,8 +70,8 @@
             </div>
         </div>
     </div>
-</section>
-<!--------banner end-->
+</section> -->
+<!-----banner end -->
  <!-- Categories Section Begin -->
     <section class="categories">
         <div class="container-fluid">

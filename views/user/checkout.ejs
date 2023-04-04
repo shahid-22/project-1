@@ -287,6 +287,7 @@
       </div>
 
     <!----end-modal-->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 <script>
@@ -313,21 +314,20 @@
 
         //-------------------------------------------
        if(res.data.status==="success"){
-            // Swal.fire({
-            //       title: 'order placed success fully',
-            //       showClass: {
-            //        popup: 'animate_animated animate_fadeInDown'
-            //       },
-            //       hideClass: {
-            //       popup: 'animate_animated animate_fadeOutUp'
-            //       }
-            //     })
             location.assign("/success")
+       }else{
+        razorpayment(res.data.onlineresult,coupencode)
+        console.log("nnnnnnnnnnnnnnnnnn");
+        console.log(coupencode);
+        console.log(res);
        }
 
     }
 
 
+
+
+    
 
     let addressid
     //user id -----------------
@@ -374,8 +374,54 @@
 //  total=total.replace(/,/g,"")
 //  total=total.replace('₹','')
 //  total = parseInt(total)
+function razorpayment(order,coupencode){
+    console.log("jjjjjjjjjjjjjjjjjjj");
+    console.log(order);
+    var options = {
+    "key": "rzp_test_xZWjPEoMfU01As", // Enter the Key ID generated from the Dashboard
+    "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "SHOE ZONE", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id":order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+    "handler":function(res){
+            verifypayment(res,order,coupencode)
+    },
+    "prefill": {
+        "name": "Gaurav Kumar", //your customer's name
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.open();
+    }
 
- 
+   
+    const verifypayment=async(payment,order,coupencode)=>{
+       try{
+       let res= await axios({
+            url:"/verify-payment",
+            method:"post",
+            data:{payment,order,coupencode}
+        })
+          if(res.status){
+            location.assign("/success")
+          }else{
+            alert("payment failed")
+          }
+       }catch(err){
+        console.log(err);
+       }
+    }
 
 
         
@@ -427,7 +473,7 @@ const applyCoupon = async (coupencode) => {
         }else if(res.data.status=="Nocoupen"){
             // location.assign('/login')
             Toastify({
-                     text: "You Have No Valid Coupen",
+                     text: "INVALID COUPEN",
                      duration: 3000,
                      // close: true,
                      gravity: "top", // `top` or `bottom`

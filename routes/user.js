@@ -64,5 +64,6 @@ router.get("/wishlist",userauth.userauth, usercontroller.renderwishlist)
 router.get("/addto-wishlist/:id",usercontroller.addtowishlist)
 router.get("/Rewards",usercontroller.renderRewards)
 router.post("/apply_coupen",usercontroller.applycoupen)
+router.post("/verify-payment",usercontroller.verifypayment)
 
 module.exports = router;

@@ -37,4 +37,5 @@ router.get("/detetebanner/:id",admincontroller.deletebanner)
 router.get("/coupen",admincontroller.rendercoupenpage)
 router.post("/add-coupon",admincontroller.addcoupen)
 router.get("/detetecoupen/:id",admincontroller.deletecoupen)
+
 module.exports = router;

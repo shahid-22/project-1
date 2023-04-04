@@ -43,7 +43,7 @@
           <% if(orders[i].status == 'cancelled'){ %>
             <b class="text-danger">cancelled</b>
             <%}else if(orders[i].status=='returned'){%>
-              <b class="text-primery">cancelled</b>
+              <b class="text-primery" style="color: blue;">returned</b>
             <%}else if(orders[i].status=='delivered'){%>
               <button class="btn btn-primary" onclick="changestatus('<%=orders[i]._id%>','returned')" >Return</button>
             <% }else{%>

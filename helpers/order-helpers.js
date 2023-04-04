@@ -67,7 +67,7 @@ module.exports={
       return findallorderdetails
     },
     findAll:async()=>{
-      let orders=await db.get().collection(collection.ORDER_COLLECTION).find({}).toArray()
+      let orders=await db.get().collection(collection.ORDER_COLLECTION).find({}).sort({date:-1}).toArray()
       console.log(orders);
       return orders
     },
@@ -120,5 +120,26 @@ module.exports={
       ]).toArray()
       console.log(orderanduser);
       return orderanduser
+    },
+
+    changepaymentstatus:async(orderId)=>{
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+      console.log(orderId);
+      await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new ObjectId(orderId)},{
+        $set:{
+              paymentstatus:"paid",
+              status:'PLACED'
+        }
+      })
+
+    },
+    failedpaystatus:async(orderId)=>{
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+      console.log(orderId);
+      await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new ObjectId(orderId)},{
+        $set:{
+              paymentstatus:"failed"
+        }
+      })
     }
 }

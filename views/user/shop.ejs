@@ -130,7 +130,7 @@
                                 <!-- <div class="label new">New</div> -->
                                 <ul class="product__hover">
                                     <li><a href="<%= products[i]. imagesurl[0]%>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a ><span class="btn icon_heart_alt addtowishlist" data-productid="<%= products[i]._id%>"></span></a></li>
+                                    <li><a ><span id="wishlisticon" class="btn icon_heart_alt addtowishlist" data-productid="<%= products[i]._id%>"></span></a></li>
                                     <!-- <li><a data-productid="<%= products[i]._id%>"><span class="icon_bag_alt addTocart"></span></a></li>  -->
                                     <li><a ><span class=" btn icon_bag_alt addTocart" data-productid="<%= products[i]._id%>"></span></a></li> 
                                 </ul>
@@ -249,21 +249,18 @@
 </div>
 <!-- Search End -->
 
-<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script> -->
 
 <script type="text/javascript">
     document.querySelectorAll('.addTocart').forEach(function(button){
      button.addEventListener('click',function(event){
          event.preventDefault()
          //to prevent default action
-         console.log("meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-         console.log(this.dataset.productid);
          addToCart(this.dataset.productid)
  
      })
  
      const addToCart = async(productId)=>{
-        console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
          try{
              console.log(productId);
              const res = await axios({
@@ -312,7 +309,6 @@
         button.addEventListener('click',function(event){
          event.preventDefault()
          //to prevent default action
-         console.log("meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
          console.log(this.dataset.productid);
          addtowishlist(this.dataset.productid)
  
@@ -320,8 +316,6 @@
 
      const addtowishlist=async(productId)=>{
         try{
-  console.log("chiiiiiii");
-  console.log(productId);
             const res = await axios({
                  method:'get',
                  url:`/addto-wishlist/${productId}` 

@@ -41,8 +41,15 @@ module.exports={
     coupenalreadyExist:async(name)=>{
         const Exist=await db.get().collection(collection.COUPEN_COLLECTION).findOne({name:name})
         return Exist
+    },
+
+    checkCouponExpired : async ()=>{
+        const currentDate= new Date()
+        await db.get().collection(collection.COUPEN_COLLECTION).updateMany(
+            { expiryDate: { $lt: currentDate } },
+            { $set: {isExpired: true } }
+          );
+    
     }
-//     deleteexpirecoupen:async(coupenId)=>{
-//    await db.get().collection(collection.COUPEN_COLLECTION).deleteOne({_id:new ObjectId(coupenId)})
-//     }
+
 }

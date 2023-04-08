@@ -75,6 +75,15 @@ module.exports={
       const changeorderstatus=await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new ObjectId(orderId)},{
         $set:{status:status}
       })
+
+      if(status==='delivered'){
+
+        await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new ObjectId(orderId)},{
+          $set:{paymentstatus:'paid'}
+
+        })
+        
+      }
       console.log(changeorderstatus);
     },
     findordersanduser:async(orderId)=>{
@@ -141,5 +150,48 @@ module.exports={
               paymentstatus:"failed"
         }
       })
-    }
+    },
+
+    delivereditems:async()=>{
+      let delivereditem=await db.get().collection(collection.ORDER_COLLECTION).find({status:"delivered"}).sort({date:-1}).toArray()
+      return delivereditem
+    },
+
+    filterproduct:async(startDate,endDate)=>{
+      startDate=new Date(startDate)
+      endDate=new Date(endDate)
+    const filterproduct= await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+      {
+        $match: {
+          $and:[{date:{$gte:startDate}},{date:{$lte:endDate}},{status:'delivered'}]
+        }
+      },
+      {
+        $project:{ 'deliverydetails':0,'products':0}
+      },
+      {
+        $sort:{date:-1}
+      }
+    ]).toArray()
+    return filterproduct
+    },
+
+    // currentdate:async()=>{
+    //   let currentDate=new Date()
+    //   console.log(currentDate);
+    //   let delivereditem=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+    //     {
+    //       $match:{
+    //        status:'delivered'
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //        date:"currentDate"
+    //       }
+    //     }
+    //   ]).toArray()
+    //   return delivereditem
+    // }
+
 }

@@ -103,5 +103,55 @@ module.exports={
     finduser:async(userId)=>{
        const userdetails=await db.get().collection(collection.USER_COLLECTION).findOne({_id:new ObjectId(userId)})
        return userdetails
+    },
+    editaddress:async(addressId,userId,address)=>{
+        addressId=new ObjectId(addressId)
+        userId=new ObjectId(userId)
+        
+        await db.get().collection(collection.USER_COLLECTION).updateOne({_id:userId,address:{$elemMatch:{_id:addressId}}},{
+            $set:{
+                "address.$.firstName":address.firstName,
+                "address.$.lastName":address.lastName,
+                "address.$.address":address.address,
+                "address.$.district":address.district,
+                "address.$.city":address.city,
+                "address.$.pincode":address.pincode,
+                "address.$.phone":address.phone,
+            }
+        })
+    },
+    deleteaddress:async(addressId,userId)=>{
+        addressId=new ObjectId(addressId)
+        userId=new ObjectId(userId)
+        await db.get().collection(collection.USER_COLLECTION).updateOne({_id:userId,address:{$elemMatch:{_id:addressId}}},{
+            $pull:{address:{_id:addressId}}
+        })
+    
+    },
+    changepassword:async(UserId,newpassword)=>{
+        newpassword = await bcrypt.hash(newpassword,10);
+        await db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(UserId)},{
+            $set:{password:newpassword}
+        })
+    },
+
+    phonenumberexist:async(phonenumber)=>{
+        phonenumber=Number(phonenumber)
+        const isexist= await db.get().collection(collection.USER_COLLECTION).findOne({Phonenumber:phonenumber})
+        return isexist
+    },
+
+    emailexist:async(email)=>{
+        const isexist= await db.get().collection(collection.USER_COLLECTION).findOne({email:email})
+        return isexist
+    },
+    updateProfile:async(name,phone,email,userId)=>{
+        phone=Number(phone)
+       await db.get().collection(collection.USER_COLLECTION).updateOne({_id:new ObjectId(userId)},{
+        $set:{name:name,Phonenumber:phone,email:email}
+       })
     }
+    
+
+
 }

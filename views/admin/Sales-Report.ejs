@@ -1,0 +1,248 @@
+<!-- <div class="page-wrapper">
+    <div class="main-content">
+        <div class="section__content section__content--p30"> 
+  
+            <div class="row">
+                <div class="container">
+                    <form action="/admin/SalesReport" method="post">
+                        <div class="modal-body" style="width: 50%;">
+                            <div class="mb-1">
+                                <label for="date" class="col-form-label">START Date</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate">
+                            </div>
+                            <div class="mb-1">
+                                <label for="date" class="col-form-label">END Date</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate">
+                            </div>
+        
+                        </div>
+                            <button type="submit" class="btn btn-dark ml-5 " id="submit">SUBMIT</button>
+                    </form>
+                    
+                </div>
+            </div> -->
+ <!---------------------------------------------------------------------------------------->
+
+
+    <!-------this is total--------->
+    <!-- <div class="section" style="width: 50%; color:black;">
+            <div class="card-body shadow " >
+              <p class="card-text"><span style="font-size: large; font-weight: 500;">TotalAmount: </span><b><%=totalamount%></b></p>
+            </div>
+    </div> -->
+    <!---------this is total------->
+    
+    <!-- <div class="mt-4 table-responsive">
+        <table class="table table-striped" id="productsTable">
+            <thead class="thead-dark">
+              <tr>
+                  <th scope="col">Index</th>
+                  <th scope="col">Order_Id</th>
+                  <th scope="col">User_Id</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Payment_Method</th>
+                  <th scope="col">Order_Date</th>
+              </tr>
+            </thead>
+            <tbody>
+                <%for(let i=0;i< deliveredproduct.length;i++){%>
+
+           
+                  <tr> 
+                      <th scope="row"><%=i+1%></th>
+                      <td><%= deliveredproduct[i]._id%></td>
+                      <td><%= deliveredproduct[i].userId%></td>
+                      <td><%= deliveredproduct[i].total%></td>
+                      <td><%= deliveredproduct[i].paymentmethod%></td>
+                      <td><%= deliveredproduct[i].date%></td>
+                  </tr>  
+                <%}%>
+             
+            </tbody>
+        </table>
+    </div>
+    
+ </section> -->
+
+<!-- <div class="section" style="width:300px; color:black; margin-left:70%;">
+    <div class="card-body shadow " >
+      <p class="card-text"><span style="font-size: large; font-weight: 500;">TotalAmount: </span><b><%=totalamount%></b></p>
+    </div>
+</div> -->
+
+
+<!-- <script>
+
+    $(function () {
+      $('#productsTable').DataTable();
+    });
+    </script>  -->
+
+
+<!----------------------this is working-------------->
+<!-- <div style=" background-color:white; margin-left: 2em;" class="my-3 m-3 shadow">
+    <div class="container mt-2">
+      <div class="row">
+           <div class="col-lg-12">
+             <h2 class="title-1 m-b-25">Sales Report</h2>
+             <div class="table-responsive table--no-card m-b-40"> 
+               <table class="table table-borderless table-striped table-earning" id="productsTable">
+                 <thead>
+                   <tr>
+                    <th scope="col">Index</th>
+                    <th scope="col">Order_Id</th>
+                    <th scope="col">User_Id</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Payment_Method</th>
+                    <th scope="col">Order_Date</th>
+                   </tr>
+                 </thead>
+                 <tbody> 
+                    <%for(let i=0;i< deliveredproduct.length;i++){%>
+                        <tr> 
+                            <th scope="row"><%=i+1%></th>
+                            <td><%= deliveredproduct[i]._id%></td>
+                            <td><%= deliveredproduct[i].userId%></td>
+                            <td><%= deliveredproduct[i].total%></td>
+                            <td><%= deliveredproduct[i].paymentmethod%></td>
+                            <td><%= deliveredproduct[i].date%></td>
+                        </tr>  
+                      <%}%>
+                     </tbody>
+                 </table>
+             </div>
+           </div>
+       </div>
+    </div>
+  </div>
+
+
+
+
+  <script>
+    $(function () {
+      $('#productsTable').DataTable();
+    });
+    </script> -->
+    <!---------------------------------------------------------------------------->
+
+
+    <div class="page-wrapper">
+        <div class="main-content">
+            <div class="section__content section__content--p30"> 
+
+                    
+                            <div class="row">
+                                <div class="container">
+                                    <form action="/admin/SalesReport" method="post">
+                                        <div class="modal-body" style="width: 50%;">
+                                            <div class="mb-1">
+                                                <label for="date" class="col-form-label">START Date</label>
+                                                <input type="date" class="form-control" id="startDate" name="startDate">
+                                            </div>
+                                            <div class="mb-1">
+                                                <label for="date" class="col-form-label">END Date</label>
+                                                <input type="date" class="form-control" id="endDate" name="endDate">
+                                            </div>
+                        
+                                        </div>
+                                            <button type="submit" class="btn btn-dark ml-5 " id="submit">SUBMIT</button>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+
+
+      
+                            <div class="card shadow mt-5">
+                                <div class="card-body" style="background-color: #e5eaf0;">
+                                  <div class="container mb-5 mt-3">
+                                    <div class="row d-flex align-items-baseline">
+                                      <div class="col-xl-9">
+                                        <p style="color: #7e8d9f;font-size: 20px;"><strong></strong></p>
+                                      </div>
+                                      <div class="col-xl-3 float-end">
+                                        <a class="btn btn-light text-capitalize border-0" data-mdb-ripple-color="dark"><i
+                                            class="fa fa-print text-primary"></i> Print</a>
+                                        <a class="btn btn-light text-capitalize" data-mdb-ripple-color="dark"><i class="fa  fa-file text-primary"
+                                        ></i> Export</a>
+                                      </div>
+                                      <hr>
+                                    </div>
+                              
+                                    <div class="container">
+                                      <div class="col-md-12">
+                                        <div class="text-center">
+                                          <i class="fab fa-mdb fa-4x ms-0" style="color:#5d9fc5 ;"></i>
+                                        </div>
+                              
+                                      </div>
+                              
+                              
+                                      
+                              
+                                      <div class="row my-2 mx-1 justify-content-center">
+                                        <table class="table" id="productsTable">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                 <th scope="col">Index</th>
+                                                 <th scope="col">Order_Id</th>
+                                                 <th scope="col">User_Id</th>
+                                                 <th scope="col">Total</th>
+                                                 <th scope="col">Payment_Method</th>
+                                                 <th scope="col">Order_Date</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody> 
+                                                 <%for(let i=0;i< deliveredproduct.length;i++){%>
+                                                     <tr> 
+                                                         <th scope="row"><%=i+1%></th>
+                                                         <td><%= deliveredproduct[i]._id%></td>
+                                                         <td><%= deliveredproduct[i].userId%></td>
+                                                         <td><%= deliveredproduct[i].total%></td>
+                                                         <td><%= deliveredproduct[i].paymentmethod%></td>
+                                                         <td><%= deliveredproduct[i].date%></td>
+                                                     </tr>  
+                                                   <%}%>
+                                                  </tbody>
+                                          </table>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-xl-8">
+                                         
+                                        </div>
+                                        <div class="col-xl-3">
+                                          <ul class="list-unstyled">
+                                            
+                                          </ul>
+                                          <p class="text-black float-start"><span class="text-black me-3"> Total Amount:</span><span
+                                              style="font-size: 25px;"><%=totalamount%></span></p>
+                                        </div>
+                                      </div>
+                                      <hr>
+                                      <div class="row">
+                                        <div class="col-xl-10">
+                                          <p>-------></p>
+                                        </div>
+                                        <div class="col-xl-2">
+                                          <a href="#" class="btn" style="background-color: black; color: white;">Back</a>
+                                        </div>
+                                      </div>
+                              
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            
+                     
+      
+                      </div>
+                      </div>
+                      </div>
+    
+
+                      <script>
+                        $(function () {
+                          $('#productsTable').DataTable();
+                        });
+                        </script>

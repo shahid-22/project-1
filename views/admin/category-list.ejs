@@ -1,29 +1,5 @@
-<!-- <div class="container">
-        <div class="d-flex align-items-end flex-column" style="height: 200px;">
-            <div class="mt-3 d-flex  "><a href="/admin/addcategory" class="btn btn-success ">Add category</a>
-        </div>
 
-        <table class="table mt-3" style="background-color: white;">
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col">index</th>
-                <th scope="col">Categort Name</th>
-                <th scope="col">option</th>
-              </tr>
-            </thead>
-            <tbody>
-                <% for(var i=0; i < category.length; i++) { %>
-                    <tr>
-                        
-                        <th scope="row"><%=i+1%></th>
-                        <td><%=category[i].categoryname%></td>
-                        <td><a href="#" class="btn btn-danger">unList</a></td>
-                    </tr>
-                <% } %>    
-            </tbody>
-          </table>
-</div> -->
-<%if(alreadyexistError){%>
+<!-- <%if(alreadyexistError){%>
  <p id="error" style="color: red;font-size: larger;"><%=alreadyexistError%></p>
 <%}%>
 <script>
@@ -75,7 +51,7 @@ error.style.display='none';
     
     </section>
     <% for(var i=0; i < category.length; i++) { %>
-                  <!-- .modal -->
+                  .modal
 	<div class="modal fade" id="Mylargemodal<%= category[i]._id %>">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content" style="background-color: rgba(161, 174, 174, 0.844);">
@@ -99,5 +75,107 @@ error.style.display='none';
 		</div>                                      
 	</div>           
   <% } %>                      
-    <!----------------------end modal-->
-    <script type="text/javascript" src="/javascripts/brandvalidation.js"></script>
+    --------------------end modal
+    <script type="text/javascript" src="/javascripts/brandvalidation.js"></script> -->
+
+
+    <div class="page-wrapper">
+      <div class="main-content">
+          <div class="section__content section__content--p30">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-md-12">
+                          <div class="overview-wrap">
+                              <h2 class="title-1">category Details</h2>
+                              <button class="au-btn au-btn-icon au-btn--blue"></button>
+                              <a href="/admin/addcategory" class="btn btn-success">Add Category</a>
+                          </div>
+                      </div>
+                  </div>
+                <!-------error-->
+               <%if(alreadyexistError){%>
+             <p id="error" style="color: red;font-size: larger;"><%=alreadyexistError%></p>
+               <%}%>
+                 <script>
+                   const error=document.getElementById("error")
+                   setTimeout(()=>{
+                 error.style.display='none';
+                 },3000);
+                 
+                 </script>
+                <!-------error-->
+                  <!-- <div class="row m-t-25"> -->
+                    <div class="row" >
+                      <div class="col-lg-12 m-t-25">
+                          <div class="table-responsive table--no-card m-b-40">
+                              <table class="table table-borderless table-striped table-earning"  id="productsTable">
+                                <thead class="thead-dark">
+                                  <tr>
+                                      <th scope="col">index</th>
+                                      <th scope="col">Categort Name</th>
+                                      <th scope="col">list/unlist</th>
+                                      <th scope="col">EDIT</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <% for(var i=0; i < category.length; i++) { %>
+                                      <tr>
+                                          
+                                          <th scope="row"><%=i+1%></th>
+                                          <td><%=category[i].categoryname%></td>
+                                          <td> 
+                                            <% if(category[i].status){%>
+                                            <a href="/admin/unlistcategory/<%= category[i]._id %>" class="btn btn-danger">unlist</a>
+                                            <% }else{%>
+                                              <a href="/admin/unlistcategory/<%= category[i]._id %>"class="btn btn-success">List...</a>
+                                              <%}%>
+                                          </td>
+                                          <td><button class="btn btn-primary "  data-toggle="modal" data-target="#Mylargemodal<%= category[i]._id %>">EDIT</button></td>
+                                      </tr>
+                                  <% } %>    
+                                </tbody>
+                              </table>
+                          </div>
+                      </div>
+                
+    
+            </div>
+        </div>
+      </div>  
+    </div>
+
+
+    <!-- .modal -->
+    <% for(var i=0; i < category.length; i++) { %>
+<div class="modal fade" id="Mylargemodal<%= category[i]._id %>">
+<div class="modal-dialog modal-lg">
+<div class="modal-content" style="background-color: rgba(161, 174, 174, 0.844);">
+<div class="modal-header" style="justify-content: center;">
+<h4 style="color: black; font-size: medium;">add brand</h4>                                                          
+</div> 
+    <form action="/admin/editcategory/<%= category[i]._id %>" method="post">
+       <div class="modal-body">
+           <input type="text"  id="categoryname" class="form-control" name="categoryname"  value="<%=category[i].categoryname%>"  onkeyup="validatebrand()"  />
+           <span id="name-error" class="validation-label" style="color: red;"></span>
+</div>  
+<div class="modal-footer">
+ <button type="button" class="btn btn-default" data-dismiss="modal">
+   Close
+ </button>
+           <button type="submit" class="btn btn-primary"  onclick="return validateForm()">Submit</button>     
+           <span id="submit-error" class="validation-label" style="color: red;"></span>                           
+</div>
+    </form>
+</div>                                                                       
+</div>                                      
+</div>           
+<% } %>                      
+<!-- --------------------end modal -->
+<script type="text/javascript" src="/javascripts/brandvalidation.js"></script>
+
+<script>
+
+  $(function () {
+    $('#productsTable').DataTable();
+  });
+  </script>

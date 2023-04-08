@@ -12,8 +12,14 @@ const { ObjectId } = require("mongodb-legacy");
 
 
 module.exports={
-    dashboardrender:(req,res,next)=>{
+    dashboardrender:async(req,res,next)=>{
         if(req.session.adminloggedIn){
+        // const todayorders=await orderHelpers.currentdate()
+        // console.log(todayorders);
+        // const todaysalereport=0
+        // for(let i=0;i<orders.length;i++){
+        //     todaysalereport=orders[i].total
+        // }
             res.render('admin/dashboard',{layout:"adminlayout"})
         }else{
             res.redirect('/admin/adminlogin')
@@ -351,9 +357,9 @@ module.exports={
     },
     unlistbanner:async(req,res)=>{
         try{
-        const bannerId=new ObjectId(req.params.id)
-        await bannerHelpers.unlistbanner(bannerId)
-        res.redirect("/admin/banner")
+           const bannerId=new ObjectId(req.params.id)
+           await bannerHelpers.unlistbanner(bannerId)
+           res.redirect("/admin/banner")
         }catch(err){
             console.log(err);
         }
@@ -361,18 +367,18 @@ module.exports={
 
     posteditbanner:async(req,res)=>{
         try{
-           const bannerId=req.params.id
-           let images=req.files
-           let{bannerText}=req.body
-           const imagesurl=[]
-           for(let i=0;i<images.length;i++){
+            const bannerId=req.params.id
+            let images=req.files
+            let{bannerText}=req.body
+            const imagesurl=[]
+        for(let i=0;i<images.length;i++){
             const {url} = await cloudinary.uploader.upload(images[i].path)
             imagesurl.push(url)
         }
-        const banner = await bannerHelpers.specificproduct(bannerId)
-        const newImages=[... banner.banners.slice(imagesurl.length),...imagesurl]
-        await bannerHelpers.editbanner(bannerId,bannerText,newImages)
-         res.redirect("/admin/banner")
+            const banner = await bannerHelpers.specificproduct(bannerId)
+            const newImages=[... banner.banners.slice(imagesurl.length),...imagesurl]
+            await bannerHelpers.editbanner(bannerId,bannerText,newImages)
+            res.redirect("/admin/banner")
         }catch(err){
             console.log(err);
         }
@@ -382,23 +388,23 @@ module.exports={
 
     deletebanner:async(req,res)=>{
         try{
-        let bannerId=req.params.id
-        await bannerHelpers.deletebanner(bannerId)
-        res.redirect("/admin/banner")
+           let bannerId=req.params.id
+           await bannerHelpers.deletebanner(bannerId)
+           res.redirect("/admin/banner")
         }catch(err){
-            console.log(err);
+           console.log(err);
         }
     },
 
     rendercoupenpage:async(req,res)=>{
         try{
             let alreadyexistError=await req.query.message ?? ""
+            await coupenHelpers.checkCouponExpired()
             const coupendetails=await coupenHelpers.FindAll()
             for(let i=0;i<coupendetails.length;i++){
                 coupendetails[i].createdDate=coupendetails[i].createdDate.toLocaleString({timeZone: 'Asia/Kolkata'});
                 coupendetails[i].expiryDate=coupendetails[i].expiryDate.toLocaleString({timeZone: 'Asia/Kolkata'});
             }
-            console.log(coupendetails);
             res.render("admin/coupen",{layout:"adminlayout",coupendetails,alreadyexistError})
         }catch(err){
             console.log(err);
@@ -407,16 +413,14 @@ module.exports={
 
     addcoupen:async(req,res)=>{
         try{
-            console.log(req.body);
-            const createdDate=new Date() 
+           const createdDate=new Date() 
            const{coupen,name,discount,expiryDate}=req.body
            const isexist=await coupenHelpers.coupenalreadyExist(name)
-           console.log(isexist);
            if(isexist){
-            res.redirect("/admin/coupen?message=coupen alreadt exist")
+             res.redirect("/admin/coupen?message=coupen alreadt exist")
            }else{
-           await coupenHelpers.addcoupen(coupen,name,discount,createdDate,expiryDate)
-            res.redirect("/admin/coupen")
+             await coupenHelpers.addcoupen(coupen,name,discount,createdDate,expiryDate)
+             res.redirect("/admin/coupen")
            }
         }catch(err){
             console.log(err);
@@ -425,16 +429,63 @@ module.exports={
 
     deletecoupen:async(req,res)=>{
         try{
-        const coupenId=req.params.id
-        console.log(coupenId);
-        await  coupenHelpers.deletecoupen(coupenId)
-        res.redirect("/admin/coupen")
+           const coupenId=req.params.id
+           await  coupenHelpers.deletecoupen(coupenId)
+           res.redirect("/admin/coupen")
+        }catch(err){
+           console.log(err);
+        }
+    },
+
+    rendersalerreport:async(req,res)=>{
+        try{
+             let deliveredproduct=await orderHelpers.delivereditems()
+             let totalamount=0
+        for(let i=0;i<deliveredproduct.length;i++){
+             deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
+             deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
+             deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
+             totalamount=totalamount+ deliveredproduct[i].total
+             deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
+        }
+        for(let i=0;i<deliveredproduct.length;i++){
+             deliveredproduct[i].total= deliveredproduct[i].total.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            
+        }
+
+            totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount})
         }catch(err){
             console.log(err);
+        }
+    },
+
+    fiterdate:async(req,res)=>{
+        try{
+            let {startDate,endDate}=req.body
+            startDate=new Date(startDate)
+            endDate=new Date(endDate)
+            const deliveredproduct=await orderHelpers.filterproduct(startDate,endDate)
+            let totalamount=0
+        for(let i=0;i<deliveredproduct.length;i++){
+           deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
+            deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
+            deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
+            totalamount=totalamount+ deliveredproduct[i].total
+            deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
+        }
+        for(let i=0;i<deliveredproduct.length;i++){
+            deliveredproduct[i].total= deliveredproduct[i].total.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            
+        }
+
+          totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+          res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount})
+        }catch(err){
+          console.log(err);
         }
     }
 
 
 }
-
 

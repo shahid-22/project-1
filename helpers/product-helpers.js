@@ -136,6 +136,14 @@ module.exports={
                 }
             }) 
         }
+    },
+
+    changestock:async(productId,quantity)=>{
+
+        await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:new ObjectId(productId)},{
+            $inc:{quantity:quantity}
+        })
+
     }
 
 

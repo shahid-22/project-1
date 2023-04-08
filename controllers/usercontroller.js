@@ -7,6 +7,7 @@ const orderHelpers=require("../helpers/order-helpers")
 const bannerHelpers=require("../helpers/bannerhelpers")
 const wishlistHelpers=require("../helpers/wishlist-helpers")
 const { ObjectId } = require("mongodb-legacy");
+const bcrypt = require('bcrypt');
 const cloudinary=require('../util/cloudinary');
 const coupenHelpers = require("../helpers/coupen-helpers");
 const RazorpayHelpers=require("../helpers/razorpay-helpers");
@@ -254,6 +255,26 @@ addaddress:async(req,res)=>{
      await userHelpers.addaddrtess(address,userId)
      res.redirect("/checkout")
 },
+addnewaddress:async(req,res)=>{
+  const address=req.body
+  const userId=req.session.userId
+  await userHelpers.addaddrtess(address,userId)
+  res.redirect("/profile")
+},
+editaddress:async(req,res)=>{
+  const addressId=req.params.id
+  const userId=req.session.userId
+  await userHelpers.editaddress(addressId,userId,req.body)
+  res.redirect("/profile")
+
+},
+deleteaddress:async(req,res)=>{
+  const addressId=req.params.id
+  const userId=req.session.userId
+  await userHelpers.deleteaddress(addressId,userId)
+  res.redirect("/profile")
+},
+
 orderdetais:async(req,res)=>{
     let{products,addressid,paymentMethod,total,coupencode}=req.body
     console.log(paymentMethod);
@@ -276,20 +297,22 @@ orderdetais:async(req,res)=>{
     }
     const date = new Date()
    let result=await orderHelpers.insertorderdata(products,address,userId,status,date,total,paymentMethod)
-      console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-      console.log(result);
       const orderId=result.insertedId
       if(paymentMethod=="COD"){
       await cartHelpers.deletecart(userId)
       await coupenHelpers.adduser(coupencode,userId)
-    
+      console.log("kkkkkk");
+      console.log(products);
+      products.forEach(async(product)=>{
+        product.quantity=product.quantity*-1
+       await productHelpers.changestock(product.productid,product.quantity)
+      });
         res.json({
           status:"success",
           message:"order placed"
         })
         
       }else if(paymentMethod=="online"){
-       console.log("myyyyyyyyyyyyyyyyyyyyyyyyyy");
     
            total=total.replace(/,/g,"")
            total=total.replace('₹','')
@@ -297,7 +320,6 @@ orderdetais:async(req,res)=>{
        let onlineresult= await RazorpayHelpers.generaterazorpay(orderId,total)
        res.json({onlineresult,coupencode})
         if(onlineresult){
-          console.log("koiiiiiiiiiiiiiiiii");
           console.log(onlineresult);
         }
 
@@ -363,12 +385,12 @@ orderdetais:async(req,res)=>{
 
   renderprofilepage:async(req,res)=>{
     try{
-      let userId=req.session.userId
-      let userdetails=await userHelpers.finduser(userId)
-       res.render("user/userprofile",{userdetails})
-    }catch(err){
-       console.log(err);
-    }
+        let userId=req.session.userId
+        let userdetails=await userHelpers.finduser(userId)
+        res.render("user/userprofile",{userdetails})
+      }catch(err){
+        console.log(err);
+      }
   },
 
   renderwishlist:async(req,res)=>{
@@ -377,7 +399,7 @@ orderdetais:async(req,res)=>{
       let wishlist=await wishlistHelpers.FindAll(userId)
       console.log(wishlist);
       for(let i=0;i<wishlist.length;i++){
-        wishlist[i].productdetails.price=wishlist[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+      wishlist[i].productdetails.price=wishlist[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
       }
        res.render("user/wishlist",{wishlist})
     }catch(err){
@@ -421,13 +443,8 @@ orderdetais:async(req,res)=>{
 
   renderRewards:async(req,res)=>{
     try{
+      await coupenHelpers.checkCouponExpired()
       const rewards=await coupenHelpers.FindAll()
-      // console.log(rewards);
-      // for(let i=0;i<rewards.length;i++){
-      //    if(rewards[i].expiryDate<new Date()){
-      //     await coupenHelpers.deleteexpirecoupen(rewards[i]._id)
-      //    }
-      // }
        res.render("user/Rewards",{rewards})
     }catch(err){
       console.log(err);
@@ -485,6 +502,62 @@ orderdetais:async(req,res)=>{
             })
           //  console.log("payment failed");
         }
+  },
+  
+  changepassword:async(req,res)=>{
+    let UserId=req.session.userId
+    let{currentpassword, newpassword}=req.body
+    const user=await userHelpers.finduser(UserId)
+    const ispasswordiscorrect=await bcrypt.compare(currentpassword,user.password)
+    if(ispasswordiscorrect){
+      await userHelpers.changepassword(UserId,newpassword)
+      res.json({
+        status:"success",
+        message:"password changed"
+      })
+    }else{
+      res.json({
+        status:"failed",
+        message:"password not match"
+      })
+    }
+
+  },
+
+  editprofile:async(req,res)=>{
+    const userId=req.session.userId
+    let{name,email,phone}=req.body
+    let user=await userHelpers.finduser(userId)
+    if(user.name==name&&user.email==email&&user.Phonenumber==phone){
+      res.json({
+        status:false,
+        message:"No changes"
+       })
+    }else{
+    let phonenumberExist=await userHelpers.phonenumberexist(phone)
+    // let emailexist=await userHelpers.emailexist(email)
+    if(phonenumberExist){
+      if(phonenumberExist.Phonenumber==user.Phonenumber){
+        await userHelpers.updateProfile(name,user.Phonenumber,email,userId)
+        res.json({
+         status:true,
+         message:'profile updated'
+        })
+      }else{
+        res.json({
+          status:false,
+          message:'phone number already exist'
+         })
+      }
+    }else{
+     await userHelpers.updateProfile(name,phone,email,userId)
+     res.json({
+      status:true,
+      message:'profile updated'
+     })
+    }
+  }
+   
   }
 
 

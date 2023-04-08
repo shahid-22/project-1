@@ -72,7 +72,8 @@
 </div>
 
 <!----------------authentication------------------->
-
+  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script> -->
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
 
@@ -101,17 +102,23 @@
 //   phone authentication
 
     function phoneAuth(){
-  const number ="+91"+document.getElementById("number").value;
-  console.log('num',number);
-  firebase.auth().signInWithPhoneNumber(number,window.recaptchaVerifier).then(function(confirmationResult){
-    window.confirmationResult = confirmationResult;
-    
-    document.getElementById('sender').style.display='none';
-    document.getElementById('verifier').style.display='block';
-  }).catch(function(error){
-    alert(error.message);
+      //------------------------
+      
+      
+      //------------------------
+          const number ="+91"+document.getElementById("number").value;
+          console.log('num',number);
+          firebase.auth().signInWithPhoneNumber(number,window.recaptchaVerifier).then(function(confirmationResult){
+            window.confirmationResult = confirmationResult;
+            
+            document.getElementById('sender').style.display='none';
+            document.getElementById('verifier').style.display='block';
+          }).catch(function(error){
+            alert(error.message);
+          
+          });
+ 
 
-  });
 }
 
 

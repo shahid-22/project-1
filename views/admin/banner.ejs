@@ -1,45 +1,13 @@
-<div class="content">
+<!-- <div class="content">
 
     <h1 style="text-align: center;font-weight: 900;">BANNER</h1>
     <button type="button" class="btn btn-dark" style="margin-left: 5rem;" data-toggle="modal" data-target="#exampleModal">
         ADD BANNER
    </button>
-</div>
+</div> -->
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Banner</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <form action="/admin/banner" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="text"  id="discription" class="form-control" name="bannerText" placeholder="banner description" value=""  >
-                </div>
-                <div class="form-group">
-                    <label for="image" class="form-label">Image</label>
-                    <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
-                </div>
-                <div class="form-group">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                  </div>
-            </form>      
-
-        </div>
-      </div>
-   
-    </div>
-  </div>
-  <!---------end---modal-->
-
-
-  <section class="container">
+<!--------------------------------------------------------------------------->
+  <!-- <section class="container">
     
     <div style="background-color: white; margin-left: 2em; " class="my-3 m-3 ">
       <div class="container mt-2" style="margin-top:100px;">
@@ -54,7 +22,6 @@
                   <th scope="col">image</th>
                   <th scope="col">option</th>
                  
-                  <!-- <th scope="col">image</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -76,7 +43,7 @@
                           <img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;">
                         </td>
                         <td><button class="btn btn-danger"data-toggle="modal" data-target="#modalConfirmDelete<%=banners[i]._id%>">DELETE</button></td>
-                        <!-- <td><img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;"></td> -->
+                        
                       </tr>
                       <%}%>
                      
@@ -86,11 +53,111 @@
        </div>
       </div>
       </div>
-      
     
-    </section>
+    </section> -->
+<!------------------------------------------------------------------------------------------------------------->
 
-    <!------------------------------>
+    <div class="page-wrapper">
+      <div class="main-content">
+          <div class="section__content section__content--p30">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-md-12">
+                          <div class="overview-wrap">
+                              <h2 class="title-1">category Details</h2>
+                              <button class="au-btn au-btn-icon au-btn--blue"></button>
+                              <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
+                                ADD BANNER
+                           </button>
+                          </div>
+                      </div>
+                  </div>
+                <!-------error-->
+              
+                <!-------error-->
+                  <!-- <div class="row m-t-25"> -->
+                    <div class="row" >
+                      <div class="col-lg-12 m-t-25">
+                          <div class="table-responsive table--no-card m-b-40">
+                              <table class="table table-borderless table-striped table-earning"  id="productsTable">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">Number </th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Edit</th>
+                                    <th scope="col">Option</th>
+                                    <th scope="col">image</th>
+                                    <th scope="col">option</th>
+                                   
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                  <% for(let i=0;i< banners.length;i++){%>
+                                        <tr>
+                                          <th scope="row"><%=i+1%></th>
+                                          <td><%=banners[i].bannerText%></td>
+                                          <td><a href="" class="btn btn-primary" data-toggle="modal" data-target="#banner<%=banners[i]._id%>">EDIT</a></td>
+                                          <td>
+                                            <% if(banners[i].ischoose){%>
+                                            <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-danger">unList</a>
+                                            <% }else{%>
+                                              <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-success">List</a>
+                                              <%}%>
+                                          </td>
+                                          <td>
+                                            <img src="<%=banners[i].banners[0]%>" style="height: 60px;width: 120px;">
+                                            <img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;">
+                                          </td>
+                                          <td><button class="btn btn-danger"data-toggle="modal" data-target="#modalConfirmDelete<%=banners[i]._id%>">DELETE</button></td>
+                                          
+                                        </tr>
+                                        <%}%>
+                                       
+                                  
+                                </tbody>
+                              </table>
+                          </div>
+                      </div>
+                
+    
+            </div>
+        </div>
+      </div>  
+    </div>
+<!-------------------------------------------------------->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Banner</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="/admin/banner" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                  <input type="text"  id="discription" class="form-control" name="bannerText" placeholder="banner description" value=""  >
+              </div>
+              <div class="form-group">
+                  <label for="image" class="form-label">Image</label>
+                  <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
+              </div>
+              <div class="form-group">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+          </form>      
+
+      </div>
+    </div>
+ 
+  </div>
+</div>
+<!---------end---modal-->
+<!-------------------------------------------------------->
     <!-- Modal -->
     <% for(let i=0;i< banners.length;i++){%>
     <div class="modal fade" id="banner<%=banners[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -172,3 +239,10 @@
 <%}%>
 <!--Modal: modalConfirmDelete-->
     <!---------DELETEMODAL-->
+
+    <script>
+
+      $(function () {
+        $('#productsTable').DataTable();
+      });
+      </script>

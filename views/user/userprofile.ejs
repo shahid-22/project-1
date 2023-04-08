@@ -1,24 +1,24 @@
-<section style="background-color: #eee;">
-    <div class="container py-5">
+
+<section>
+    <div class="container py-3 mt-3 shadow" style="background-color: #ffffff;">
       <div class="row">
-        <div class="col">
-          <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+        <div class="col  mb-2">
+       
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item"><a href="#">User</a></li>
               <li class="breadcrumb-item active" aria-current="page">User Profile</li>
             </ol>
-          </nav>
+          
         </div>
       </div>
-  
       <div class="row">
         <div class="col-lg-4">
           <div class="card mb-4">
             <div class="card-body text-center">
               <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                 class="rounded-circle img-fluid" style="width: 150px;">
-              <h5 class="my-3">John Smith</h5>
+              <h5 class="my-3"><%=userdetails.name%></h5>
               
               <div class="d-flex justify-content-center mb-2">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#changeimage">Change Image</button>
@@ -29,22 +29,22 @@
             <div class="card-body p-0">
               <ul class="list-group list-group-flush rounded-3">
                 <li class="list-group-item d-flex " style="justify-content: center;text-decoration: none; ">
-                  <a href="#" class="mb-0">My Account</a>
+                  <a href="/profile" class="mb-0">profile</a>
                 </li>
                 <li class="list-group-item d-flex " style="justify-content: center;">
-                  <a href="#" class="mb-0">My Cart</a>
+                  <a href="/cart" class="mb-0">My Cart</a>
                 </li>
                 <li class="list-group-item d-flex " style="justify-content: center;">
-                  <a href="#" class="mb-0">Add NewAddress</a>
+                  <a href="#" data-toggle="modal" data-target="#address"  class="mb-0">Add NewAddress</a>
                 </li>
                 <li class="list-group-item d-flex " style="justify-content: center;">
-                    <a href="#" class="mb-0">My Wishlist</a>
+                    <a href="/orders" class="mb-0">My orders</a>
                 </li>
                 <li class="list-group-item d-flex " style="justify-content: center;">
-                    <a href="#" class="mb-0">Change password</a>
+                    <a href="" data-toggle="modal" data-target="#exampleModalCenter" class="mb-0">Change password</a>
                 </li>
                 <li class="list-group-item d-flex " style="justify-content: center;">
-                    <a href="#" class="mb-0">Logout</a>
+                    <a href="/logout" class="mb-0">Logout</a>
                 </li>
                 
               </ul>
@@ -54,12 +54,14 @@
         <div class="col-lg-8">
           <div class="card mb-4">
             <div class="card-body">
+              <form>
               <div class="row">
                 <div class="col-sm-3">
                   <p class="mb-0">Full Name</p>
                 </div>
                 <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userdetails.name%></p>
+                  <input type="text" class="text-muted mb-0" id="name" value="<%=userdetails.name%>" name="name" style="border: none;" onkeyup="validateName()" >
+                  <span id="name-err" class="text-danger"></span>
                 </div>
               </div>
               <hr>
@@ -68,7 +70,8 @@
                   <p class="mb-0">Email</p>
                 </div>
                 <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userdetails.email%></p>
+                  <input type="text" class="text-muted mb-0" id="email" value="<%=userdetails.email%>" name="email" style="border: none;" onkeyup=" validateEmail()">
+                  <span id="email-err" class="text-danger"></span>
                 </div>
               </div>
               <hr>
@@ -77,59 +80,52 @@
                   <p class="mb-0">Phone</p>
                 </div>
                 <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userdetails.Phonenumber%></p>
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Address</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0"><%=userdetails.address[0].address%>,<%=userdetails.address[0].district%>,<%=userdetails.address[0].city%>,<%=userdetails.address[0].pincode%></p>
+                  <input type="text" class="text-muted mb-0" id="phone" value="<%=userdetails.Phonenumber%>" name="phonenumber" style="border: none;" onkeyup="validatemobilenumber()">
+                  <span id="phone-err" class="text-danger"></span>
                 </div>
               </div>
             </div>
           </div>
+          <button class="btn btn-dark d-flex " id="update" type="submit" style="margin-left: 45%;" onclick="return validateFormupdate()">update profile</button>
+          <span id="update-err" class="text-danger"></span>
+        </form>
           <div class="row">
             <div class="col-md-6">
               <div class="card mb-4 mb-md-0">
                 <!------------------------->
-                <!-- <table class="table mt-3">
-                  <thead>
-                    <tr>
-                      <th scope="col">Select</th>
-                      <th scope="col" style="text-align: center;">Select  Shipping Address</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  
-                      <tr>
-                        <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;" value="" class="address"></th>
-                        <td><span><b> Name :  </b>hhhhhhhhhhhhhhhhhhhhhh</span><br>
-                        <span><b> Address :  </b>ffffffffffffffffffffff</span><br>
-                        <span><b> Phone :  </b>565475756</span>
-
-                        </td>
-                       
-                      </tr>
-
-                     
-
-            
-                    
-                  </tbody>
-                </table> -->
                 <!------------------------->
-                <button class="btn btn-dark">Edit Address</button>
+                
                
               </div>
             </div>
             <div class="col-md-6">
-              <div class="card mb-4 mb-md-0">
-                <button class="btn btn-danger">Delete Address</button>
+            </div>
+            <!------------>
+           <% if(userdetails.address){%>
+            <% for(let i=0;i< userdetails.address.length;i++){%>
+            <div class="col-md-12 " >
+            <div class="card shadow  mt-4 " style=" background-color: #fff;">
+              <div class="card-header " style=" color: black; font-size: medium;">
+                <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;"  class="address"></th>
+                <a href="/delete-address/<%=userdetails.address[i]._id%>" ><i class="fa fa-trash d-flex flex-row-reverse" aria-hidden="true" style="color: red;"></i></a>
+              </div>
+              <div class="card-body">
+                <tr>
+                  <td>
+                    <span><b> Name :  </b><%=userdetails.address[i].firstName%><span> </span><%=userdetails.address[i].lastName%></span>
+                    <span style="margin-left: 1em;"><b> Phone :  </b><%=userdetails.address[i]. phone%></span><br> <a href="" data-toggle="modal" data-target="#editprofile<%=userdetails.address[i]._id%>"><i class="fa fa-pencil d-flex flex-row-reverse "></i></a>
+                    <span><b> Address :  </b><%=userdetails.address[i].address%>,<%=userdetails.address[i].city%>,<%=userdetails.address[i].district%>,PIN:<%=userdetails.address[i]. pincode%></span>
+
+                  </td>
+                 
+                </tr>
               </div>
             </div>
+            
+          </div>
+          <% }%>
+        <%}%>
+            <!------------>
           </div>
         </div>
       </div>
@@ -156,7 +152,7 @@
                 <!-- Email input -->
                <div class="form-outline mb-4">
                  <label class="form-label" for="form7Example2"><b>Banner Images</b></label>
-                 <input type="file" class="form-control-file" id="" name="image" style="color: black;" single>
+                 <input type="file" class="form-control-file" id="" name="image" style="color: black;" multiple>
                  <div class="modal-footer">
                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                    <button type="button" class="btn btn-primary">change</button>
@@ -169,3 +165,408 @@
 </div>
     <!------------------------------>
   <!---change image modal-->
+
+
+  <!----modal-->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #eee;">
+          <h5 class="modal-title" id="exampleModalCenterTitle" ><span style="margin-left: 15em;" >Change Password</span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Enter Current Passwod</label>
+              <input type="password" class="form-control" id="currentpassword" name="Password" aria-describedby="passwordHelp" placeholder="Enter password" onkeyup="validatePassword()">
+              <span id="password-err" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">New Password</label>
+              <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="new Password" onkeyup="validatePassword2()">
+              <span id="newpassword-err" class="text-danger"></span>
+
+            </div>
+            
+            <button type="submit" id="submitpasswod" class="btn btn-primary" onclick="return validateForm()">Submit</button>
+            <span id="submit-error" class="text-danger"></span>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!----end-modal-->
+
+ <!----adress add modal-->
+ <div class="modal fade" id="address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle"><span >Address</span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form  action="/add-new-Address" method="post">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="first Name">First Name</label>
+                  <input type="text" class="form-control" name="firstName" id="firstName" placeholder="first name">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="last Name">Last Name</label>
+                  <input type="text" class="form-control" name="lastName" placeholder="last name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputAddress">Address</label>
+                <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
+              </div>
+              <div class="form-row">
+                  <div class="form-group col-md-6">
+                      <label for="inputState">District</label>
+                      <select id="" class="form-control" name="district" required>
+                        <option value="">...........................select district..........................</option>
+                              <option >Calicut</option>
+                              <option >Malappuaram</option>
+                              <option >Palakkad</option>
+                              <option >Thrissur</option>
+                      </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputZip">City</label>
+                    <input type="text" class="form-control" name="city">
+                  </div>
+                </div>
+
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="forPincode">pincode</label>
+                  <input type="text" class="form-control" name="pincode">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="phone">phone</label>
+                  <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+                </div>
+              </div>
+
+               <div style="margin-left: 75%;">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!----end-modal-->
+
+
+<!----edit modal-->
+<% for(let i=0;i< userdetails.address.length;i++){%>
+<div class="modal fade" id="editprofile<%=userdetails.address[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle"><span >Address</span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form  action="/edit-Address/<%=userdetails.address[i]._id%>" method="post">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="first Name">First Name</label>
+                  <input type="text" class="form-control" name="firstName" id="firstName" placeholder="first name" value="<%=userdetails.address[i].firstName%>">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="last Name">Last Name</label>
+                  <input type="text" class="form-control" name="lastName" placeholder="last name" value="<%=userdetails.address[i].lastName%>">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputAddress">Address</label>
+                <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address" value="<%=userdetails.address[i].address%>">
+              </div>
+              <div class="form-row">
+                  <div class="form-group col-md-6">
+                      <label for="inputState">District</label>
+                      <select id="" class="form-control" name="district" required>
+                        <option value="<%=userdetails.address[i].district%>"><%=userdetails.address[i].district%></option>
+                              <option >Calicut</option>
+                              <option >Malappuaram</option>
+                              <option >Palakkad</option>
+                              <option >Thrissur</option>
+                      </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputZip">City</label>
+                    <input type="text" class="form-control" name="city" value="<%=userdetails.address[i].city%>">
+                  </div>
+                </div>
+
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="forPincode">pincode</label>
+                  <input type="text" class="form-control" name="pincode" value="<%=userdetails.address[i].pincode%>">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="phone">phone</label>
+                  <input type="text" class="form-control" name="phone" minlength="10" maxlength="10" value="<%=userdetails.address[i].phone%>">
+                </div>
+              </div>
+
+               <div style="margin-left: 75%;">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit"  class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+<% }%>
+<!----end-edit--modal-->
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script> -->
+<script>
+  document.getElementById("submitpasswod").addEventListener("click",function(event){
+    event.preventDefault()
+    let currentpassword=document.getElementById("currentpassword").value
+    let newpassword=document.getElementById("newpassword").value
+    changepassword(currentpassword,newpassword)
+    console.log(currentpassword);
+  })
+  
+
+  const changepassword=async(currentpassword,newpassword)=>{
+    const res=await axios({
+       url:"/change-password",
+       method:"post",
+       data:{currentpassword,newpassword}
+    })
+     if(res.data.status=="success"){
+      Toastify({
+                     text: "Password is changed",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                 }).showToast()
+     }else{
+      Toastify({
+                     text: "Password not changed",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "red",
+                     },
+                 }).showToast()
+     }
+
+
+  }
+  
+</script>
+
+<script>
+
+var passwordError = document.getElementById('password-err');
+var submitError = document.getElementById('submit-error');
+var conformpasswordError=document.getElementById('newpassword-err')
+
+
+function validatePassword(){
+  var password = document.getElementById('currentpassword').value.trim()
+  if(password.length==0){
+    passwordError.innerHTML='password required'
+    return false
+  }
+  else if(password.length<8){
+    passwordError.innerHTML="password must be 8 charecter"
+    return false
+  }
+  passwordError.innerHTML='';
+  return true
+}
+
+function validatePassword2(){
+  var passsword2 = document.getElementById('newpassword').value.trim()
+  if( passsword2.length==0){
+    conformpasswordError.innerHTML='password required'
+    return false
+  }
+  else if( passsword2.length<8){
+    conformpasswordError.innerHTML="password must be 8 charecter"
+    return false
+  }
+  conformpasswordError.innerHTML='';
+  return true
+
+}
+
+function validateForm(){
+  if(!validatePassword() || !validatePassword2()){
+    submitError .style.display='flex';
+    submitError.style.justifyContent='center';
+    submitError.innerHTML = 'Please fix all errors to submit';
+    setTimeout(()=>{
+      submitError.style.display='none';
+    },3000);
+    return false;
+  }
+}
+
+</script>
+
+
+<!-----------edit profile-------------->
+ <script>
+  document.getElementById("update").addEventListener("click",function(event){
+    event.preventDefault()
+     let update=document.getElementById("update-err").innerText
+     if(update){
+     
+      Toastify({
+                     text: "Field is required",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "red",
+                     },
+                 }).showToast()
+
+                setTimeout(()=>{
+      location.reload()
+    },1000);
+      
+     }else{
+    let name=document.getElementById("name").value
+    let email=document.getElementById('email').value
+    let phone=document.getElementById("phone").value
+    console.log(name,email,phone);
+       updateprofile(name,email,phone)
+     }
+  })
+
+  let updateprofile=async(name,email,phone)=>{
+     let res=await axios({
+      url:"/edit-profile",
+      method:"post",
+      data:{name,email,phone}
+     })
+     if(res.data.status){
+                  Toastify({
+                     text:res.data.message,
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                  }).showToast()
+     }else{
+      Toastify({
+                     text:res.data.message,
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "red",
+                     },
+                  }).showToast()
+     }
+  } 
+
+ </script>
+
+ <script>
+ var nameError = document.getElementById('name-err');
+var emailError = document.getElementById('email-err');
+var phoneError=document.getElementById('phone-err');
+var updateError=document.getElementById("update-err")
+
+function validateName(){                                 
+  var name = document.getElementById('name').value.trim()
+  if(name.length == 0){
+    nameError.innerHTML = 'Name is required';
+    return false;
+  }
+  if(!name.match(/^[A-Za-z]+ [A-Za-z]+$/)) {
+    nameError.innerHTML = 'Write full name';
+      return false;
+  }
+  nameError.innerHTML = '';
+      return true;
+}
+function validateEmail(){
+  var email = document.getElementById('email').value.trim()
+  if(email.length==0){
+    emailError.innerHTML = 'Email is required';
+      return false;
+  }
+  if(!email.match(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/)){
+    emailError.innerHTML = 'Email invalid';
+    return false;
+  }
+  emailError.innerHTML = '';
+  return true;
+}
+
+function validatemobilenumber(){
+  var Phonenumber = document.getElementById('phone').value.trim()
+  if(Phonenumber.length==0){
+    phoneError.innerHTML='password required'
+    return false
+  }else if(isNaN(Phonenumber)){
+    phoneError.innerHTML='enter numeric value'
+    return false
+  }else if(Phonenumber.length>10){
+    phoneError.innerHTML='enter 10 numbers'
+    return false
+  }else if(Phonenumber.length<10){
+    phoneError.innerHTML='must be 10 numbers'
+    return false
+  }
+  phoneError.innerHTML=''
+  return true
+
+}
+
+function validateFormupdate(){
+  if(!validateName()||! validateEmail()||!validatemobilenumber()){
+    updateError.style.display='flex';
+    updateError.style.justifyContent='center';
+    updateError.innerHTML = 'Please fix all errors to submit';
+    setTimeout(()=>{
+      updateError.style.display='none';
+    },3000);
+    return false;
+  }
+}
+ </script>
+
+<!-----------edit profile-------------->

@@ -49,6 +49,7 @@
                                     </div>
                                 </td>
                                 <td class="cart__price"><%=cart[i]. productdetails. price%></td>
+                                <td class="cart__price" id="stock<%=cart[i]. productdetails._id%>" hidden><%=cart[i]. productdetails.quantity%></td>
                                 
                                 <td class="cart__quantity">
                                     <div class="btn btn-light" onclick="changeQuantity('<%=cart[i]._id%>','<%=cart[i]. productdetails._id%>',-1,'<%=cart[i]. productdetails. price%>')">  <i class="fa fa-minus"></i></div>
@@ -131,6 +132,26 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script> -->
 <script>
   const changeQuantity=async(cartId,proId,count,price)=>{
+    const stock = parseInt(document.getElementById(`stock${proId}`).textContent)
+    console.log("quantity");
+    let quantity=parseInt(count)
+    quantity =quantity+parseInt(document.getElementById(proId).textContent)
+    console.log(quantity);
+    console.log(stock);
+    console.log(count);
+    if (quantity > stock) {
+            Toastify({
+                text: "there is not enough stock for that",
+                duration: 3000,
+                gravity: "bottom",
+                position: "center",
+                style: {
+                    background: "linear-gradient(to right, #fe6d00, #ffb900)",
+                },
+            }).showToast();
+
+    }else{
+
         const res=await axios({
             method:"post",
             url:"/change-product-quantity",
@@ -153,22 +174,23 @@
             console.log(values.length);
             //nnnnnnnnnn
             let  total = 0
-       values.forEach(subTotal=>{
-        let value = subTotal.innerText
-        value = value.replace(/,/g,"")
-        value= value.replace('₹','')
-        // console.log(value);
-        total = total+parseInt(value)
-        // console.log(total);
-       })
-       document.querySelectorAll('.totalamount').forEach(totalamount=>{
-        totalamount.innerText=total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
-       }) 
+            values.forEach(subTotal=>{
+            let value = subTotal.innerText
+            value = value.replace(/,/g,"")
+            value= value.replace('₹','')
+            // console.log(value);
+            total = total+parseInt(value)
+            // console.log(total);
+            })
+            document.querySelectorAll('.totalamount').forEach(totalamount=>{
+             totalamount.innerText=total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+            }) 
 
 
             //nnnnnnnnnn
         }
     }
+}
 
 
 </script>

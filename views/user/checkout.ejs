@@ -104,14 +104,20 @@
                             <div class="checkout__order__total">
                                 <ul>
                                     <!-- <li>Subtotal <span>$ 750.0</span></li> -->
+                                    <li>Total Amount:<span id="grand total"><%=totalprice%></span></li>
                                     <li>offer Price:<span id="offer">₹00,000.00</span></li>
-                                    <li>Total Amount:<span id="total"><%=totalprice%></span></li>
+                                    <li>Grand Total:<span id="total"><%=totalprice%></span></li>
                                 </ul>
                             </div>
                             <div class="checkout__order__widget">
                                 <label for="check-payment">
                                     Cash on delivery
                                     <input type="radio" id="check-payment" class="payment" value="COD"  name="g" >
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label for="wallet">
+                                    Wallet
+                                    <input type="radio" id="wallet" class="payment" value="wallet"  name="g" >
                                     <span class="checkmark"></span>
                                 </label>
                                 <label for="paypal" >
@@ -301,7 +307,7 @@
     placeorder=async()=>{
         let coupencode=document.getElementById("coupencode").value
         let total=document.getElementById("total").innerText
-        if(products && addressId && paymentMethod&& total){
+        if(products && addressid && paymentMethod&& total){
         var res= await axios({
             method:"post",
             url:"/place-order",
@@ -315,6 +321,20 @@
         //-------------------------------------------
        if(res.data.status==="success"){
             location.assign("/success")
+       }else if(res.data.status=="failed"){
+          //---------------------
+          Toastify({
+                     text: "no money for wallet",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "right", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                 }).showToast()
+       
        }else{
         razorpayment(res.data.onlineresult,coupencode)
         console.log("nnnnnnnnnnnnnnnnnn");
@@ -335,7 +355,7 @@
     addressId.forEach(function(address){
          address.addEventListener('click',function(){
             addressid=this.value
-            console.log(addressid);
+            console.log("addressid"+addressid);
          })
     })
  //-----------------------------------

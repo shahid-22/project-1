@@ -70,28 +70,36 @@ router.get("/success",userauth.userauth,usercontroller.rendersuccesspage)
 
 
 router.get("/profile",userauth.userauth,usercontroller.renderprofilepage)
-router.post("/add-new-address",usercontroller.addnewaddress)
-router.post("/edit-Address/:id",usercontroller.editaddress)
-router.get("/delete-address/:id",usercontroller.deleteaddress)
+
+
+router.post("/add-new-address",userauth.userauth,usercontroller.addnewaddress)
+
+
+router.post("/edit-Address/:id",userauth.userauth,usercontroller.editaddress)
+
+
+router.get("/delete-address/:id",userauth.userauth,usercontroller.deleteaddress)
 
 
 router.get("/wishlist",userauth.userauth, usercontroller.renderwishlist)
 
 
-router.get("/addto-wishlist/:id",usercontroller.addtowishlist)
+router.get("/addto-wishlist/:id",userauth.userauth,usercontroller.addtowishlist)
 
 
-router.get("/Rewards",usercontroller.renderRewards)
+router.get("/Rewards",userauth.userauth,usercontroller.renderRewards)
 
 
-router.post("/apply_coupen",usercontroller.applycoupen)
+router.post("/apply_coupen",userauth.userauth,usercontroller.applycoupen)
 
 
-router.post("/verify-payment",usercontroller.verifypayment)
+router.post("/verify-payment",userauth.userauth,usercontroller.verifypayment)
 
-router.post("/change-password",usercontroller.changepassword)
+router.post("/change-password",userauth.userauth,usercontroller.changepassword)
 
-router.post("/edit-profile",usercontroller.editprofile)
+router.post("/edit-profile",userauth.userauth,usercontroller.editprofile)
+
+router.get("/wallet",userauth.userauth,usercontroller.renderwallet)
 
 
 

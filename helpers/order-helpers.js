@@ -6,8 +6,10 @@ const { ObjectId } = require('mongodb-legacy');
 module.exports={
     insertorderdata:async(products,address,userId,status,date,total,paymentmethod)=>{
       const paymentstatus="pending"
+      let today =new Date()
+      today= new Date(today).toISOString().slice(0, 10);
       const result= await db.get().collection(collection.ORDER_COLLECTION).insertOne(
-           { userId:userId,deliverydetails:address,products:products,date:date,total:total,paymentmethod,status,paymentstatus}
+           { userId:userId,deliverydetails:address,products:products,date:date,total:total,paymentmethod,status,paymentstatus,today}
         )
          return result
     },
@@ -20,7 +22,8 @@ module.exports={
           $project:{
             date:1,
             status:1,
-            paymentmethod:1
+            paymentmethod:1,
+            paymentstatus:1
           }
         },
         {
@@ -132,7 +135,6 @@ module.exports={
     },
 
     changepaymentstatus:async(orderId)=>{
-      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
       console.log(orderId);
       await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new ObjectId(orderId)},{
         $set:{
@@ -176,22 +178,44 @@ module.exports={
     return filterproduct
     },
 
-    // currentdate:async()=>{
-    //   let currentDate=new Date()
-    //   console.log(currentDate);
-    //   let delivereditem=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-    //     {
-    //       $match:{
-    //        status:'delivered'
-    //       }
-    //     },
-    //     {
-    //       $match: {
-    //        date:"currentDate"
-    //       }
-    //     }
-    //   ]).toArray()
-    //   return delivereditem
-    // }
+    currentdateorder:async(todaydate)=>{
+      let todaysale=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $match:{
+            $and:[{today:todaydate},{status:'delivered'}]
+        }
+      },
+      ]).toArray()
+      return todaysale
+    },
+
+    weeksalesreport:async(today,weekdate)=>{
+      console.log(today,weekdate);
+      let weeksale=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $match: {
+            $and:[{today:{$lte:today}},{today:{$gte:weekdate}},{status:'delivered'}]
+          }
+        }
+      ]).toArray()
+      return weeksale
+    },
+
+    getorder:async(orderId)=>{
+      console.log("hiiiiiiiiiiii");
+      console.log(orderId);
+      let order=await db.get().collection(collection.ORDER_COLLECTION).findOne({_id:orderId})
+      return order
+    },
+
+    changepaystatus:async(orderId)=>{
+      await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:orderId},{
+        $set:{
+              paymentstatus:"refunded",
+        }
+      })
+    }
+
+    
 
 }

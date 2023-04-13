@@ -61,15 +61,14 @@
                         <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
                         magni lores eos qui ratione voluptatem sequi nesciunt.</p>
                         <div class="product__details__button">
-                            <div class="quantity">
-                                <span>Quantity:</span>
-                                <div class="pro-qty">
-                                    <input type="text" value="1">
-                                </div>
-                            </div>
+                            <!-- <div class="quantity"> -->
+                                <!-- <div class="btn btn-light ml-3" >  <i class="fa fa-minus"></i></div>
+                                <span >1</span>
+                                <div class="btn btn-light">  <i class="fa fa-plus"></i></div> -->
+                            <!-- </div> -->
                             <a href="#" class="cart-btn addTocart" data-productid="<%=product[0]._id%>"><span class="icon_bag_alt"></span> Add to cart</a>
                             <ul>
-                                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                <li><a href="#"><span class="icon_heart_alt addTowishlist" data-productid="<%=product[0]._id%>"></span></a></li>
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
                             </ul>
                         </div>
@@ -82,44 +81,6 @@
                                             In Stock
                                             <input type="checkbox" id="stockin">
                                             <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <span>Available color:</span>
-                                    <div class="color__checkbox">
-                                        <label for="red">
-                                            <input type="radio" name="color__radio" id="red" checked>
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label for="black">
-                                            <input type="radio" name="color__radio" id="black">
-                                            <span class="checkmark black-bg"></span>
-                                        </label>
-                                        <label for="grey">
-                                            <input type="radio" name="color__radio" id="grey">
-                                            <span class="checkmark grey-bg"></span>
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <span>Available size:</span>
-                                    <div class="size__btn">
-                                        <label for="xs-btn" class="active">
-                                            <input type="radio" id="xs-btn">
-                                            xs
-                                        </label>
-                                        <label for="s-btn">
-                                            <input type="radio" id="s-btn">
-                                            s
-                                        </label>
-                                        <label for="m-btn">
-                                            <input type="radio" id="m-btn">
-                                            m
-                                        </label>
-                                        <label for="l-btn">
-                                            <input type="radio" id="l-btn">
-                                            l
                                         </label>
                                     </div>
                                 </li>
@@ -385,7 +346,7 @@
 <script type="text/javascript">
     $(".zoom_05").elevateZoom({
    
-//    cursor: 'pointer'
+//    cursor: 'pointer',
 //    easing : true,
 }); 
 
@@ -425,6 +386,16 @@
                          background: "linear-gradient(to right, #00b09b, #96c93d)",
                      },
                  }).showToast()
+                }else if(res.data.status=="failed"){
+                    Toastify({
+                    text: "there is not enough stock for that",
+                    duration: 3000,
+                    gravity: "bottom",
+                    position: "center",
+                    style: {
+                    background: "linear-gradient(to right, #fe6d00, #ffb900)",
+                    },
+                    }).showToast();
              }else{
                  // location.assign('/login')
                  Toastify({
@@ -449,6 +420,60 @@
     
  </script>
 
+
+<script type="text/javascript"> 
+    document.querySelectorAll('.addTowishlist').forEach(function(button){
+        button.addEventListener('click',function(event){
+         event.preventDefault()
+         //to prevent default action
+         console.log(this.dataset.productid);
+         addtowishlist(this.dataset.productid)
+ 
+     })
+
+     const addtowishlist=async(productId)=>{
+        try{
+            const res = await axios({
+                 method:'get',
+                 url:`/addto-wishlist/${productId}` 
+             })
+
+             //-----------------
+             if(res.data.status==="success"){
+                 Toastify({
+                     text: res.data.message,
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "center", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "linear-gradient(to right, #00b09b, #96c93d)",
+                     },
+                 }).showToast()
+             }else{
+                 // location.assign('/login')
+                 Toastify({
+                     text: "Removed",
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "center", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                         background: "linear-gradient(to right, #00b09b, #e80707)",
+                     },
+                 }).showToast()
+             }
+             //-----------------
+
+
+        }catch(err){
+            console.log(err);
+        }
+     }
+    })
+</script>
 
 
 

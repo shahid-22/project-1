@@ -11,74 +11,93 @@ const bcrypt = require('bcrypt');
 const cloudinary=require('../util/cloudinary');
 const coupenHelpers = require("../helpers/coupen-helpers");
 const RazorpayHelpers=require("../helpers/razorpay-helpers");
+const walletHelpers=require("../helpers/wallet-helpers")
 const { response } = require("express");
 
 module.exports={
   userviewrender:async(req,res,next)=>{
-    let user=req.session.user
-    let userName = req.session.userName;
-
-    //cart count---------------------------------
-    let cartcount=null
-    if(userName){
-    cartcount=await cartHelpers.getcartcount(req.session.userId)
+    try{
+        let user=req.session.user
+        let userName = req.session.userName;
+        //cart count---------------------------------
+        let cartcount=null
+        if(userName){
+        cartcount=await cartHelpers.getcartcount(req.session.userId)
+        }
+        //-------------cartcount-----------------------------------
+        let banners=await bannerHelpers.findOne()
+        // let latestproduct=await productHelpers.latestproduct()
+        res.render('user/userview',{user,userName,cartcount,banners});
+    }catch(err){
+      console.log(err);
     }
-    //-------------cartcount-----------------------------------
-
-    let banners=await bannerHelpers.findOne()
-    res.render('user/userview',{user,userName,cartcount,banners});
   },
+
 
 
   renderusersignup:(req,res)=>{
-    if(req.session.loggedIn==true){
-      res.redirect('/')
-    }else{
-      res.render('user/usersignup');
-    }
+      try{
+        if(req.session.loggedIn==true){
+           res.redirect('/')
+        }else{
+           res.render('user/usersignup');
+        }
+      }catch(err){
+        console.log(err);
+      }
 
   },
+
 
 
   renderuserlogin:(req,res)=>{
-    if(req.session.loggedIn){
-      res.redirect('/')
-    }else{
-      res.render('user/userlogin',{loginErr:req.session.loginErr})
-      req.session.loginErr=false;
-
-    }
+     try{
+        if(req.session.loggedIn){
+           res.redirect('/')
+        }else{
+           res.render('user/userlogin',{loginErr:req.session.loginErr})
+           req.session.loginErr=false;
+        }
+      }catch(err){
+        console.log(err);
+      }
   },
 
 
+
   signuppost:(req,res)=>{
-  userHelpers.dosignup(req.body).then((response)=>{
-    req.session.userId=response._id
-    console.log(req.session.userId);
-    req.session.loggedIn=true;
-    req.session.user=response;
-    req.session.userName=response.name;
-    // console.log(req.session.user);
-    res.redirect('/');
-    })
+    try{
+      userHelpers.dosignup(req.body).then((response)=>{
+      req.session.userId=response._id
+      req.session.loggedIn=true;
+      req.session.user=response;
+      req.session.userName=response.name;
+      res.redirect('/');
+      })
+    }catch(err){
+      console.log(err);
+    }
   },
 
 
   loginpost:(req,res)=>{
-    userHelpers.dologin(req.body).then((response)=>{
-    // console.log(response);
-   if(response.status){
-     req.session.loggedIn=true;
-     req.session.userId=response.user._id
-     console.log(req.session.userId);
-     req.session.user=response;
-     req.session.userName=response.user.name;
-     res.redirect('/')
-    }else{
-     req.session.loginErr='invalid username or password'
-     res.redirect('/login')
-    }
-    })
+     try{
+         userHelpers.dologin(req.body).then((response)=>{
+         if(response.status){
+         req.session.loggedIn=true;
+         req.session.userId=response.user._id
+         console.log(req.session.userId);
+         req.session.user=response;
+         req.session.userName=response.user.name;
+         res.redirect('/')
+         }else{
+         req.session.loginErr='invalid username or password'
+         res.redirect('/login')
+        }
+        })
+      }catch(err){
+        console.log(err);
+      }
   },
 
 
@@ -92,7 +111,39 @@ module.exports={
       let  userName=req.session. userName
       const brandId=req.query.brandId
       const categoryId=req.query.categoryId
-      if(categoryId){
+      const minamout=req.query.min
+      const maxamount=req.query.max
+
+      // let page=req.query.page||1
+      // let limit=6
+      // let skip=(page-1)*limit
+      // let currentpage=parseInt(page)
+      // let totalproduct= await productHelpers.totalproduct()
+      // console.log("totalproductcount"+totalproduct);
+      // let totalpage=Math.ceil(totalproduct/limit)
+      // totalpage=parseInt(totalpage)
+      // console.log("totalpage"+totalpage);
+      // console.log(currentpage);
+
+      
+
+       if(minamout&&maxamount){
+          let products=await productHelpers.findfilterproduct(minamout,maxamount)
+          for(let i=0;i<products.length;i++){
+          products[i].price=products[i].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+        }
+        let categories=await categoryHelpers.listedcategory()
+        let brands= await BrandHelpers.findlistedbrand()
+        //cart count---------------------------------
+        let cartcount=null
+        if(userName){
+        cartcount=await cartHelpers.getcartcount(req.session.userId)
+        }
+        //-------------cartcount-----------------------------------
+        res.render("user/shop",{products,categories,brands, userName,cartcount})
+       }
+      
+      else if(categoryId){
             let products=await  productHelpers.findcategoryproduct(categoryId)
             for(let i=0;i<products.length;i++){
               products[i].price=products[i].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
@@ -105,6 +156,7 @@ module.exports={
               cartcount=await cartHelpers.getcartcount(req.session.userId)
               }
               //-------------cartcount-----------------------------------
+              // console.log(products);
               res.render("user/shop",{products,categories,brands, userName,cartcount})
       }else if(brandId){
               let products=await productHelpers.findbrandproduct(brandId)
@@ -119,6 +171,7 @@ module.exports={
               cartcount=await cartHelpers.getcartcount(req.session.userId)
               }
               //-------------cartcount-----------------------------------
+              
               res.render("user/shop",{products,categories,brands, userName,cartcount})
 
       }else{
@@ -138,30 +191,37 @@ module.exports={
        }
   },
 
+
+
   renderproductdetail:async(req,res)=>{
-      let  userName=req.session. userName
-      const productId=req.params.id
-      const product=await productHelpers.findsingleproductdata(productId)
-      product[0].price=product[0].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-      //cart count---------------------------------
-      let cartcount=null
-      if(userName){
-      cartcount=await cartHelpers.getcartcount(req.session.userId)
+   try{
+         let  userName=req.session. userName
+         const productId=req.params.id
+         const product=await productHelpers.findsingleproductdata(productId)
+         product[0].price=product[0].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+         //cart count---------------------------------
+         let cartcount=null
+         if(userName){
+         cartcount=await cartHelpers.getcartcount(req.session.userId)
+         }
+         //-------------cartcount-----------------------------------
+         res.render('user/productdetails',{product, userName,cartcount})
+      }catch(err){
+        console.log(err);
       }
-      //-------------cartcount-----------------------------------
-      res.render('user/productdetails',{product, userName,cartcount})
   },
 
 rendercartpage:async(req,res)=>{
+  try{
       let  userName=req.session. userName
       let userId= new ObjectId(req.session.userId)
       const cart=await cartHelpers.getcart(userId)
       let totalprice=0
-  for(let i=0;i<cart.length;i++){
+      for(let i=0;i<cart.length;i++){
       totalprice=totalprice+cart[i].subTotal
       cart[i].productdetails.price= cart[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
       cart[i].subTotal= cart[i].subTotal.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-    }
+      }
       totalprice=totalprice.toLocaleString('en-IN', { style: "currency", currency: "INR" })
       //cart count---------------------------------
       let cartcount=null
@@ -171,6 +231,9 @@ rendercartpage:async(req,res)=>{
       //-------------cartcount-----------------------------------
 
       res.render("user/cart-page",{userName,cart,totalprice,cartcount})
+    }catch(err){
+      console.log(err);
+    }
 },
 
 addtocart:async(req,res)=>{
@@ -178,14 +241,26 @@ addtocart:async(req,res)=>{
      const userId= new ObjectId(req.session.userId)
      const iscartexist=await cartHelpers.findcart(userId)
   if(iscartexist){
-     await cartHelpers.updatecart(userId,productId)
+  let updatecart=  await cartHelpers.updatecart(userId,productId)
+     if(updatecart=="success"){
+      res.json({
+        status:"success",
+        message:"added to cart"
+      })
+     }else{
+      res.json({
+        status:"failed",
+        message:"out of stock"
+      })
+     }
   }else{
      await cartHelpers.addtocart(userId,productId)
+     res.json({
+      status:"success",
+      message:"added to cart"
+    })
   }
-  res.json({
-    status:"success",
-    message:"added to cart"
-  })
+  
 },
 
 renderotppage:(req,res)=>{
@@ -297,14 +372,18 @@ orderdetais:async(req,res)=>{
     }
     const date = new Date()
    let result=await orderHelpers.insertorderdata(products,address,userId,status,date,total,paymentMethod)
+   console.log("myyyyyyyyyyy");
+   console.log(result);
       const orderId=result.insertedId
       if(paymentMethod=="COD"){
       await cartHelpers.deletecart(userId)
       await coupenHelpers.adduser(coupencode,userId)
       console.log("kkkkkk");
       console.log(products);
+
       products.forEach(async(product)=>{
         product.quantity=product.quantity*-1
+        console.log(product.quantity);
        await productHelpers.changestock(product.productid,product.quantity)
       });
         res.json({
@@ -313,7 +392,7 @@ orderdetais:async(req,res)=>{
         })
         
       }else if(paymentMethod=="online"){
-    
+      
            total=total.replace(/,/g,"")
            total=total.replace('₹','')
            total = parseInt(total)
@@ -324,24 +403,66 @@ orderdetais:async(req,res)=>{
         }
 
         
+      }else if(paymentMethod=="wallet"){
+        total=total.replace(/,/g,"")
+        total=total.replace('₹','')
+        total = parseInt(total)
+        let walletamount=await walletHelpers.findamount(userId)
+        walletamount=parseInt(walletamount.amount)
+        console.log("walletamount"+walletamount);
+        console.log("total"+total);
+        if(total>walletamount){
+          console.log("no money for that");
+          res.json({
+            status:"failed",
+            message:"order placed"
+          })
+        }else{
+        await cartHelpers.deletecart(userId)
+        if(coupencode){
+         await coupenHelpers.adduser(coupencode,userId)
+        }
+      console.log("kkkkkk");
+      console.log(products);
+
+      products.forEach(async(product)=>{
+        product.quantity=product.quantity*-1
+        console.log(product.quantity);
+       await productHelpers.changestock(product.productid,product.quantity)
+      });
+      await orderHelpers.changepaymentstatus(orderId)
+        // update wallet
+          
+        let amount = total*-1
+        await walletHelpers.updateWallet(userId,amount)
+        res.json({
+          status:"success",
+          message:"order placed"
+        })
+
+      }
       }
       
 },
  renderorderpage:async(req,res)=>{
-    let  userName=req.session. userName
-    //cart count---------------------------------
-    let cartcount=null
-    if(userName){
-    cartcount=await cartHelpers.getcartcount(req.session.userId)
-    }
-    //-------------cartcount-----------------------------------
-   let userId=new ObjectId(req.session.userId)
-   let orders= await orderHelpers.getorderdetails(userId)
-   console.log(orders);
-   for(let i=0;i<orders.length;i++){
-   orders[i].date=orders[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
-  }
-   res.render("user/orders",{orders,userName,cartcount})
+     try{
+         let  userName=req.session. userName
+         //cart count---------------------------------
+         let cartcount=null
+         if(userName){
+         cartcount=await cartHelpers.getcartcount(req.session.userId)
+         }
+         //-------------cartcount-----------------------------------
+         let userId=new ObjectId(req.session.userId)
+         let orders= await orderHelpers.getorderdetails(userId)
+         console.log(orders);
+         for(let i=0;i<orders.length;i++){
+         orders[i].date=orders[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
+         }
+         res.render("user/orders",{orders,userName,cartcount})
+      }catch(err){
+        console.log(err);
+      }
  },
 
 
@@ -385,9 +506,10 @@ orderdetais:async(req,res)=>{
 
   renderprofilepage:async(req,res)=>{
     try{
+        let  userName=req.session. userName
         let userId=req.session.userId
         let userdetails=await userHelpers.finduser(userId)
-        res.render("user/userprofile",{userdetails})
+        res.render("user/userprofile",{userdetails,userName})
       }catch(err){
         console.log(err);
       }
@@ -395,13 +517,14 @@ orderdetais:async(req,res)=>{
 
   renderwishlist:async(req,res)=>{
     try{
+      let  userName=req.session. userName
       let userId=new ObjectId(req.session.userId)
       let wishlist=await wishlistHelpers.FindAll(userId)
       console.log(wishlist);
       for(let i=0;i<wishlist.length;i++){
       wishlist[i].productdetails.price=wishlist[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
       }
-       res.render("user/wishlist",{wishlist})
+       res.render("user/wishlist",{wishlist,userName})
     }catch(err){
       console.log(err);
     }
@@ -443,9 +566,11 @@ orderdetais:async(req,res)=>{
 
   renderRewards:async(req,res)=>{
     try{
+      let  userName=req.session. userName
+      let userId=req.session.userId
       await coupenHelpers.checkCouponExpired()
-      const rewards=await coupenHelpers.FindAll()
-       res.render("user/Rewards",{rewards})
+      const rewards=await coupenHelpers.FindAll(userId)
+      res.render("user/Rewards",{rewards,userName})
     }catch(err){
       console.log(err);
     }
@@ -483,81 +608,114 @@ orderdetais:async(req,res)=>{
   },
 
   verifypayment:async(req,res)=>{
-    let userId= new ObjectId(req.session.userId)
-
-   const successfull= RazorpayHelpers.verifypayment(req.body)
-      if(successfull){
+    try{
+      let userId= new ObjectId(req.session.userId)
+      const successfull= RazorpayHelpers.verifypayment(req.body)
+        if(successfull){
+             // change stock
+             let cart= await cartHelpers.getcart(userId)
+             cart.forEach(async(cart)=>{
+             cart.products.quantity=cart.products.quantity *-1
+             await productHelpers.changestock(cart.products.productId,cart.products.quantity)
+             });
+           // change stock
           await orderHelpers.changepaymentstatus(req.body.order.receipt)
           await cartHelpers.deletecart(userId)
           await coupenHelpers.adduser(req.body.coupencode,userId)
           // console.log("success full");
-
             res.json({
               status:true
             })
-
         }else{
             res.json({
               status:false
             })
           //  console.log("payment failed");
         }
+      }catch(err){
+        console.log(err);
+      }
   },
+
+
   
   changepassword:async(req,res)=>{
-    let UserId=req.session.userId
-    let{currentpassword, newpassword}=req.body
-    const user=await userHelpers.finduser(UserId)
-    const ispasswordiscorrect=await bcrypt.compare(currentpassword,user.password)
-    if(ispasswordiscorrect){
-      await userHelpers.changepassword(UserId,newpassword)
-      res.json({
-        status:"success",
-        message:"password changed"
-      })
-    }else{
-      res.json({
-        status:"failed",
-        message:"password not match"
-      })
-    }
-
+    try{
+       let UserId=req.session.userId
+       let{currentpassword, newpassword}=req.body
+       const user=await userHelpers.finduser(UserId)
+       const ispasswordiscorrect=await bcrypt.compare(currentpassword,user.password)
+      if(ispasswordiscorrect){
+       await userHelpers.changepassword(UserId,newpassword)
+           res.json({
+             status:"success",
+             message:"password changed"
+           })
+      }else{
+           res.json({
+             status:"failed",
+             message:"password not match"
+           })
+      }
+      }catch(err){
+        console.log(err);
+      }
   },
 
+
+
   editprofile:async(req,res)=>{
-    const userId=req.session.userId
-    let{name,email,phone}=req.body
-    let user=await userHelpers.finduser(userId)
-    if(user.name==name&&user.email==email&&user.Phonenumber==phone){
-      res.json({
-        status:false,
-        message:"No changes"
-       })
-    }else{
+    try{
+        const userId=req.session.userId
+        let{name,email,phone}=req.body
+        let user=await userHelpers.finduser(userId)
+        if(user.name==name&&user.email==email&&user.Phonenumber==phone){
+            res.json({
+              status:false,
+              message:"No changes"
+             })
+          }else{
     let phonenumberExist=await userHelpers.phonenumberexist(phone)
     // let emailexist=await userHelpers.emailexist(email)
-    if(phonenumberExist){
-      if(phonenumberExist.Phonenumber==user.Phonenumber){
+        if(phonenumberExist){
+        if(phonenumberExist.Phonenumber==user.Phonenumber){
         await userHelpers.updateProfile(name,user.Phonenumber,email,userId)
-        res.json({
-         status:true,
-         message:'profile updated'
-        })
-      }else{
-        res.json({
-          status:false,
-          message:'phone number already exist'
-         })
+            res.json({
+             status:true,
+             message:'profile updated'
+            })
+          }else{
+            res.json({
+              status:false,
+              message:'phone number already exist'
+             })
+          }
+          }else{
+        await userHelpers.updateProfile(name,phone,email,userId)
+            res.json({
+             status:true,
+             message:'profile updated'
+            })
+          }
+          }
+      }catch(err){
+        console.log(err);
       }
-    }else{
-     await userHelpers.updateProfile(name,phone,email,userId)
-     res.json({
-      status:true,
-      message:'profile updated'
-     })
-    }
-  }
    
+  },
+
+
+
+  renderwallet:async(req,res)=>{
+    try{
+          let userId=req.session.userId
+          userId=new ObjectId(userId)
+          let walletamount=await walletHelpers.getuserwallet(userId)
+          walletamount=walletamount.amount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+          res.render("user/wallet",{walletamount})
+    }catch(err){
+      console.log(err);
+    }
   }
 
 

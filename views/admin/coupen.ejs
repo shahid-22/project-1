@@ -147,7 +147,7 @@
                           <div class="overview-wrap">
                               <h2 class="title-1">coupen Details</h2>
                               <button class="au-btn au-btn-icon au-btn--blue"></button>
-                              <button class="btn btn-success "  data-toggle="modal" data-target="#exampleModal">Add coupen</button>
+                              <button class="btn btn-dark "  data-toggle="modal" data-target="#exampleModal">Add coupen</button>
                           </div>
                       </div>
                   </div>
@@ -258,24 +258,24 @@
         <div class="modal fade" id="modalConfirmDelete<%=coupendetails[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
-              Content
+              <!-- Content -->
               <div class="modal-content text-center">
-                Header
+                <!-- Header -->
                 <div class="modal-header d-flex justify-content-center">
                   <p class="heading">Are you sure?</p>
                 </div>
           
-                Body
+                <!-- Body -->
                 <div class="modal-body">
           
                   <i class="fas fa-times fa-4x animated rotateIn"></i>
           
                 </div>
           
-                Footer
+                <!-- Footer -->
                 <div class="modal-footer flex-center">
-                  <a href="/admin/detetecoupen/<%=coupendetails[i]._id%>" class="btn  btn-outline-danger">Yes</a>
-                  <a type="button" class="btn  btn-danger waves-effect" data-dismiss="modal">No</a>
+                  <a href="/admin/detetecoupen/<%=coupendetails[i]._id%>" class="btn   btn-danger waves-effect">Yes</a>
+                  <a type="button" class="btn btn-outline-danger" data-dismiss="modal">No</a>
                 </div>
               </div>
               /.Content

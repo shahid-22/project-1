@@ -144,7 +144,39 @@ module.exports={
             $inc:{quantity:quantity}
         })
 
+    },
+
+    findfilterproduct:async(minamount,maxamount)=>{
+        console.log(minamount,maxamount);
+        minamount=Number(minamount)
+        maxamount=Number(maxamount)
+        let products=await db.get().collection(collection.PRODUCT_COLLECTION).aggregate([
+            {
+              $match: {
+                isdeleted:false
+              }
+            },
+            {
+                
+              $match: {
+                $and:[{price:{$gte:minamount,$lte:maxamount}}]
+              }
+                  
+            },{
+                $sort:{price:1}
+            }
+        ]).toArray()
+        console.log(products);
+        return products
+    },
+
+    totalproduct:async()=>{
+    const totalproductcount=await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments({isdeleted:false})
+    return totalproductcount
     }
+
+
+    
 
 
 }

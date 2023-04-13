@@ -44,7 +44,7 @@ module.exports={
             }
         })
     },
-    findAll:async()=>{
+    findAll:async(limit,skip)=>{
       const products=await db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).toArray()
       return products
     },

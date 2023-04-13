@@ -12,9 +12,27 @@ module.exports={
       await db.get().collection(collection.COUPEN_COLLECTION).insertOne({coupen,name,discount,createdDate,expiryDate,isExpired})
       
     },
-    FindAll:async()=>{
-        const coupen=await await db.get().collection(collection.COUPEN_COLLECTION).find({isExpired: false}).sort({createdDate:-1}).toArray() 
+    FindAll:async(userId)=>{
+        // const coupen=await await db.get().collection(collection.COUPEN_COLLECTION).find({isExpired: false}).sort({createdDate:-1}).toArray() 
+        // return coupen
+        console.log(userId);
+        const coupen=await await db.get().collection(collection.COUPEN_COLLECTION).aggregate([
+            {
+                $match:{
+                    isExpired: false
+                }
+            },
+            {
+                $match: {
+                    users:{$nin:[new ObjectId(userId)]}
+                }
+            },
+            {
+                $sort:{createdDate:-1}
+            }
+        ]).toArray()
         return coupen
+        
     },
     deletecoupen:async(coupenId)=>{
         await db.get().collection(collection.COUPEN_COLLECTION).deleteOne({_id:new ObjectId(coupenId)})

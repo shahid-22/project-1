@@ -104,6 +104,8 @@ router.get("/SalesReport",admincontroller.rendersalerreport)
 
 router.post("/SalesReport",admincontroller.fiterdate)
 
+router.post("/addamoutwallet",admincontroller.addamoutwallet)
+
 
 
 module.exports = router;

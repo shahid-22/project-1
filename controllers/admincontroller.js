@@ -8,19 +8,73 @@ const collection=require('../config/collection');
 const orderHelpers = require("../helpers/order-helpers");
 const bannerHelpers=require("../helpers/bannerhelpers");
 const coupenHelpers=require("../helpers/coupen-helpers")
+const walletHelpers=require("../helpers/wallet-helpers")
 const { ObjectId } = require("mongodb-legacy");
 
 
 module.exports={
     dashboardrender:async(req,res,next)=>{
         if(req.session.adminloggedIn){
-        // const todayorders=await orderHelpers.currentdate()
-        // console.log(todayorders);
-        // const todaysalereport=0
-        // for(let i=0;i<orders.length;i++){
-        //     todaysalereport=orders[i].total
-        // }
-            res.render('admin/dashboard',{layout:"adminlayout"})
+        //---------today sale------------
+        let todaydate=new Date()
+        todaydate = new Date(todaydate).toISOString().slice(0, 10);
+        const todaysale=await orderHelpers.currentdateorder(todaydate)
+        console.log(todaysale);
+        let totalamount=0
+        for(let i=0;i<todaysale.length;i++){
+             todaysale[i].total=todaysale[i].total.replace(/,/g,"")
+             todaysale[i].total=todaysale[i].total.replace('₹','')
+             todaysale[i].total=parseInt(todaysale[i].total)
+             totalamount=totalamount+ todaysale[i].total
+            //  deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
+        }
+        let daytotal=totalamount
+            totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            //------------------------today sale end---------------
+
+            //--------week report-----------------------
+            let today = new Date();
+            today.setDate(today.getDate() - 7);
+            let weekdate = today.toISOString().slice(0, 10);
+            console.log(weekdate);
+            console.log(todaydate);
+            const weeksale=await orderHelpers.weeksalesreport(todaydate,weekdate)
+            console.log("jjjjjjjjjjjjjjj");
+            console.log(weeksale);
+            let weektotalamount=0
+        for(let i=0;i<weeksale.length;i++){
+            weeksale[i].total=weeksale[i].total.replace(/,/g,"")
+            weeksale[i].total=weeksale[i].total.replace('₹','')
+            weeksale[i].total=parseInt(weeksale[i].total)
+            weektotalamount=weektotalamount+ weeksale[i].total
+        }
+        let weektotal=weektotalamount
+            weektotalamount=weektotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            //--------------------------------------------
+            // let date=new Date()
+            // let year = date.getUTCFullYear();
+            // console.log("year"+year);
+            let currentdate = new Date();
+            currentdate.setDate(currentdate.getDate() - 30);
+            let monthdate = currentdate.toISOString().slice(0, 10);
+            console.log(weekdate);
+            console.log(todaydate);
+            const monthsale=await orderHelpers.weeksalesreport(todaydate,monthdate)
+            console.log("jjjjjjjjjjjjjjjgggg");
+            console.log(monthsale);
+            let monthtotalamount=0
+        for(let i=0;i<monthsale.length;i++){
+            monthsale[i].total=monthsale[i].total.replace(/,/g,"")
+            monthsale[i].total=monthsale[i].total.replace('₹','')
+            monthsale[i].total=parseInt(monthsale[i].total)
+            monthtotalamount=monthtotalamount+monthsale[i].total
+        }
+        let monthotal=monthtotalamount
+        monthtotalamount=monthtotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+          totalsale=daytotal+weektotal+monthotal
+           totalsale=totalsale.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+           
+            res.render('admin/dashboard',{layout:"adminlayout",totalamount,weektotalamount,monthtotalamount,totalsale})
         }else{
             res.redirect('/admin/adminlogin')
         }
@@ -135,8 +189,9 @@ module.exports={
     },
 
 
-    renderaddcategory:(req,res)=>{
-        res.render('admin/add-category',{layout:"adminlayout"})
+    renderaddcategory:async(req,res)=>{
+        let alreadyexistError=await req.query.message ?? ""
+        res.render('admin/add-category',{layout:"adminlayout",alreadyexistError})
     },
 
 
@@ -145,10 +200,10 @@ module.exports={
              let{categoryname}=req.body
              const catogoryalreadyexist=await categoryHelpers.categoryalreadyexist(categoryname)
            if(catogoryalreadyexist){
-              res.redirect('/admin/addcategory')
+              res.redirect('/admin/addcategory?message=already exist')
            }else{
             if(req.body.categoryname==req.body.categoryname.toLowerCase()){
-                res.redirect('/admin/addcategory')
+                res.redirect('/admin/addcategory?message=write capital letters')
             }else{
               categoryHelpers.getcategorydata(req.body).then((response)=>{
               console.log(response);
@@ -175,10 +230,14 @@ module.exports={
             let {brandname}=req.body
             const brandalreadtexist=await BrandHelpers.brandalreadyexist(brandname)
         if(brandalreadtexist){
-            res.redirect('/admin/Brand')
+            res.redirect('/admin/Brand?message=already exist')
         }else{
+            if(brandname==brandname.toLowerCase()){
+            res.redirect('/admin/Brand?message=write capital letters')
+            }else{
            await BrandHelpers.addbranddata(req.body)
            res.redirect('/admin/Brand')
+            }
         }
     },
     unlistcategory:async(req,res)=>{
@@ -311,10 +370,34 @@ module.exports={
     changeorderstatus:async(req,res)=>{
         try{
             let {orderId,status}=req.body
-            await orderHelpers.changeorderstatus(orderId,status)
-            res.json({
-                status:"status changed"
-            })
+              if(status=="cancelled"){
+                    let order=await orderHelpers.Findalldetails(new ObjectId(orderId))
+                    order.forEach(async(order)=>{
+                    await productHelpers.changestock(order.products.productid,order.products.quantity)
+                    });
+                    await orderHelpers.changeorderstatus(orderId,status)
+                    res.json({
+                    status:"status changed"
+                    })
+
+                }else if(status=="returned"){
+                    let order=await orderHelpers.Findalldetails(new ObjectId(orderId))
+                    order.forEach(async(order)=>{
+                        await productHelpers.changestock(order.products.productid,order.products.quantity)
+                        });
+                        await orderHelpers.changeorderstatus(orderId,status)
+                        await orderHelpers.changepaystatus(orderId)
+                        res.json({
+                        status:"status changed"
+                        })
+                
+                }else{
+                    await orderHelpers.changeorderstatus(orderId,status)
+                    res.json({
+                        status:"status changed"
+                    })
+                }
+                
 
         }catch(err){
             console.log(err);
@@ -484,6 +567,22 @@ module.exports={
         }catch(err){
           console.log(err);
         }
+    },
+
+    addamoutwallet:async(req,res)=>{
+        let{orderId}=req.body
+        console.log(orderId);
+        console.log("nnnnnnnnbbbbbbbbbbbbb");
+        orderId=new ObjectId(orderId)
+        console.log(orderId);
+        const order=await orderHelpers.getorder(orderId)
+        console.log(order);
+        if(order.paymentstatus=="paid"){
+           await walletHelpers.insertamount(order.userId,order.total)
+           await orderHelpers.changepaystatus(orderId)
+
+        }
+       
     }
 
 

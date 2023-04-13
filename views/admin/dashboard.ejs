@@ -56,7 +56,7 @@
                     <div class="row">
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--green">
-                                <h2 class="number">1,368</h2>
+                                <h2 class="number"><%=totalamount%></h2>
                                 <span class="desc">Today Sale</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-account-o"></i>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--orange">
-                                <h2 class="number">38,688</h2>
+                                <h2 class="number"><%=weektotalamount%></h2>
                                 <span class="desc">This Week</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-shopping-cart"></i>
@@ -74,8 +74,8 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--blue">
-                                <h2 class="number">189,086</h2>
-                                <span class="desc">This Year</span>
+                                <h2 class="number"><%=monthtotalamount%></h2>
+                                <span class="desc">This month</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-calendar-note"></i>
                                 </div>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--red">
-                                <h2 class="number">1,060,386</h2>
+                                <h2 class="number"><%=totalsale%></h2>
                                 <span class="desc">Total Earnings</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-money"></i>
@@ -113,8 +113,8 @@
                             <div class="col-lg-6">
                                 <div class="au-card m-b-30">
                                     <div class="au-card-inner">
-                                        <h3 class="title-2 m-b-40">Bar chart</h3>
-                                        <canvas id="barChart"></canvas>
+                                        <h3 class="title-2 m-b-40">Single Bar Chart</h3>
+                                        <canvas id="singelBarChart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -129,8 +129,8 @@
                             <div class="col-lg-6">
                                 <div class="au-card m-b-30">
                                     <div class="au-card-inner">
-                                        <h3 class="title-2 m-b-40">Single Bar Chart</h3>
-                                        <canvas id="singelBarChart"></canvas>
+                                        <h3 class="title-2 m-b-40">Bar chart</h3>
+                                        <canvas id="barChart"></canvas>
                                     </div>
                                 </div>
                             </div>

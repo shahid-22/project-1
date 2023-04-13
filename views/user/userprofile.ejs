@@ -366,6 +366,10 @@
                         background: "linear-gradient(to right, #00b09b, #96c93d)",
                      },
                  }).showToast()
+                 setTimeout(()=>{
+                   location.assign("/profile")
+                 },1000);
+                 
      }else{
       Toastify({
                      text: "Password not changed",

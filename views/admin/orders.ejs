@@ -136,9 +136,9 @@
                                   <th scope="col">PAYMENT</th>
                                   <th scope="col">PAY_STATUS</th>
                                   <th scope="col">STATUS</th>
+                                  <th scope="col">CHANGE STATUS</th>
+                                  <th scope="col">CHANGE STATUS</th>
                                   <th scope="col">VIEW ORDER</th>
-                                  <th scope="col">CHANGE STATUS</th>
-                                  <th scope="col">CHANGE STATUS</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -155,18 +155,6 @@
                                             <%=orders[i].paymentstatus%></td>
                                              <% } %>
                                           <td><%=orders[i].status%></td>
-                                          <td><a href="/admin/orderdetails/<%=orders[i]._id%>" class="btn btn-dark">details</a></td>
-                                          <td>
-                                            <%if(orders[i].status=='delivered'){%>
-                                              <b class="text-success">delivered</b>
-                                              <%}else if(orders[i].status=='cancelled'){%>
-                                                <b class="text-danger">cancelled</b>
-                                                <%}else if(orders[i].status=='returned'){%>
-                                                  <b class="text-danger">returned</b>
-                                              <%}else{%>
-                                                <button class="btn btn-danger" data-toggle="modal" data-target="#modalLoginForm<%=orders[i]._id%>" >CANCEL</button>
-                                              <% } %>
-                                          </td>
                                           <td>
                                             <%if(orders[i].status=='shipped'){%>
                                               <button class="btn btn-success"  onclick="changestatus('<%=orders[i]._id%>','delivered')">DELIVERED</button>
@@ -178,8 +166,34 @@
                                                   <b class="text-danger">cancelled</b>
                                                   <%}else if(orders[i].status=='returned'){%>
                                                     <b class="text-danger">returned</b>
+                                                    <%}else if(orders[i].status=='refunded'){%>
+                                                      <b class="text-primary">refunded</b>
                                             <%}%>
                                           </td>
+                                          <td>
+                                            <%if(orders[i].status=='delivered'){%>
+                                              <b class="text-success">delivered</b>
+                                              <%}else if(orders[i].status=='cancelled'){%>
+                                                <b class="text-danger">cancelled</b>
+                                                <%}else if(orders[i].status=='refunded'){%>
+                                                  <b class="text-primary">refunded</b>
+                                                <%}else if(orders[i].status=='returned'){%>
+                                                  
+                                                  <!-- <b class="text-danger">returned</b> -->
+                                                  <!-- <a href="#" class="btn btn-primary">accept</a> -->
+                                                  <div class="dropdown">
+                                                    <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                     refund
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                      <a class="dropdown-item" onclick="addamoutwallet('<%=orders[i]._id%>',changestatus('<%=orders[i]._id%>','refunded'))">Accept</a>
+                                                    </div>
+                                                  </div>
+                                              <%}else{%>
+                                                <button class="btn btn-danger" data-toggle="modal" data-target="#modalLoginForm<%=orders[i]._id%>" >CANCEL</button>
+                                              <% } %>
+                                          </td>
+                                          <td><a href="/admin/orderdetails/<%=orders[i]._id%>" class="btn btn-dark">details</a></td>
                                       </tr>
                                       <% } %>
                               </tbody>
@@ -242,3 +256,16 @@
         $('#productsTable').DataTable();
       });
       </script>
+
+<script>
+  const addamoutwallet=async(orderId)=>{
+    console.log(orderId);
+    const res= await axios({
+      method:"post",
+      url:"/admin/addamoutwallet",
+      data:{orderId}
+    })
+   
+
+  }
+</script>

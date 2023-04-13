@@ -1,7 +1,20 @@
+<div class="page-wrapper">
+    <div class="main-content">
+        <div class="section__content section__content--p30">
 <div class="container">
     <div class="row">
         <div class="col-lg-9 mt-3">
             <h2 class="fw-bold">ADD CATEGORY</h2>
+            <%if(alreadyexistError){%>
+                <p id="error" style="color: red;font-size: larger;"><%=alreadyexistError%></p>
+               <%}%>
+               <script>
+                 const error=document.getElementById("error")
+                 setTimeout(()=>{
+               error.style.display='none';
+               },3000);
+               
+               </script>
             <form action="/admin/addcategory" style="margin-top: 2em;" method="post"  >
                 <div class="form-group">
                     <input type="text"  id="categoryname" class="form-control" name="categoryname" placeholder="categoryname *" value="" onkeyup="validatecategory()"   />
@@ -15,5 +28,7 @@
         </div>
     </div>
 </div> 
-
+</div>
+</div>
+</div>
 <script type="text/javascript" src="/javascripts/categoryvalidation.js"></script>

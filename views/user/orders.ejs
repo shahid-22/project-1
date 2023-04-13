@@ -47,11 +47,16 @@
         <td>
           <% if(orders[i].status == 'cancelled'){ %>
             <b class="text-danger">cancelled</b>
+            <%}else if(orders[i].status=='refunded'){%>
+              <b class="text-primery" style="color: blue;">refunded</b>
             <%}else if(orders[i].status=='returned'){%>
               <b class="text-primery" style="color: blue;">returned</b>
             <%}else if(orders[i].status=='delivered'){%>
               <button class="btn btn-primary" onclick="changestatus('<%=orders[i]._id%>','returned')" >Return</button>
+              <%}else if(orders[i].paymentstatus=='paid'){%>
+                <button class="btn btn-danger" onclick="changestatus('<%=orders[i]._id%>','returned')" >CANCEL</button>
             <% }else{%>
+             
           <!-- <a href="#" class="btn btn-danger" onclick="changestatus('<%=orders[i]._id%>','cancelled')" >CANCEL</a></td> -->
           <button class="btn btn-danger" data-toggle="modal" data-target="#modalLoginForm<%=orders[i]._id%>" >CANCEL</button>
           <%}%>
@@ -117,3 +122,4 @@
   });
   </script>
   
+ 

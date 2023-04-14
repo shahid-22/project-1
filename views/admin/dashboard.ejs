@@ -108,14 +108,12 @@
             <!-- END STATISTIC CHART-->
 
             <!-- DATA TABLE-->
-
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="au-card m-b-30">
                                     <div class="au-card-inner">
-                                        <h3 class="title-2 m-b-40">Single Bar Chart</h3>
-                                        <canvas id="singelBarChart"></canvas>
-                                    </div>
+                                        <canvas id="myChart"></canvas>
+                                      </div>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -148,3 +146,30 @@
             </div>
             <!-- END DATA TABLE-->
         </div>
+
+
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+       <script>
+        const ctx = document.getElementById('myChart');
+      
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+            datasets: [{
+              label: '# of Votes',
+              data: [12, 19, 3, 5, 2, 3,4,5,6,7,8,9],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
+
+       

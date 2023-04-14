@@ -114,16 +114,16 @@ module.exports={
       const minamout=req.query.min
       const maxamount=req.query.max
 
-      // let page=req.query.page||1
-      // let limit=6
-      // let skip=(page-1)*limit
-      // let currentpage=parseInt(page)
-      // let totalproduct= await productHelpers.totalproduct()
-      // console.log("totalproductcount"+totalproduct);
-      // let totalpage=Math.ceil(totalproduct/limit)
-      // totalpage=parseInt(totalpage)
-      // console.log("totalpage"+totalpage);
-      // console.log(currentpage);
+      let page=req.query.page||1
+      let limit=6
+      let skip=(page-1)*limit
+      let currentpage=parseInt(page)
+      let totalproduct= await productHelpers.totalproduct()
+      console.log("totalproductcount"+totalproduct);
+      let totalpage=Math.ceil(totalproduct/limit)
+      totalpage=parseInt(totalpage)
+      console.log("totalpage"+totalpage);
+      console.log(currentpage);
 
       
 
@@ -140,7 +140,7 @@ module.exports={
         cartcount=await cartHelpers.getcartcount(req.session.userId)
         }
         //-------------cartcount-----------------------------------
-        res.render("user/shop",{products,categories,brands, userName,cartcount})
+        res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
        }
       
       else if(categoryId){
@@ -157,7 +157,7 @@ module.exports={
               }
               //-------------cartcount-----------------------------------
               // console.log(products);
-              res.render("user/shop",{products,categories,brands, userName,cartcount})
+              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
       }else if(brandId){
               let products=await productHelpers.findbrandproduct(brandId)
               for(let i=0;i<products.length;i++){
@@ -172,10 +172,11 @@ module.exports={
               }
               //-------------cartcount-----------------------------------
               
-              res.render("user/shop",{products,categories,brands, userName,cartcount})
+              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
 
       }else{
-              let products=await userHelpers.findAll()
+       
+              let products=await userHelpers.findAll(skip,limit)
               for(let i=0;i<products.length;i++){
                 products[i].price=products[i].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
               }
@@ -187,7 +188,7 @@ module.exports={
               cartcount=await cartHelpers.getcartcount(req.session.userId)
               }
               //-------------cartcount-----------------------------------
-              res.render("user/shop",{products,categories,brands,userName,cartcount})
+              res.render("user/shop",{products,categories,brands,userName,cartcount,totalpage,currentpage})
        }
   },
 
@@ -506,9 +507,10 @@ orderdetais:async(req,res)=>{
 
   renderprofilepage:async(req,res)=>{
     try{
-        let  userName=req.session. userName
+      let  userName=req.session. userName
         let userId=req.session.userId
         let userdetails=await userHelpers.finduser(userId)
+        console.log(userdetails);
         res.render("user/userprofile",{userdetails,userName})
       }catch(err){
         console.log(err);
@@ -708,11 +710,14 @@ orderdetais:async(req,res)=>{
 
   renderwallet:async(req,res)=>{
     try{
+          let userName=req.session.userName
           let userId=req.session.userId
           userId=new ObjectId(userId)
           let walletamount=await walletHelpers.getuserwallet(userId)
+          if(walletamount){
           walletamount=walletamount.amount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-          res.render("user/wallet",{walletamount})
+          }
+          res.render("user/wallet",{walletamount,userName})
     }catch(err){
       console.log(err);
     }

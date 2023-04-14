@@ -686,7 +686,7 @@
   }
 
   try {
-    //Sales chart
+    // yearly Sales chart
     var ctx = document.getElementById("sales-chart");
     if (ctx) {
       ctx.height = 150;
@@ -886,7 +886,7 @@
           datasets: [
             {
               label: "My First dataset",
-              data: [65, 59, 80, 81, 56, 55, 40],
+              data: [100, 59, 80, 81, 56, 55, 40],
               borderColor: "rgba(0, 123, 255, 0.9)",
               borderWidth: "0",
               backgroundColor: "rgba(0, 123, 255, 0.5)",
@@ -1131,9 +1131,9 @@
 
           }],
           labels: [
-            "Green",
-            "Green",
-            "Green"
+            "ONLINE",
+            "COD",
+            "WALLET"
           ]
         },
         options: {
@@ -1211,7 +1211,7 @@
           datasets: [
             {
               label: "My First dataset",
-              data: [40, 55, 75, 81, 56, 55, 40],
+              data: [100, 55, 75, 81, 56, 55, 40],
               borderColor: "rgba(0, 123, 255, 0.9)",
               borderWidth: "0",
               backgroundColor: "rgba(0, 123, 255, 0.5)"

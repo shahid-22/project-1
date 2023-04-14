@@ -19,6 +19,7 @@ module.exports={
         let todaydate=new Date()
         todaydate = new Date(todaydate).toISOString().slice(0, 10);
         const todaysale=await orderHelpers.currentdateorder(todaydate)
+        console.log("hiiiii");
         console.log(todaysale);
         let totalamount=0
         for(let i=0;i<todaysale.length;i++){
@@ -39,8 +40,6 @@ module.exports={
             console.log(weekdate);
             console.log(todaydate);
             const weeksale=await orderHelpers.weeksalesreport(todaydate,weekdate)
-            console.log("jjjjjjjjjjjjjjj");
-            console.log(weeksale);
             let weektotalamount=0
         for(let i=0;i<weeksale.length;i++){
             weeksale[i].total=weeksale[i].total.replace(/,/g,"")
@@ -48,6 +47,8 @@ module.exports={
             weeksale[i].total=parseInt(weeksale[i].total)
             weektotalamount=weektotalamount+ weeksale[i].total
         }
+        console.log("jjjjjjjjjjjjjjj");
+        console.log(weeksale);
         let weektotal=weektotalamount
             weektotalamount=weektotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             //--------------------------------------------
@@ -60,8 +61,6 @@ module.exports={
             console.log(weekdate);
             console.log(todaydate);
             const monthsale=await orderHelpers.weeksalesreport(todaydate,monthdate)
-            console.log("jjjjjjjjjjjjjjjgggg");
-            console.log(monthsale);
             let monthtotalamount=0
         for(let i=0;i<monthsale.length;i++){
             monthsale[i].total=monthsale[i].total.replace(/,/g,"")
@@ -142,6 +141,7 @@ module.exports={
     renderproductview:(req,res)=>{
         try{
             productHelpers.findproducts().then((products)=>{
+                // console.log("products"+products);
             res.render('admin/product-view',{layout:"adminlayout",products})
             })
         }catch(err){
@@ -411,6 +411,7 @@ module.exports={
             for(let i=0;i<orders.length;i++){
             orders[i].productdetails.price=orders[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             }
+            console.log("order"+orders[0].total);
             orders[0].total=orders[0].total.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             orders[0].date=orders[0].date.toLocaleString({timeZone: 'Asia/Kolkata'});
             res.render("admin/orderdetails",{layout:"adminlayout",orders})
@@ -583,7 +584,11 @@ module.exports={
 
         }
        
-    }
+    },
+
+
+
+
 
 
 }

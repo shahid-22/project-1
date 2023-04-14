@@ -29,12 +29,7 @@ module.exports={
     findproducts:()=>{
         return new Promise((resolve,reject)=>{
         db.get().collection(collection.PRODUCT_COLLECTION).aggregate([
-            // {
-            //     $match:{
-            //         isdeleted:{$ne:true}
-            //     }
-
-            // },
+          
             {
                 $lookup:{
                     from: "category",
@@ -52,7 +47,7 @@ module.exports={
                 }
             }
         ]).toArray().then((response)=>{
-            console.log(response);
+            // console.log("response"+response);
             resolve(response)
         })
         })
@@ -173,7 +168,9 @@ module.exports={
     totalproduct:async()=>{
     const totalproductcount=await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments({isdeleted:false})
     return totalproductcount
-    }
+    },
+
+
 
 
     

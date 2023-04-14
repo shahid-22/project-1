@@ -44,8 +44,8 @@ module.exports={
             }
         })
     },
-    findAll:async(limit,skip)=>{
-      const products=await db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).toArray()
+    findAll:async(skip,limit)=>{
+      const products=await db.get().collection(collection.PRODUCT_COLLECTION).find({isdeleted:false}).skip(skip).limit(limit).toArray()
       return products
     },
     phonenumberexist:async(phonenumber)=>{

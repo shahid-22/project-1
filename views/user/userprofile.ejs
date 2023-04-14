@@ -21,7 +21,7 @@
               <h5 class="my-3"><%=userdetails.name%></h5>
               
               <div class="d-flex justify-content-center mb-2">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#changeimage">Change Image</button>
+                <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#changeimage">Change Image</button> -->
               </div>
             </div>
           </div>
@@ -101,13 +101,13 @@
             <div class="col-md-6">
             </div>
             <!------------>
-           <% if(userdetails.address){%>
+            <% if(userdetails.address){%>
             <% for(let i=0;i< userdetails.address.length;i++){%>
             <div class="col-md-12 " >
             <div class="card shadow  mt-4 " style=" background-color: #fff;">
               <div class="card-header " style=" color: black; font-size: medium;">
                 <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;"  class="address"></th>
-                <a href="/delete-address/<%=userdetails.address[i]._id%>" ><i class="fa fa-trash d-flex flex-row-reverse" aria-hidden="true" style="color: red;"></i></a>
+                <a ><i class="fa fa-trash d-flex flex-row-reverse"  data-toggle="modal" data-target="#modalConfirmDelete" aria-hidden="true" style="color: red;"></i></a>
               </div>
               <div class="card-body">
                 <tr>
@@ -123,9 +123,40 @@
             </div>
             
           </div>
+          <!---conformation modal-->
+  <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <!-- Content -->
+    <div class="modal-content text-center">
+      <!-- Header -->
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">Are you sure?</p>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <i class="fa fa-times fa-4x animated rotateIn"></i>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer flex-center">
+        <a href="/delete-address/<%=userdetails.address[i]._id%>" class="btn   btn-danger waves-effect">Yes</a>
+        <a type="button" class="btn btn-outline-danger" data-dismiss="modal">No</a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<!---conformation modal-->
+
+
           <% }%>
-        <%}%>
+         
             <!------------>
+            <%}%>
           </div>
         </div>
       </div>
@@ -133,6 +164,7 @@
   </section>
 
   <!---change image modal-->
+  
   <!-- Modal -->
 <div class="modal fade" id="changeimage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -258,7 +290,7 @@
 
                <div style="margin-left: 75%;">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <button type="submit" class="btn btn-primary">SUBMIT</button>
               </div>
             </form>
       </div>
@@ -270,6 +302,7 @@
 
 
 <!----edit modal-->
+<% if(userdetails.address){%>
 <% for(let i=0;i< userdetails.address.length;i++){%>
 <div class="modal fade" id="editprofile<%=userdetails.address[i]._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -334,6 +367,7 @@
     </div>
   </div>
 </div>
+<% }%>
 <% }%>
 <!----end-edit--modal-->
 

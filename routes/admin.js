@@ -106,6 +106,8 @@ router.post("/SalesReport",admincontroller.fiterdate)
 
 router.post("/addamoutwallet",admincontroller.addamoutwallet)
 
+router.get("/getdashboarddata",admincontroller.dashboarddata)
+
 
 
 

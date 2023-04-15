@@ -6,9 +6,9 @@ const { ObjectId } = require('mongodb-legacy');
 const insertamount=async(userId,total)=>{
 console.log(userId);
 console.log(total);
-total=total.replace(/,/g,"")
-total=total.replace('₹','')
-total=parseInt(total)
+// total=total.replace(/,/g,"")
+// total=total.replace('₹','')
+// total=parseInt(total)
 let alreadyexist= await db.get().collection(collection.WALLET_COLLECTION).findOne({user:userId})
 if(alreadyexist){
     await db.get().collection(collection.WALLET_COLLECTION).updateOne({user:userId},{

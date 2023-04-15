@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-6 col-lg-3">
                             <div class="statistic__item statistic__item--blue">
-                                <h2 class="number"><%=monthtotalamount%></h2>
+                                <h2 class="number"><%=monthlyAmount%></h2>
                                 <span class="desc">This month</span>
                                 <div class="icon">
                                     <i class="zmdi zmdi-calendar-note"></i>
@@ -109,14 +109,14 @@
 
             <!-- DATA TABLE-->
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-7">
                                 <div class="au-card m-b-30">
                                     <div class="au-card-inner">
                                         <canvas id="myChart"></canvas>
                                       </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
                                 <div class="au-card m-b-30">
                                     <div class="au-card-inner">
                                         <h3 class="title-2 m-b-40">Pie Chart</h3>
@@ -150,16 +150,57 @@
 
        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
        <script>
+
+        (async()=>{
+
+       const res=await axios({
+        method:'get',
+        url:"/admin/getdashboarddata"
+       })
+      console.log(res.data.salesPerMonth);
+      const salesPerMonth = res.data.salesPerMonth
+    let amountofSalesPerMonth = [0,0,0,0,0,0,0,0,0,0,0,0]
+    salesPerMonth.forEach(sales => {
+      amountofSalesPerMonth[ sales._id-1 ]= sales.sale
+    });
+
+     console.log(res.data.paymentStatuscount)
+
+    //  const orderStatusDetails = res.data.orderStatusDetails
+    // console.log(orderStatusDetails);
+    //  let orderStatuses=[];
+    //  let orderStatusCount=[]
+
+    //  orderStatusDetails.forEach(order=>{
+    //   orderStatuses.push(order._id)
+    //   orderStatusCount.push(order.count)
+    //  })
+
+     const payStatusDetails =res.data.paymentStatuscount
+    // console.log(orderStatusDetails);
+     let orderStatuses=[];
+     let orderStatusCount=[]
+
+     payStatusDetails.forEach(order=>{
+      orderStatuses.push(order._id)
+      orderStatusCount.push(order.count)
+     })
+
+
+
+
+try{
+
         const ctx = document.getElementById('myChart');
-      
         new Chart(ctx, {
           type: 'bar',
           data: {
             labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
             datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3,4,5,6,7,8,9],
-              borderWidth: 1
+              label: '# MONTH SALE',
+              data:amountofSalesPerMonth,
+              borderWidth: 2,
+              backgroundColor:"blue"
             }]
           },
           options: {
@@ -170,6 +211,56 @@
             }
           }
         });
+    }catch(err){
+        console.log(err);
+    }
+
+    try {
+
+//pie chart
+var ctx = document.getElementById("pieChart");
+if (ctx) {
+  ctx.height = 200;
+  var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      datasets: [{
+        data:orderStatusCount,
+        backgroundColor: [
+          "#32a84e",
+          "#5e32a8",
+          "#a84232",
+          
+        ],
+        hoverBackgroundColor: [
+          "#32a84e",
+          "#5e32a8",
+          "#a84232",
+    
+        ]
+
+      }],
+      labels: orderStatuses,
+    },
+    options: {
+      legend: {
+        position: 'top',
+        labels: {
+          fontFamily: 'Poppins'
+        }
+
+      },
+      responsive: true
+    }
+  });
+}
+
+
+} catch (error) {
+console.log(error);
+}
+
+    })();
       </script>
 
        

@@ -6,6 +6,9 @@ const { ObjectId } = require('mongodb-legacy');
 module.exports={
     insertorderdata:async(products,address,userId,status,date,total,paymentmethod)=>{
       const paymentstatus="pending"
+      total=total.replace(/,/g,"")
+      total=total.replace('₹','')
+      total=parseInt(total)
       let today =new Date()
       today= new Date(today).toISOString().slice(0, 10);
       const result= await db.get().collection(collection.ORDER_COLLECTION).insertOne(
@@ -214,8 +217,89 @@ module.exports={
               paymentstatus:"refunded",
         }
       })
-    }
+    },
 
+    totalSale : async ()=>{
+      const totalSale = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $match: {
+          status:"delivered"
+        }
+      },
+        {
+          $group: {
+          _id:null,
+          grandtotal:{
+            $sum:"$total"
+          }
+        }}
+      ]).toArray()
+
+      console.log("hhh"+totalSale[0].grandtotal)
+      return totalSale[0].grandtotal
+  
+    },
+
+    filterSales : async(startDate,endDate)=>{
+      const salesAmount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {$match:{status:'delivered'}},
+        {$match:{ today:{$gte:startDate,$lt:endDate}} },
+        { $group: {_id: null, total: {$sum: '$total'}}},
+      ]).toArray()
+      console.log("sales amount"+salesAmount[0].total);
+      return salesAmount
+  
+    },
+
+    salesPerMonth:async(startDate,endDate)=>{
+      const salesPerMonth = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $match:{ 
+            status:'delivered' 
+          }
+        },
+        {
+          $match :{
+            today:{
+              $gte:startDate,
+              $lt:endDate
+            }
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $month:'$date'
+            },
+            sale: {
+              $sum: '$total'
+            }
+          }
+  
+        }
+      ]).toArray()
+      console.log(salesPerMonth[0].sale);
+      return salesPerMonth
+  
+    },
+
+    getpayStatusordercount:async()=>{
+      const orderpayStatusDetails = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+        {
+          $group: {
+            _id:'$paymentmethod',
+            count: {
+              $sum: 1
+            }
+          }
+        },
+      ]).toArray()
+      console.log(orderpayStatusDetails);
+      
+      return orderpayStatusDetails
+  
+  
+    }
     
 
 }

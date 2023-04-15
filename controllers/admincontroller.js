@@ -19,17 +19,10 @@ module.exports={
         let todaydate=new Date()
         todaydate = new Date(todaydate).toISOString().slice(0, 10);
         const todaysale=await orderHelpers.currentdateorder(todaydate)
-        console.log("hiiiii");
-        console.log(todaysale);
         let totalamount=0
         for(let i=0;i<todaysale.length;i++){
-             todaysale[i].total=todaysale[i].total.replace(/,/g,"")
-             todaysale[i].total=todaysale[i].total.replace('₹','')
-             todaysale[i].total=parseInt(todaysale[i].total)
              totalamount=totalamount+ todaysale[i].total
-            //  deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
         }
-        let daytotal=totalamount
             totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             //------------------------today sale end---------------
 
@@ -37,43 +30,52 @@ module.exports={
             let today = new Date();
             today.setDate(today.getDate() - 7);
             let weekdate = today.toISOString().slice(0, 10);
-            console.log(weekdate);
-            console.log(todaydate);
             const weeksale=await orderHelpers.weeksalesreport(todaydate,weekdate)
             let weektotalamount=0
         for(let i=0;i<weeksale.length;i++){
-            weeksale[i].total=weeksale[i].total.replace(/,/g,"")
-            weeksale[i].total=weeksale[i].total.replace('₹','')
-            weeksale[i].total=parseInt(weeksale[i].total)
             weektotalamount=weektotalamount+ weeksale[i].total
         }
-        console.log("jjjjjjjjjjjjjjj");
-        console.log(weeksale);
-        let weektotal=weektotalamount
             weektotalamount=weektotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             //--------------------------------------------
-            // let date=new Date()
-            // let year = date.getUTCFullYear();
-            // console.log("year"+year);
-            let currentdate = new Date();
-            currentdate.setDate(currentdate.getDate() - 30);
-            let monthdate = currentdate.toISOString().slice(0, 10);
-            console.log(weekdate);
-            console.log(todaydate);
-            const monthsale=await orderHelpers.weeksalesreport(todaydate,monthdate)
-            let monthtotalamount=0
-        for(let i=0;i<monthsale.length;i++){
-            monthsale[i].total=monthsale[i].total.replace(/,/g,"")
-            monthsale[i].total=monthsale[i].total.replace('₹','')
-            monthsale[i].total=parseInt(monthsale[i].total)
-            monthtotalamount=monthtotalamount+monthsale[i].total
-        }
-        let monthotal=monthtotalamount
-        monthtotalamount=monthtotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-          totalsale=daytotal+weektotal+monthotal
-           totalsale=totalsale.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+
+           //----------month report-------------
+           let startMonthDate = new Date(new Date().getFullYear() ,new Date().getMonth())
+           startMonthDate.setUTCHours(startMonthDate.getUTCHours() + 5, startMonthDate.getUTCMinutes() + 30); // Add 5 hours and 30 minutes for IST timezone
+           startMonthDate = startMonthDate.toISOString().slice(0, 10);
+    
+           let endMonthDate = new Date(new Date().getFullYear(),new Date().getMonth() + 1)
+           endMonthDate.setUTCHours(endMonthDate.getUTCHours() + 5, endMonthDate.getUTCMinutes() + 30); // Add 5 hours and 30 minutes for IST timezone
+           endMonthDate = endMonthDate.toISOString().slice(0, 10);
+    
+           console.log(startMonthDate);
+           console.log(endMonthDate);
+           let monthlyAmount= await orderHelpers.filterSales(startMonthDate,endMonthDate)
+           if(monthlyAmount){
+            monthlyAmount=monthlyAmount[0].total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
+           }else{
+            monthlyAmount="₹000"
+           }
            
-            res.render('admin/dashboard',{layout:"adminlayout",totalamount,weektotalamount,monthtotalamount,totalsale})
+    
+    
+        //    const salesPerMonth = await orderService.salesPerMonth(startYearDate,endYearDate)
+        //    console.log(salesPerMonth);
+    
+        //    const orderStatusDetails = await orderService.getOrderStatusAndCount()
+        //    console.log(orderStatusDetails);
+        //    res.json({
+        //     salesPerMonth,
+        //     orderStatusDetails
+        //    })
+    
+    
+        
+           //----------total sale-- 
+         let totalsale=await orderHelpers.totalSale()
+        totalsale=totalsale.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+         //----------total sale--
+           
+            res.render('admin/dashboard',{layout:"adminlayout",totalamount,weektotalamount,monthlyAmount,totalsale})
         }else{
             res.redirect('/admin/adminlogin')
         }
@@ -526,9 +528,9 @@ module.exports={
              let deliveredproduct=await orderHelpers.delivereditems()
              let totalamount=0
         for(let i=0;i<deliveredproduct.length;i++){
-             deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
-             deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
-             deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
+            //  deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
+            //  deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
+            //  deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
              totalamount=totalamount+ deliveredproduct[i].total
              deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
         }
@@ -552,9 +554,9 @@ module.exports={
             const deliveredproduct=await orderHelpers.filterproduct(startDate,endDate)
             let totalamount=0
         for(let i=0;i<deliveredproduct.length;i++){
-           deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
-            deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
-            deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
+        //    deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
+        //     deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
+        //     deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
             totalamount=totalamount+ deliveredproduct[i].total
             deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
         }
@@ -585,6 +587,41 @@ module.exports={
         }
        
     },
+
+
+    dashboarddata:async(req,res)=>{
+            //sales permonth
+            const date = new Date().getFullYear()
+            let startYearDate = new Date(date, 0, 1);  // January is 0 and December is 11.
+            startYearDate.setUTCHours(startYearDate.getUTCHours() + 5, startYearDate.getUTCMinutes() + 30); // Add 5 hours and 30 minutes for IST timezone
+            startYearDate = startYearDate.toISOString().slice(0, 10);
+            
+            let  endYearDate = new Date(date+1,0,1)
+            endYearDate.setUTCHours(endYearDate.getUTCHours() + 5,endYearDate.getUTCMinutes() + 30 )
+            endYearDate= endYearDate.toISOString().slice(0,10)
+     
+            const salesPerMonth = await orderHelpers.salesPerMonth(startYearDate,endYearDate)
+            console.log("salespermonth"+salesPerMonth);
+     
+            const paymentStatuscount = await orderHelpers.getpayStatusordercount()
+            console.log(paymentStatuscount);
+          
+
+            
+    //         console.log(orderStatusDetails);
+    //     res.json({
+    //         salesPerMonth,
+    //         orderStatusDetails
+    //    })
+       
+
+            res.json({
+             salesPerMonth,
+             paymentStatuscount
+        })
+       
+
+    }
 
 
 

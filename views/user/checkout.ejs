@@ -238,7 +238,7 @@
               </button>
             </div>
             <div class="modal-body">
-                <form  action="/add-Address" method="post">
+                <form  action="/add-Address" method="post" id="formValidate">
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="first Name">First Name</label>
@@ -306,12 +306,13 @@
 
     placeorder=async()=>{
         let coupencode=document.getElementById("coupencode").value
+        let offer=document.getElementById("offer").innerText
         let total=document.getElementById("total").innerText
         if(products && addressid && paymentMethod&& total){
         var res= await axios({
             method:"post",
             url:"/place-order",
-            data:{products,addressid,paymentMethod,total,coupencode}
+            data:{products,addressid,paymentMethod,total,coupencode,offer}
         })
         
     }else{
@@ -337,9 +338,6 @@
        
        }else{
         razorpayment(res.data.onlineresult,coupencode)
-        console.log("nnnnnnnnnnnnnnnnnn");
-        console.log(coupencode);
-        console.log(res);
        }
 
     }
@@ -547,3 +545,12 @@ let coupenId=document.getElementById("copenbtn").addEventListener("click",functi
     
 
 </script>
+
+
+<script type="text/javascript" src="/javascripts/addprofile.js"></script>
+<style>
+    label.error {
+          color: rgb(210, 67, 67);
+          font-size: 12px;
+        }
+  </style>

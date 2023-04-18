@@ -43,6 +43,14 @@
                             <span id="submit-error" class="validation-label" style="color: red;"></span>
                             <!-- <a href="#" type="submit" class="btn btn-primary" style="margin-left: 12em; margin-top: 1em;">signup</a> -->
                         </form>
+                        <% if(signupErr){%>
+                            <p id="login-error" class="error text-danger"><%=signupErr%></p>
+                        <% }%>
+                        <script>
+                           setTimeout(() => {
+                            document.querySelector('#login-error').style.display='none'
+                           },3000);
+                        </script>
                         </div>
                     
                    

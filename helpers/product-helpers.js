@@ -170,6 +170,59 @@ module.exports={
     return totalproductcount
     },
 
+    findsearchproducts:async(search)=>{
+        const searchedproduct=await db.get().collection(collection.PRODUCT_COLLECTION).aggregate([
+        {
+            $match:{      
+                isdeleted:false
+            }
+         },
+         {
+             $lookup:{
+                 from: "category",
+                 localField: "categoryname",
+                 foreignField:"_id",
+                 as:"categorydetails"
+             }
+         },
+         {
+             $lookup:{
+                 from: "Brand",
+                 localField: "brandname",
+                 foreignField:"_id",
+                 as: "branddetails"
+             }
+         },
+         {
+            $unwind: {
+              path: '$branddetails',
+             
+            }
+        },
+        {
+            $unwind: {
+              path: '$categorydetails',
+            }
+
+        },
+        {
+            $match: {
+              $or:[
+                {productname:{$regex:search,$options:'i'}},
+                {'branddetails.brandname':{$regex:search,$options:'i'}},
+                {'categorydetails.categoryname':{$regex:search,$options:'i'}},
+              ]
+            }
+
+        }
+        ]).toArray()
+        console.log(searchedproduct);
+        return searchedproduct
+
+         
+
+    }
+
 
 
 

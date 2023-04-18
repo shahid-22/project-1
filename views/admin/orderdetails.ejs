@@ -69,6 +69,7 @@
                                           <th scope="col">name</th>
                                           <th scope="col">quantity</th>
                                           <th scope="col">price</th>
+                                          <th scope="col">COP_offer</th>
                                           <th scope="col">image</th>
                                         </tr>
                                       </thead>
@@ -79,6 +80,7 @@
                                           <td><%=orders[i].productdetails.productname%></td>
                                           <td><%=orders[i].products.quantity%></td>
                                           <td><%=orders[i].productdetails.price%></td>
+                                          <td><%=orders[i].offer%></td>
                                           <td><img src="<%=orders[i].productdetails.imagesurl[0]%>" style="height: 50px;width: 50px;"></td>
                                         </tr>
                                         <%}%>

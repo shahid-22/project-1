@@ -55,7 +55,6 @@
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
-                            <span>( 138 reviews )</span>
                         </div>
                         <div class="product__details__price"><%= product[0].price%></div>
                         <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
@@ -98,12 +97,12 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( 2 )</a>
-                            </li>
+                            </li> -->
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
@@ -119,7 +118,7 @@
                                     nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
                                 quis, sem.</p>
                             </div>
-                            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                            <!-- <div class="tab-pane" id="tabs-2" role="tabpanel">
                                 <h6>Specification</h6>
                                 <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
                                     quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
@@ -144,7 +143,7 @@
                                     dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
                                     nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
                                 quis, sem.</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -358,15 +357,11 @@
     document.querySelectorAll('.addTocart').forEach(function(button){
      button.addEventListener('click',function(event){
          event.preventDefault()
-         //to prevent default action
-         console.log("meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-         console.log(this.dataset.productid);
          addToCart(this.dataset.productid)
  
      })
  
      const addToCart = async(productId)=>{
-        console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
          try{
              console.log(productId);
              const res = await axios({

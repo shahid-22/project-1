@@ -62,7 +62,6 @@
  
      const addToCart = async(productId)=>{
          try{
-            //  console.log(productId);
              const res = await axios({
                  method:'get',
                  url:`/addto-cart/${productId}`

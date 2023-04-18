@@ -14,16 +14,22 @@ const { ObjectId } = require("mongodb-legacy");
 
 module.exports={
     dashboardrender:async(req,res,next)=>{
-        if(req.session.adminloggedIn){
-        //---------today sale------------
-        let todaydate=new Date()
-        todaydate = new Date(todaydate).toISOString().slice(0, 10);
-        const todaysale=await orderHelpers.currentdateorder(todaydate)
-        let totalamount=0
-        for(let i=0;i<todaysale.length;i++){
-             totalamount=totalamount+ todaysale[i].total
-        }
+        try{
+            const dashboardclass="active"
+            if(req.session.adminloggedIn){
+            //---------today sale------------
+            let todaydate=new Date()
+            todaydate = new Date(todaydate).toISOString().slice(0, 10);
+            const todaysale=await orderHelpers.currentdateorder(todaydate)
+            let totalamount=0
+            if(todaysale){
+            for(let i=0;i<todaysale.length;i++){
+                totalamount=totalamount+ todaysale[i].total
+            }
             totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+        }else{
+            totalamount="₹0.00"
+        }
             //------------------------today sale end---------------
 
             //--------week report-----------------------
@@ -32,10 +38,14 @@ module.exports={
             let weekdate = today.toISOString().slice(0, 10);
             const weeksale=await orderHelpers.weeksalesreport(todaydate,weekdate)
             let weektotalamount=0
-        for(let i=0;i<weeksale.length;i++){
-            weektotalamount=weektotalamount+ weeksale[i].total
-        }
+            if(weeksale){
+            for(let i=0;i<weeksale.length;i++){
+                weektotalamount=weektotalamount+ weeksale[i].total
+            }
             weektotalamount=weektotalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+        }else{
+            weektotalamount="₹0.00"
+        }
             //--------------------------------------------
 
            //----------month report-------------
@@ -47,45 +57,40 @@ module.exports={
            endMonthDate.setUTCHours(endMonthDate.getUTCHours() + 5, endMonthDate.getUTCMinutes() + 30); // Add 5 hours and 30 minutes for IST timezone
            endMonthDate = endMonthDate.toISOString().slice(0, 10);
     
-           console.log(startMonthDate);
-           console.log(endMonthDate);
            let monthlyAmount= await orderHelpers.filterSales(startMonthDate,endMonthDate)
-           if(monthlyAmount){
+           if(monthlyAmount[0]){
             monthlyAmount=monthlyAmount[0].total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
            }else{
-            monthlyAmount="₹000"
+            monthlyAmount="₹0.00"
            }
-           
-    
-    
-        //    const salesPerMonth = await orderService.salesPerMonth(startYearDate,endYearDate)
-        //    console.log(salesPerMonth);
-    
-        //    const orderStatusDetails = await orderService.getOrderStatusAndCount()
-        //    console.log(orderStatusDetails);
-        //    res.json({
-        //     salesPerMonth,
-        //     orderStatusDetails
-        //    })
-    
-    
         
            //----------total sale-- 
-         let totalsale=await orderHelpers.totalSale()
-        totalsale=totalsale.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+           let totalsale=await orderHelpers.totalSale()
+           if(totalsale[0]){
+               totalsale=totalsale[0].grandtotal.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+           }else{
+            totalsale="₹0.00"
+           }
          //----------total sale--
-           
-            res.render('admin/dashboard',{layout:"adminlayout",totalamount,weektotalamount,monthlyAmount,totalsale})
+            res.render('admin/dashboard',{layout:"adminlayout",totalamount,weektotalamount,monthlyAmount,totalsale,dashboardclass})
         }else{
             res.redirect('/admin/adminlogin')
         }
+    }catch(err){
+        console.log(err);
+    }
     },
 
 
     renderuserview:(req,res)=>{
+        try{
+            const userclass="active"
             adminHelpers.getuserdata().then((users)=>{
-            res.render('admin/user-view',{layout:"adminlayout",users})
-        }) 
+            res.render('admin/user-view',{layout:"adminlayout",users,userclass})
+            }) 
+        }catch(err){
+            console.log(err);
+        }    
         
     },
 
@@ -106,48 +111,60 @@ module.exports={
 
 
     renderadminlogin:(req,res)=>{
-        if(req.session.adminloggedIn){
-            res.redirect('/admin')
-        }else{ 
-            res.render('admin/adminlogin',{layout:"adminlayout",adminlogin:true,adminlogErr:req.session.admlogErr})
-            req.session.admlogErr=false;
+        try{
+            if(req.session.adminloggedIn){
+                res.redirect('/admin')
+            }else{ 
+                res.render('admin/adminlogin',{layout:"adminlayout",adminlogin:true,adminlogErr:req.session.admlogErr})
+                req.session.admlogErr=false;
+            }
+        }catch(err){
+            console.log(err);
         }
     },
 
 
     postadminlogin:async(req,res)=>{
-        let admin=await db.get().collection(collection.ADMIN_COLLECTION).findOne({email:req.body.email});
-        if(admin){
-            if(admin.password==req.body.password&&admin.email==req.body.email){
-                req.session.admin = req.body.email;
-                req.session.adminloggedIn = true;
-                res.redirect('/admin')
+        try{
+            let admin=await db.get().collection(collection.ADMIN_COLLECTION).findOne({email:req.body.email});
+            if(admin){
+                if(admin.password==req.body.password&&admin.email==req.body.email){
+                    req.session.admin = req.body.email;
+                    req.session.adminloggedIn = true;
+                    res.redirect('/admin')
+                }else{
+                    req.session.admlogErr = "password not match....";
+                    console.log(req.session.admlogErr);
+                    res.redirect('/admin/adminlogin')
+                }
             }else{
-                req.session.admlogErr = "password not match....";
-                console.log(req.session.admlogErr);
+                req.session.admlogErr = "Invalid username or password";
                 res.redirect('/admin/adminlogin')
             }
-        }else{
-            req.session.admlogErr = "Invalid username or password";
-            res.redirect('/admin/adminlogin')
+        }catch(err){
+            console.log(err);
         }
     },
 
 
     adminlogout:(req,res)=>{
-        req.session.adminloggedIn =false;
-        res.redirect('/admin/adminlogin')
+        try{
+           req.session.adminloggedIn =false;
+           res.redirect('/admin/adminlogin')
+        }catch(err){
+            console.log(err);
+        }
     },
 
 
     renderproductview:(req,res)=>{
         try{
+            const productclass="active"
             productHelpers.findproducts().then((products)=>{
-                // console.log("products"+products);
-            res.render('admin/product-view',{layout:"adminlayout",products})
+            res.render('admin/product-view',{layout:"adminlayout",products,productclass})
             })
         }catch(err){
-        console.log(err);
+          console.log(err);
         }
     },
 
@@ -166,11 +183,8 @@ module.exports={
 
     postaddproduct:(req,res)=>{
         try{
-            // console.log(req.body);
-            // console.log(req.files);
             let images=req.files
             productHelpers.productdata(req.body,images).then((response)=>{
-            console.log(response);
             })
             res.redirect("/admin/add-product")  
         }catch(err){
@@ -181,9 +195,10 @@ module.exports={
 
     rendercategory:async(req,res)=>{
         try{
+            const categoryclass="active"
             let alreadyexistError=await req.query.message ?? ""
             categoryHelpers.findcategory().then((category)=>{
-            res.render('admin/category-list',{layout:"adminlayout",category,alreadyexistError})  
+            res.render('admin/category-list',{layout:"adminlayout",category,alreadyexistError,categoryclass})  
             })
         }catch(err){
             console.log(err);
@@ -192,13 +207,17 @@ module.exports={
 
 
     renderaddcategory:async(req,res)=>{
-        let alreadyexistError=await req.query.message ?? ""
-        res.render('admin/add-category',{layout:"adminlayout",alreadyexistError})
+        try{
+           let alreadyexistError=await req.query.message ?? ""
+           res.render('admin/add-category',{layout:"adminlayout",alreadyexistError})
+        }catch(err){
+            console.log(err);
+        }
     },
 
 
     postaddcategory:async(req,res)=>{
-       try{
+        try{
              let{categoryname}=req.body
              const catogoryalreadyexist=await categoryHelpers.categoryalreadyexist(categoryname)
            if(catogoryalreadyexist){
@@ -211,35 +230,40 @@ module.exports={
               console.log(response);
            })
            res.redirect('/admin/addcategory')
-        }
-           }
+            }
+               }
         }catch(err){
-        console.log(err);
+            console.log(err);
         }
     },
 
 
     renderbrandlist:async(req,res)=>{
         try{
+            const brandclass="active"
            let alreadyexistError=await req.query.message ?? ""
            let brands= await BrandHelpers.findbranddate()
-           res.render('admin/brand-list',{layout:"adminlayout",brands,alreadyexistError})
+           res.render('admin/brand-list',{layout:"adminlayout",brands,alreadyexistError,brandclass})
         }catch(err){
             console.log(err);
         }
     },
     postbrandlist:async (req,res)=>{
+        try{
             let {brandname}=req.body
             const brandalreadtexist=await BrandHelpers.brandalreadyexist(brandname)
-        if(brandalreadtexist){
-            res.redirect('/admin/Brand?message=already exist')
-        }else{
-            if(brandname==brandname.toLowerCase()){
-            res.redirect('/admin/Brand?message=write capital letters')
+            if(brandalreadtexist){
+                res.redirect('/admin/Brand?message=already exist')
             }else{
-           await BrandHelpers.addbranddata(req.body)
-           res.redirect('/admin/Brand')
+                if(brandname==brandname.toLowerCase()){
+                res.redirect('/admin/Brand?message=write capital letters')
+                }else{
+               await BrandHelpers.addbranddata(req.body)
+               res.redirect('/admin/Brand')
+                }
             }
+        }catch(err){
+            console.log(err);
         }
     },
     unlistcategory:async(req,res)=>{
@@ -358,11 +382,12 @@ module.exports={
 
     renderorderpage:async(req,res)=>{
         try{
+            const orderclass="active"
             const orders=await orderHelpers.findAll()
             for(let i=0;i<orders.length;i++){
             orders[i].date=orders[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
             }
-           res.render("admin/orders",{layout:"adminlayout",orders})
+           res.render("admin/orders",{layout:"adminlayout",orders,orderclass})
         }catch(err){
            console.log(err);
         }
@@ -413,8 +438,9 @@ module.exports={
             for(let i=0;i<orders.length;i++){
             orders[i].productdetails.price=orders[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             }
-            console.log("order"+orders[0].total);
+            console.log("order"+orders[0].offer);
             orders[0].total=orders[0].total.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            orders[0].offer=orders[0].offer.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             orders[0].date=orders[0].date.toLocaleString({timeZone: 'Asia/Kolkata'});
             res.render("admin/orderdetails",{layout:"adminlayout",orders})
         }catch(err){
@@ -424,8 +450,9 @@ module.exports={
 
     renderbannerpage:async(req,res)=>{
         try{
+            const bannerclass="active"
             let banners=await bannerHelpers.getall()
-           res.render("admin/banner",{layout:"adminlayout",banners})
+           res.render("admin/banner",{layout:"adminlayout",banners,bannerclass})
         }catch(err){
             console.log(err);
         }
@@ -484,6 +511,7 @@ module.exports={
 
     rendercoupenpage:async(req,res)=>{
         try{
+            const coupenclass="active"
             let alreadyexistError=await req.query.message ?? ""
             await coupenHelpers.checkCouponExpired()
             const coupendetails=await coupenHelpers.FindAll()
@@ -491,7 +519,7 @@ module.exports={
                 coupendetails[i].createdDate=coupendetails[i].createdDate.toLocaleString({timeZone: 'Asia/Kolkata'});
                 coupendetails[i].expiryDate=coupendetails[i].expiryDate.toLocaleString({timeZone: 'Asia/Kolkata'});
             }
-            res.render("admin/coupen",{layout:"adminlayout",coupendetails,alreadyexistError})
+            res.render("admin/coupen",{layout:"adminlayout",coupendetails,alreadyexistError,coupenclass})
         }catch(err){
             console.log(err);
         }
@@ -525,12 +553,10 @@ module.exports={
 
     rendersalerreport:async(req,res)=>{
         try{
+             const salesreportclass="active" 
              let deliveredproduct=await orderHelpers.delivereditems()
              let totalamount=0
         for(let i=0;i<deliveredproduct.length;i++){
-            //  deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
-            //  deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
-            //  deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
              totalamount=totalamount+ deliveredproduct[i].total
              deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
         }
@@ -540,7 +566,7 @@ module.exports={
         }
 
             totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-            res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount})
+            res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount,salesreportclass})
         }catch(err){
             console.log(err);
         }
@@ -554,9 +580,6 @@ module.exports={
             const deliveredproduct=await orderHelpers.filterproduct(startDate,endDate)
             let totalamount=0
         for(let i=0;i<deliveredproduct.length;i++){
-        //    deliveredproduct[i].total=deliveredproduct[i].total.replace(/,/g,"")
-        //     deliveredproduct[i].total=deliveredproduct[i].total.replace('₹','')
-        //     deliveredproduct[i].total=parseInt(deliveredproduct[i].total)
             totalamount=totalamount+ deliveredproduct[i].total
             deliveredproduct[i].date=deliveredproduct[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
         }
@@ -573,23 +596,23 @@ module.exports={
     },
 
     addamoutwallet:async(req,res)=>{
-        let{orderId}=req.body
-        console.log(orderId);
-        console.log("nnnnnnnnbbbbbbbbbbbbb");
-        orderId=new ObjectId(orderId)
-        console.log(orderId);
-        const order=await orderHelpers.getorder(orderId)
-        console.log(order);
-        if(order.paymentstatus=="paid"){
-           await walletHelpers.insertamount(order.userId,order.total)
-           await orderHelpers.changepaystatus(orderId)
-
+        try{
+           let{orderId}=req.body
+           orderId=new ObjectId(orderId)
+           const order=await orderHelpers.getorder(orderId)
+           if(order.paymentstatus=="paid"){
+              await walletHelpers.insertamount(order.userId,order.total)
+              await orderHelpers.changepaystatus(orderId)
+           }
+        }catch(err){
+            console.log(err);
         }
        
     },
 
 
     dashboarddata:async(req,res)=>{
+        try{
             //sales permonth
             const date = new Date().getFullYear()
             let startYearDate = new Date(date, 0, 1);  // January is 0 and December is 11.
@@ -600,26 +623,24 @@ module.exports={
             endYearDate.setUTCHours(endYearDate.getUTCHours() + 5,endYearDate.getUTCMinutes() + 30 )
             endYearDate= endYearDate.toISOString().slice(0,10)
      
-            const salesPerMonth = await orderHelpers.salesPerMonth(startYearDate,endYearDate)
-            console.log("salespermonth"+salesPerMonth);
+            let salesPerMonth = await orderHelpers.salesPerMonth(startYearDate,endYearDate)
+            if(!salesPerMonth){
+              salesPerMonth=0
+            }
      
-            const paymentStatuscount = await orderHelpers.getpayStatusordercount()
+            let paymentStatuscount = await orderHelpers.getpayStatusordercount()
             console.log(paymentStatuscount);
-          
-
-            
-    //         console.log(orderStatusDetails);
-    //     res.json({
-    //         salesPerMonth,
-    //         orderStatusDetails
-    //    })
-       
+            if(!paymentStatuscount){
+                paymentStatuscount=0
+            }
 
             res.json({
              salesPerMonth,
              paymentStatuscount
-        })
-       
+            })
+        }catch(err){
+            console.log(err);
+        }    
 
     }
 

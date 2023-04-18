@@ -17,6 +17,7 @@ const { response } = require("express");
 module.exports={
   userviewrender:async(req,res,next)=>{
     try{
+        const homeclass="active" 
         let user=req.session.user
         let userName = req.session.userName;
         //cart count---------------------------------
@@ -27,7 +28,7 @@ module.exports={
         //-------------cartcount-----------------------------------
         let banners=await bannerHelpers.findOne()
         // let latestproduct=await productHelpers.latestproduct()
-        res.render('user/userview',{user,userName,cartcount,banners});
+        res.render('user/userview',{user,userName,cartcount,banners,homeclass});
     }catch(err){
       console.log(err);
     }
@@ -40,7 +41,8 @@ module.exports={
         if(req.session.loggedIn==true){
            res.redirect('/')
         }else{
-           res.render('user/usersignup');
+           res.render('user/usersignup',{signupErr:req.session.signupErr});
+           req.session.signupErr=false
         }
       }catch(err){
         console.log(err);
@@ -65,8 +67,16 @@ module.exports={
 
 
 
-  signuppost:(req,res)=>{
+  signuppost:async(req,res)=>{
     try{
+      let email=req.body.email
+      let phone=req.body.Phonenumber
+      let emailexist=await userHelpers.emailexist(email)
+      let phoneexist=await userHelpers.phonenumberexist(phone)
+      if(emailexist||phoneexist){
+        req.session.signupErr='invalid email or phonenumber'
+        res.redirect("/signup")
+      }else{
       userHelpers.dosignup(req.body).then((response)=>{
       req.session.userId=response._id
       req.session.loggedIn=true;
@@ -74,6 +84,7 @@ module.exports={
       req.session.userName=response.name;
       res.redirect('/');
       })
+    }
     }catch(err){
       console.log(err);
     }
@@ -102,32 +113,50 @@ module.exports={
 
 
   logout:(req,res)=>{
-    req.session.destroy();
-    res.redirect('/');
+    try{
+      req.session.destroy();
+      res.redirect('/');
+    }catch(err){
+      console.log(err);
+    }
   },
 
 
   rendershopepage:async(req,res)=>{
+    try{
+      const shopeclass="active"
       let  userName=req.session. userName
       const brandId=req.query.brandId
       const categoryId=req.query.categoryId
       const minamout=req.query.min
       const maxamount=req.query.max
+      const search=req.query.search
 
       let page=req.query.page||1
       let limit=6
       let skip=(page-1)*limit
       let currentpage=parseInt(page)
       let totalproduct= await productHelpers.totalproduct()
-      console.log("totalproductcount"+totalproduct);
       let totalpage=Math.ceil(totalproduct/limit)
       totalpage=parseInt(totalpage)
-      console.log("totalpage"+totalpage);
-      console.log(currentpage);
 
-      
+        if(search){
+          let products=await productHelpers.findsearchproducts(search)
+          for(let i=0;i<products.length;i++){
+            products[i].price=products[i].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+          }
+          let categories=await categoryHelpers.listedcategory()
+          let brands= await BrandHelpers.findlistedbrand()
+          //cart count---------------------------------
+          let cartcount=null
+          if(userName){
+          cartcount=await cartHelpers.getcartcount(req.session.userId)
+          }
+          //-------------cartcount-----------------------------------
+          res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage,shopeclass})
+        }
 
-       if(minamout&&maxamount){
+       else if(minamout&&maxamount){
           let products=await productHelpers.findfilterproduct(minamout,maxamount)
           for(let i=0;i<products.length;i++){
           products[i].price=products[i].price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
@@ -140,7 +169,7 @@ module.exports={
         cartcount=await cartHelpers.getcartcount(req.session.userId)
         }
         //-------------cartcount-----------------------------------
-        res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
+        res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage,shopeclass})
        }
       
       else if(categoryId){
@@ -157,7 +186,7 @@ module.exports={
               }
               //-------------cartcount-----------------------------------
               // console.log(products);
-              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
+              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage,shopeclass})
       }else if(brandId){
               let products=await productHelpers.findbrandproduct(brandId)
               for(let i=0;i<products.length;i++){
@@ -172,7 +201,7 @@ module.exports={
               }
               //-------------cartcount-----------------------------------
               
-              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage})
+              res.render("user/shop",{products,categories,brands, userName,cartcount,totalpage,currentpage,shopeclass})
 
       }else{
        
@@ -188,8 +217,11 @@ module.exports={
               cartcount=await cartHelpers.getcartcount(req.session.userId)
               }
               //-------------cartcount-----------------------------------
-              res.render("user/shop",{products,categories,brands,userName,cartcount,totalpage,currentpage})
+              res.render("user/shop",{products,categories,brands,userName,cartcount,totalpage,currentpage,shopeclass})
        }
+      }catch(err){
+        console.log(err);
+      }
   },
 
 
@@ -237,125 +269,181 @@ rendercartpage:async(req,res)=>{
     }
 },
 
+
 addtocart:async(req,res)=>{
-     const productId=req.params.id
-     const userId= new ObjectId(req.session.userId)
-     const iscartexist=await cartHelpers.findcart(userId)
-  if(iscartexist){
-  let updatecart=  await cartHelpers.updatecart(userId,productId)
-     if(updatecart=="success"){
-      res.json({
+  try{
+       const productId=req.params.id
+       const userId= new ObjectId(req.session.userId)
+       const iscartexist=await cartHelpers.findcart(userId)
+      if(iscartexist){
+      let updatecart=  await cartHelpers.updatecart(userId,productId)
+       if(updatecart=="success"){
+        res.json({
+          status:"success",
+          message:"added to cart"
+        })
+        }else{
+        res.json({
+          status:"failed",
+          message:"out of stock"
+        })
+        }
+      }else{
+       await cartHelpers.addtocart(userId,productId)
+       res.json({
         status:"success",
         message:"added to cart"
       })
-     }else{
-      res.json({
-        status:"failed",
-        message:"out of stock"
-      })
-     }
-  }else{
-     await cartHelpers.addtocart(userId,productId)
-     res.json({
-      status:"success",
-      message:"added to cart"
-    })
-  }
-  
+      }  
+    }catch(err){
+      console.log(err);
+    }
 },
+
 
 renderotppage:(req,res)=>{
-     res.render("user/otpverification")
-},
-
-otppost:async(req,res)=>{
-     
-     let otpdetails=req.body.number
-     const isalreadyexist=await userHelpers.phonenumberexist(otpdetails)
-  if(isalreadyexist){
-    req.session.loggedIn=true;
-    req.session.userId=isalreadyexist._id
-    req.session.user=isalreadyexist
-    req.session.userName=isalreadyexist.name;
-     res.redirect('/')
-  }else{
-    res.redirect('/OTP-login')
+  try{
+    let errormsg=req.query.message ?? ""
+     res.render("user/otpverification",{errormsg})
+  }catch(err){
+    console.log(err);
   }
 },
-changeproductquantity:async(req,res)=>{
-    let{cartId,proId,count}=req.body
-    const changequantity=await cartHelpers.changecartproductquantity(cartId,proId,count)
-   if(changequantity. modifiedCount===1){
-    res.json({
-     status:"removed",
-     message:"item removed"
-    })
-   }else{
-    res.json({
-      status:"changed",
-      message:"product quantity changed"
-    })
+
+
+otppost:async(req,res)=>{
+   try{
+      let otpdetails=req.body.number
+      const isalreadyexist=await userHelpers.phonenumberexist(otpdetails)
+      if(isalreadyexist){
+      req.session.loggedIn=true;
+      req.session.userId=isalreadyexist._id
+      req.session.user=isalreadyexist
+      req.session.userName=isalreadyexist.name;
+      res.redirect('/')
+      }else{
+      res.redirect('/OTP-login?message=is already exist')
+      }
+   }catch(err){
+     console.log(err);
    }
+},
+
+
+changeproductquantity:async(req,res)=>{
+   try{
+      let{cartId,proId,count}=req.body
+      const changequantity=await cartHelpers.changecartproductquantity(cartId,proId,count)
+      if(changequantity. modifiedCount===1){
+      res.json({
+       status:"removed",
+       message:"item removed"
+      })
+      }else{
+      res.json({
+        status:"changed",
+        message:"product quantity changed"
+      })
+      }
+    }catch(err){
+      console.log(err);
+    }
 
 },
+
+
 removecart:async(req,res)=>{
-     const productId=req.params.id
-     const userId=req.session.userId
-     await cartHelpers.removecartproduct(userId,productId)
-     res.redirect("/cart")
-},
-rendercheckoutpage:async(req,res)=>{
-     let  userName=req.session. userName
-     const userId=new ObjectId(req.session.userId)
-     const cartproductdetails=await cartHelpers.getcart(userId)
-     console.log(cartproductdetails);
-     let totalprice=0
-  for(let i=0;i<cartproductdetails.length;i++){
-     totalprice=totalprice+cartproductdetails[i].subTotal
-     cartproductdetails[i].productdetails.price=cartproductdetails[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-     cartproductdetails[i].subTotal= cartproductdetails[i].subTotal.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+   try{
+      const productId=req.params.id
+      const userId=req.session.userId
+      await cartHelpers.removecartproduct(userId,productId)
+      res.redirect("/cart")
+    }catch(err){
+      console.log(err);
     }
-     totalprice=totalprice.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-     let user=await userHelpers.findaddress(req.session.userId)
-     //cart count---------------------------------
-    let cartcount=null
-    if(userName){
-    cartcount=await cartHelpers.getcartcount(req.session.userId)
-   }
-   //-------------cartcount-----------------------------------
-     res.render("user/checkout",{userName,cartproductdetails,totalprice,user,cartcount})
 },
+
+
+rendercheckoutpage:async(req,res)=>{
+   try{
+      let  userName=req.session. userName
+      const userId=new ObjectId(req.session.userId)
+      const cartproductdetails=await cartHelpers.getcart(userId)
+      let totalprice=0
+      for(let i=0;i<cartproductdetails.length;i++){
+      totalprice=totalprice+cartproductdetails[i].subTotal
+      cartproductdetails[i].productdetails.price=cartproductdetails[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+      cartproductdetails[i].subTotal= cartproductdetails[i].subTotal.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+      }
+      totalprice=totalprice.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+      let user=await userHelpers.findaddress(req.session.userId)
+      //cart count---------------------------------
+      let cartcount=null
+      if(userName){
+      cartcount=await cartHelpers.getcartcount(req.session.userId)
+      }
+      //-------------cartcount-----------------------------------
+      res.render("user/checkout",{userName,cartproductdetails,totalprice,user,cartcount})
+    }catch(err){
+      console.log(err);
+    }
+},
+
+
 addaddress:async(req,res)=>{
+  try{
      const address=req.body
      const userId=req.session.userId
      await userHelpers.addaddrtess(address,userId)
      res.redirect("/checkout")
+  }catch(err){
+    console.log(err);
+  }
 },
+
+
 addnewaddress:async(req,res)=>{
-  const address=req.body
-  const userId=req.session.userId
-  await userHelpers.addaddrtess(address,userId)
-  res.redirect("/profile")
+  try{
+    const address=req.body
+    const userId=req.session.userId
+    await userHelpers.addaddrtess(address,userId)
+    res.redirect("/profile")
+  }catch(err){
+    console.log(err);
+  }
 },
+
+
 editaddress:async(req,res)=>{
-  const addressId=req.params.id
-  const userId=req.session.userId
-  await userHelpers.editaddress(addressId,userId,req.body)
-  res.redirect("/profile")
+  try{
+    const addressId=req.params.id
+    const userId=req.session.userId
+    await userHelpers.editaddress(addressId,userId,req.body)
+    res.redirect("/profile")
+  }catch(err){
+    console.log(err);
+  }
 
 },
+
+
 deleteaddress:async(req,res)=>{
-  const addressId=req.params.id
-  const userId=req.session.userId
-  await userHelpers.deleteaddress(addressId,userId)
-  res.redirect("/profile")
+  try{
+    const addressId=req.params.id
+    const userId=req.session.userId
+    await userHelpers.deleteaddress(addressId,userId)
+    res.redirect("/profile")
+  }catch(err){
+    console.log(err);
+  }
 },
 
 orderdetais:async(req,res)=>{
-    let{products,addressid,paymentMethod,total,coupencode}=req.body
-    console.log(paymentMethod);
-    console.log("zzzzzzzzzzzzzzzzzzzzzzzzzz");
-    console.log(coupencode);
+  try{
+    let{products,addressid,paymentMethod,total,coupencode,offer}=req.body
+    offer=offer.replace(/,/g,"")
+    offer=offer.replace('₹','')
+    offer= parseInt(offer)
     let userId=req.session.userId
     let address=await userHelpers.findOneaddress(userId,addressid)
     userId=new ObjectId(userId)
@@ -372,19 +460,14 @@ orderdetais:async(req,res)=>{
       status="Pending"
     }
     const date = new Date()
-   let result=await orderHelpers.insertorderdata(products,address,userId,status,date,total,paymentMethod)
-   console.log("myyyyyyyyyyy");
-   console.log(result);
+    let result=await orderHelpers.insertorderdata(products,address,userId,status,date,total,paymentMethod,offer)
       const orderId=result.insertedId
       if(paymentMethod=="COD"){
       await cartHelpers.deletecart(userId)
       await coupenHelpers.adduser(coupencode,userId)
-      console.log("kkkkkk");
-      console.log(products);
 
       products.forEach(async(product)=>{
         product.quantity=product.quantity*-1
-        console.log(product.quantity);
        await productHelpers.changestock(product.productid,product.quantity)
       });
         res.json({
@@ -410,10 +493,7 @@ orderdetais:async(req,res)=>{
         total = parseInt(total)
         let walletamount=await walletHelpers.findamount(userId)
         walletamount=parseInt(walletamount.amount)
-        console.log("walletamount"+walletamount);
-        console.log("total"+total);
         if(total>walletamount){
-          console.log("no money for that");
           res.json({
             status:"failed",
             message:"order placed"
@@ -423,17 +503,12 @@ orderdetais:async(req,res)=>{
         if(coupencode){
          await coupenHelpers.adduser(coupencode,userId)
         }
-      console.log("kkkkkk");
-      console.log(products);
-
       products.forEach(async(product)=>{
         product.quantity=product.quantity*-1
-        console.log(product.quantity);
        await productHelpers.changestock(product.productid,product.quantity)
       });
       await orderHelpers.changepaymentstatus(orderId)
         // update wallet
-          
         let amount = total*-1
         await walletHelpers.updateWallet(userId,amount)
         res.json({
@@ -443,10 +518,15 @@ orderdetais:async(req,res)=>{
 
       }
       }
-      
+    }catch(err){
+      console.log(err);
+    } 
 },
+
+
  renderorderpage:async(req,res)=>{
      try{
+         const orderclass="active"
          let  userName=req.session. userName
          //cart count---------------------------------
          let cartcount=null
@@ -456,11 +536,10 @@ orderdetais:async(req,res)=>{
          //-------------cartcount-----------------------------------
          let userId=new ObjectId(req.session.userId)
          let orders= await orderHelpers.getorderdetails(userId)
-         console.log(orders);
          for(let i=0;i<orders.length;i++){
          orders[i].date=orders[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
          }
-         res.render("user/orders",{orders,userName,cartcount})
+         res.render("user/orders",{orders,userName,cartcount,orderclass})
       }catch(err){
         console.log(err);
       }
@@ -471,7 +550,6 @@ orderdetais:async(req,res)=>{
     try{
           const orderId=new ObjectId(req.params.id)
           let orderdetails=await orderHelpers.Findalldetails(orderId)
-          console.log(orderdetails);
           //-------------------------------------
           // let totalprice=0
         for(let i=0;i<orderdetails.length;i++){
@@ -479,10 +557,11 @@ orderdetais:async(req,res)=>{
             orderdetails[i].productdetails.price=orderdetails[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             orderdetails[i].subTotal= orderdetails[i].subTotal.toLocaleString('en-IN', { style: "currency", currency: "INR" })
             orderdetails[i].date=orderdetails[i].date.toLocaleString({timeZone: 'Asia/Kolkata'});
+            orderdetails[i].offer=orderdetails[i].offer.toLocaleString('en-IN', { style: "currency", currency: "INR" })
+            orderdetails[i].total=orderdetails[i].total.toLocaleString('en-IN', { style: "currency", currency: "INR" })
         }
             // totalprice=totalprice.toLocaleString('en-IN', { style: "currency", currency: "INR" })
           //-------------------------------------
-            console.log(orderdetails);
             let  userName=req.session. userName
            //cart count---------------------------------
             let cartcount=null
@@ -498,7 +577,6 @@ orderdetais:async(req,res)=>{
 
   rendersuccesspage:(req,res)=>{
    try{
-
       res.render("user/success")
      }catch(err){
         console.log(err);
@@ -507,11 +585,11 @@ orderdetais:async(req,res)=>{
 
   renderprofilepage:async(req,res)=>{
     try{
-      let  userName=req.session. userName
+        const accountclass="active"
+        let  userName=req.session. userName
         let userId=req.session.userId
         let userdetails=await userHelpers.finduser(userId)
-        console.log(userdetails);
-        res.render("user/userprofile",{userdetails,userName})
+        res.render("user/userprofile",{userdetails,userName,accountclass})
       }catch(err){
         console.log(err);
       }
@@ -522,7 +600,6 @@ orderdetais:async(req,res)=>{
       let  userName=req.session. userName
       let userId=new ObjectId(req.session.userId)
       let wishlist=await wishlistHelpers.FindAll(userId)
-      console.log(wishlist);
       for(let i=0;i<wishlist.length;i++){
       wishlist[i].productdetails.price=wishlist[i].productdetails.price.toLocaleString('en-IN', { style: "currency", currency: "INR" })
       }
@@ -537,8 +614,6 @@ orderdetais:async(req,res)=>{
     try{
       const proId= new ObjectId(req.params.id)
       const userId=new ObjectId(req.session.userId)
-      console.log(proId)
-      console.log(userId);
       const isalreadyExist=await wishlistHelpers.finduser(userId)
       if(isalreadyExist){
       let result=  await wishlistHelpers.updatewishlist(proId,userId)
@@ -566,34 +641,34 @@ orderdetais:async(req,res)=>{
 
   },
 
+
   renderRewards:async(req,res)=>{
     try{
+      const accountclass="active"
       let  userName=req.session. userName
       let userId=req.session.userId
       await coupenHelpers.checkCouponExpired()
       const rewards=await coupenHelpers.FindAll(userId)
-      res.render("user/Rewards",{rewards,userName})
+      res.render("user/Rewards",{rewards,userName,accountclass})
     }catch(err){
       console.log(err);
     }
   },
 
   applycoupen:async(req,res)=>{
-    const userId=req.session.userId
-    const{coupencode}=req.body
-    const coupen=await coupenHelpers.findOne(coupencode)
-     if(!coupen){
+    try{
+       const userId=req.session.userId
+       const{coupencode}=req.body
+       const coupen=await coupenHelpers.findOne(coupencode)
+      if(!coupen){
          res.json({
               status:"Nocoupen"
         })
-
       }else if(coupen.expiryDate<new Date()||coupen.isExpired){
           res.json({
                status:"Expired"
              })
-
       }else{
-     
             const isUsedcoupen=await coupenHelpers.checkUsedCoupon(userId,coupencode)
             if(isUsedcoupen){
                   res.json({
@@ -606,8 +681,12 @@ orderdetais:async(req,res)=>{
                  })
             }
       }
+    }catch(err){
+      console.log(err);
+    }
    
   },
+
 
   verifypayment:async(req,res)=>{
     try{
@@ -710,6 +789,7 @@ orderdetais:async(req,res)=>{
 
   renderwallet:async(req,res)=>{
     try{
+          const accountclass="active"
           let userName=req.session.userName
           let userId=req.session.userId
           userId=new ObjectId(userId)
@@ -717,7 +797,7 @@ orderdetais:async(req,res)=>{
           if(walletamount){
           walletamount=walletamount.amount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
           }
-          res.render("user/wallet",{walletamount,userName})
+          res.render("user/wallet",{walletamount,userName,accountclass})
     }catch(err){
       console.log(err);
     }

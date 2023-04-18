@@ -133,12 +133,8 @@
 <script>
   const changeQuantity=async(cartId,proId,count,price)=>{
     const stock = parseInt(document.getElementById(`stock${proId}`).textContent)
-    console.log("quantity");
     let quantity=parseInt(count)
     quantity =quantity+parseInt(document.getElementById(proId).textContent)
-    console.log(quantity);
-    console.log(stock);
-    console.log(count);
     if (quantity > stock) {
             Toastify({
                 text: "there is not enough stock for that",
@@ -161,33 +157,23 @@
             location.reload()
         }else{
             let currentquantity=document.getElementById(proId)
-            // console.log(currentquantity.innerText);
              currentquantity.innerText=parseInt(currentquantity.innerText)+parseInt(count)
-            //  console.log(currentquantity.innerText);
             price=price.replace(/,/g, "")
             price=price.replace('₹','')
-            console.log(price);
             subtotal=parseInt(price)*parseInt(currentquantity.innerText)
-            // console.log(subtotal);
             document.getElementsByClassName(proId)[0].innerText=subtotal.toLocaleString('en-IN',{style:'currency',currency:'INR'})
             const values=document.querySelectorAll(".subTotal")
-            console.log(values.length);
-            //nnnnnnnnnn
             let  total = 0
             values.forEach(subTotal=>{
             let value = subTotal.innerText
             value = value.replace(/,/g,"")
             value= value.replace('₹','')
-            // console.log(value);
             total = total+parseInt(value)
-            // console.log(total);
             })
             document.querySelectorAll('.totalamount').forEach(totalamount=>{
              totalamount.innerText=total.toLocaleString('en-IN',{style:'currency',currency:'INR'})
             }) 
 
-
-            //nnnnnnnnnn
         }
     }
 }
@@ -218,53 +204,3 @@
   <% } %>
 <!-----------------modal end -->
 
-<!-- <script>
-const applyCoupon = async (coupencode) => {
-    try{
-        const res= await axios({
-            method:"post",
-            url:"/apply_coupen",
-            data:{coupencode}
-        })
-
-        
-        console.log("hhhhhhggggggggggggg");
-        console.log(res.data.percentage);
-        console.log(res.data.status);
-        const discount=res.data.percentage
-        if(res.data.status=="success"){
-        
-        let value=document.getElementById("grandtotal").innerText
-        value= value.replace(/,/g,"")
-        value= value.replace('₹','')
-        value=parseInt(value)
-        const grandtotal=value*(discount/100)
-
-        console.log(value);
-        console.log(grandtotal);
-         document.getElementById("offeramount").innerText=grandtotal.toLocaleString('en-IN',{style:'currency',currency:'INR'})
-        document.getElementById("grandtotal").innerText=(value-grandtotal).toLocaleString('en-IN',{style:'currency',currency:'INR'})
-        }else{
-            
-        }
-     
-    }catch(err){
-        console.log(err);
-    }
-
-}
-
-var isclicked=false;
-let coupenId=document.getElementById("copenbtn").addEventListener("click",function () {
-    const coupencode=document.getElementById("coupencode").value
-      console.log(coupencode);
-      console.log(isclicked);
-      if(!isclicked){
-     applyCoupon(coupencode)
-          isclicked=true
-      }
-    
-})
-console.log(coupenId);
-
-</script> -->

@@ -1,4 +1,5 @@
-jQuery('#formValidateedit').validate({
+
+jQuery('#formValidate').validate({
     rules:{
       firstName:{
         required:true,

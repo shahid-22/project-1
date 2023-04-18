@@ -107,7 +107,7 @@
             <div class="card shadow  mt-4 " style=" background-color: #fff;">
               <div class="card-header " style=" color: black; font-size: medium;">
                 <th scope="row"><input type="radio"name="address" style="width: 20px;height: 20px; accent-color: black; cursor: pointer;"  class="address"></th>
-                <a ><i class="fa fa-trash d-flex flex-row-reverse"  data-toggle="modal" data-target="#modalConfirmDelete" aria-hidden="true" style="color: red;"></i></a>
+                <a ><i class="fa fa-trash d-flex flex-row-reverse"  data-toggle="modal" data-target="#modalConfirmDelete" aria-hidden="true" style="color: red; cursor: pointer;"></i></a>
               </div>
               <div class="card-body">
                 <tr>
@@ -244,7 +244,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <form  action="/add-new-Address" method="post">
+          <form  action="/add-new-Address" method="post" id="formValidate">
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="first Name">First Name</label>
@@ -284,7 +284,7 @@
                 </div>
                 <div class="form-group col-md-6">
                   <label for="phone">phone</label>
-                  <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+                  <input type="text" class="form-control" name="phone"  >
                 </div>
               </div>
 
@@ -314,7 +314,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <form  action="/edit-Address/<%=userdetails.address[i]._id%>" method="post">
+          <form  action="/edit-Address/<%=userdetails.address[i]._id%>" method="post" id="formValidateedit">
               <div class="form-row">
                 <div class="form-group col-md-6">
                   <label for="first Name">First Name</label>
@@ -608,3 +608,14 @@ function validateFormupdate(){
  </script>
 
 <!-----------edit profile-------------->
+
+
+
+<style>
+  label.error {
+        color: rgb(210, 67, 67);
+        font-size: 12px;
+      }
+</style>
+<script type="text/javascript" src="/javascripts/addprofile.js"></script>
+<script type="text/javascript" src="/javascripts/editprofile.js"></script>

@@ -6,9 +6,10 @@
                 <div class="row">
                     <div class="col-lg-6 mt-3">
                         <h2 class="fw-bold">ADD PRODUCTS</h2>
-                        <form action="/admin/add-product" style="margin-top: 2em;" method="post"  enctype="multipart/form-data">
+                        <form action="/admin/add-product" style="margin-top: 2em;" method="post" id="productvalidate"  enctype="multipart/form-data">
                             <div class="form-group">
-                                <input type="text"  id="productname" class="form-control" name="productname" placeholder="Product Name *" value=""  />
+                                <input type="text"  id="productname" class="form-control" name="productname" placeholder="Product Name *" value="" onkeyup="validatename()" />
+                                <span id="name-error" class="validation-label" style="color: red;"></span>
                             </div>
                             <div class="form-group">
                                 <select name="categoryname" class="form-control">
@@ -26,25 +27,26 @@
                                         <% } %>
                                 </select>
                             </div>
-                            <!-- <div class="form-group">
-                                <input type="text"  id="" class="form-control" name="Brand" placeholder="Brand *" value=""  />
-                            </div> -->
                             <div class="form-group">
                                 <!-- <input type="text"  id="" class="form-control" name="description" placeholder="description*" value=""  /> -->
-                                <textarea id="" class="form-control" name="description" placeholder="description*" value="" ></textarea>
+                                <textarea id="description" class="form-control" name="description" placeholder="description*" value="" onkeyup="validatedescription()" ></textarea>
+                                <span id="disc-Error" class="validation-label" style="color: red;"></span>
                             </div>
                             <div class="form-group">
-                                <input type="number"  id="" class="form-control" name="price" placeholder="price *" value=""  />
+                                <input type=""  id="price" class="form-control" name="price" placeholder="price *" value="" onkeyup=" validateprice()"  />
+                                <span id="price-Error" class="validation-label" style="color: red;"></span>
                             </div>
                             <div class="form-group">
-                                <input type="number"  id="" class="form-control" name="quantity" placeholder="quantity *" value=""  />
+                                <input type=""  id="quantity" class="form-control" name="quantity" placeholder="quantity *" value="" onkeyup="validatequantity()"  />
+                                <span id="quantiy-Error" class="validation-label" style="color: red;"></span>
                             </div>
                              <div class="form-group">
                                 <label for="image" class="form-label">Image</label>
-                                <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
+                                <input type="file"  id="" class="form-control" name="image"  value=""  multiple required/>
                             </div>
                              <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary" onclick="return validateForm()">Submit</button>
+                                <span id="submit-error" class="validation-label" style="color: red;"></span>
                             </div>
                         </form>
                     </div>
@@ -55,3 +57,6 @@
         </div>
     </div>
 </div>
+
+
+<script type="text/javascript" src="/javascripts/productvalid.js"></script>

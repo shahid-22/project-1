@@ -137,7 +137,7 @@ module.exports={
 
     phonenumberexist:async(phonenumber)=>{
         phonenumber=Number(phonenumber)
-        const isexist= await db.get().collection(collection.USER_COLLECTION).findOne({Phonenumber:phonenumber})
+        const isexist= await db.get().collection(collection.USER_COLLECTION).findOne({Phonenumber:phonenumber,isBlocked:false})
         return isexist
     },
 

@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb-legacy');
 
 
 module.exports={
-    insertorderdata:async(products,address,userId,status,date,total,paymentmethod)=>{
+    insertorderdata:async(products,address,userId,status,date,total,paymentmethod,offer)=>{
       const paymentstatus="pending"
       total=total.replace(/,/g,"")
       total=total.replace('₹','')
@@ -12,7 +12,7 @@ module.exports={
       let today =new Date()
       today= new Date(today).toISOString().slice(0, 10);
       const result= await db.get().collection(collection.ORDER_COLLECTION).insertOne(
-           { userId:userId,deliverydetails:address,products:products,date:date,total:total,paymentmethod,status,paymentstatus,today}
+           { userId:userId,deliverydetails:address,products:products,date:date,total:total,paymentmethod,status,paymentstatus,today,offer}
         )
          return result
     },
@@ -60,6 +60,7 @@ module.exports={
             productdetails:1,
             subTotal:{$multiply:["$products.quantity","$productdetails.price"]},
             status:1,
+            offer:1,
             paymentmethod:1,
             total:1,
             date:1,
@@ -235,8 +236,9 @@ module.exports={
         }}
       ]).toArray()
 
-      console.log("hhh"+totalSale[0].grandtotal)
-      return totalSale[0].grandtotal
+      // console.log("hhh"+totalSale[0].grandtotal)
+      // return totalSale[0].grandtotal
+      return totalSale
   
     },
 
@@ -246,7 +248,7 @@ module.exports={
         {$match:{ today:{$gte:startDate,$lt:endDate}} },
         { $group: {_id: null, total: {$sum: '$total'}}},
       ]).toArray()
-      console.log("sales amount"+salesAmount[0].total);
+      // console.log("sales amount"+salesAmount[0].total);
       return salesAmount
   
     },
@@ -278,7 +280,9 @@ module.exports={
   
         }
       ]).toArray()
-      console.log(salesPerMonth[0].sale);
+      // console.log(salesPerMonth[0].sale);
+      console.log("shahid");
+      console.log(salesPerMonth);
       return salesPerMonth
   
     },

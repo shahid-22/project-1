@@ -9,14 +9,14 @@
     <div class="menu-sidebar__content js-scrollbar1">
         <nav class="navbar-sidebar">
             <ul class="list-unstyled navbar__list">
-                <li class="active has-sub">
+                <li class="<%=locals.dashboardclass%> has-sub">
                     <a class="js-arrow" href="#">
                         <i class="fas fa-tachometer-alt"></i>Dashboard</a>
                     <ul class="list-unstyled navbar__sub-list js-sub-list">
-                        <li>
+                        <li class="<%=locals.dashboardclass%>">
                             <a href="/admin">Dashboard</a>
                         </li>
-                        <li>
+                        <li class="<%=locals.salesreportclass%>">
                             <a href="/admin/SalesReport">Sales Report</a>
                         </li>
                         <!-- <li>
@@ -27,31 +27,31 @@
                         </li> -->
                     </ul>
                 </li>
-                <li>
+                <li class="<%=locals.userclass%>">
                     <a href="/admin/user-view">
                         <i class="fas fa-chart-bar"></i>users</a>
                 </li>
-                <li>
+                <li class="<%=locals.productclass%>">
                     <a href="/admin/productview">
                         <i class="fas fa-table"></i>products</a>
                 </li>
-                <li>
+                <li class="<%=locals.categoryclass%>">
                     <a href="/admin/category">
                      <i class="far fa-check-square"></i>category</a>
                 </li>
-                <li>
+                <li class="<%=locals.brandclass%>">
                     <a href="/admin/Brand">
                      <i class="far fa-check-square"></i>Brand</a>
                 </li>
-                <li>
+                <li class="<%=locals.orderclass%>">
                     <a href="/admin/orders">
                      <i class="far fa-check-square"></i>Orders</a>
                 </li>
-                <li>
+                <li class="<%=locals.bannerclass%>">
                     <a href="/admin/banner">
                      <i class="far fa-check-square"></i>Banner</a>
                 </li>
-                <li>
+                <li class="<%=locals.coupenclass%>">
                     <a href="/admin/coupen">
                      <i class="far fa-check-square"></i>coupen</a>
                 </li>

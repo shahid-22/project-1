@@ -1,60 +1,4 @@
-<!-- <div class="content">
 
-    <h1 style="text-align: center;font-weight: 900;">BANNER</h1>
-    <button type="button" class="btn btn-dark" style="margin-left: 5rem;" data-toggle="modal" data-target="#exampleModal">
-        ADD BANNER
-   </button>
-</div> -->
-
-<!--------------------------------------------------------------------------->
-  <!-- <section class="container">
-    
-    <div style="background-color: white; margin-left: 2em; " class="my-3 m-3 ">
-      <div class="container mt-2" style="margin-top:100px;">
-       <div class="row">
-          <table class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">Number </th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Edit</th>
-                  <th scope="col">Option</th>
-                  <th scope="col">image</th>
-                  <th scope="col">option</th>
-                 
-                </tr>
-              </thead>
-              <tbody>
-                
-                <% for(let i=0;i< banners.length;i++){%>
-                      <tr>
-                        <th scope="row"><%=i+1%></th>
-                        <td><%=banners[i].bannerText%></td>
-                        <td><a href="" class="btn btn-primary" data-toggle="modal" data-target="#banner<%=banners[i]._id%>">EDIT</a></td>
-                        <td>
-                          <% if(banners[i].ischoose){%>
-                          <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-danger">unList</a>
-                          <% }else{%>
-                            <a href="/admin/unlistbanner/<%=banners[i]._id%>" class="btn btn-success">List</a>
-                            <%}%>
-                        </td>
-                        <td>
-                          <img src="<%=banners[i].banners[0]%>" style="height: 60px;width: 120px;">
-                          <img src="<%=banners[i].banners[1]%>" style="height: 60px;width: 120px;">
-                        </td>
-                        <td><button class="btn btn-danger"data-toggle="modal" data-target="#modalConfirmDelete<%=banners[i]._id%>">DELETE</button></td>
-                        
-                      </tr>
-                      <%}%>
-                     
-                
-              </tbody>
-            </table>
-       </div>
-      </div>
-      </div>
-    
-    </section> -->
 <!------------------------------------------------------------------------------------------------------------->
 
     <div class="page-wrapper">
@@ -64,7 +8,7 @@
                   <div class="row">
                       <div class="col-md-12">
                           <div class="overview-wrap">
-                              <h2 class="title-1">category Details</h2>
+                              <h2 class="title-1">banner Details</h2>
                               <button class="au-btn au-btn-icon au-btn--blue"></button>
                               <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
                                 ADD BANNER
@@ -137,17 +81,19 @@
         </button>
       </div>
       <div class="modal-body">
-          <form action="/admin/banner" style="margin-top: 2em;" method="post" enctype="multipart/form-data">
+          <form action="/admin/banner" style="margin-top: 2em;" method="post" id="validate" enctype="multipart/form-data">
               <div class="form-group">
-                  <input type="text"  id="discription" class="form-control" name="bannerText" placeholder="banner description" value=""  >
+                  <input type="text"  id="bannerText" class="form-control" name="bannerText" placeholder="banner description" value="" onkeyup="validatebanner()" >
+                  <span id="name-error" class="validation-label" style="color: red;"></span>
               </div>
               <div class="form-group">
                   <label for="image" class="form-label">Image</label>
-                  <input type="file"  id="" class="form-control" name="image"  value=""  multiple/>
+                  <input type="file"  id="" class="form-control" name="image"  value=""  multiple required/>
               </div>
               <div class="form-group">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary" onclick="return validateForm()">Submit</button>
+                  <span id="submit-error" class="validation-label" style="color: red;"></span>
                 </div>
           </form>      
 
@@ -175,7 +121,8 @@
               <!-- Name input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="bannertext"><b>Banner Text</b></label>
-                <input type="text" id="bannertext" class="form-control  form-control-lg" name="bannerText" value="<%=banners[i].bannerText%>" style="color: black;"/>
+                <input type="text" id="bannertext" class="form-control  form-control-lg" name="bannerText" value="<%=banners[i].bannerText%>" style="color: black;" required/>
+                
               </div>
                   <div style="display: inline-block;">
                     <img src="<%=banners[i].banners[0]%>" alt="" width="150">
@@ -186,11 +133,11 @@
               <!-- Email input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="form7Example2"><b>Banner Images</b></label>
-                <input type="file" class="form-control-file" id="" name="image" style="color: black;" multiple>
+                <input type="file" class="form-control-file" id="" name="image" style="color: black;" multiple required>
               </div>
 
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary" >Save</button>
 
             </form>
                
@@ -246,3 +193,44 @@
         $('#productsTable').DataTable();
       });
       </script>
+
+
+
+      <script>
+       let nameError = document.getElementById('name-error');
+       let submitError = document.getElementById('submit-error');
+
+
+
+
+
+
+      function validatebanner(){                                 
+      let name = document.getElementById('bannerText').value.trim()
+      if(name.length == 0){
+      nameError.style.display='flex';
+      nameError.innerHTML = 'enter your banner text';
+      setTimeout(()=>{
+      nameError.style.display='none';
+      },3000);
+      return false;
+      }
+      nameError.innerHTML = '';
+      return true;
+      }
+      
+      
+      
+      function validateForm(){
+      if(! validatebanner()){
+      submitError.style.display='flex';
+      submitError.style.justifyContent='center';
+      submitError.innerHTML = 'Please fix all errors to submit';
+      setTimeout(()=>{
+      submitError.style.display='none';
+      },3000);
+      return false;
+      }
+      }
+      
+            </script>

@@ -288,14 +288,14 @@
 <!-- Footer Section End -->
 
 <!-- Search Begin -->
-<div class="search-model">
+<!-- <div class="search-model">
     <div class="h-100 d-flex align-items-center justify-content-center">
         <div class="search-close-switch">+</div>
         <form class="search-model-form">
             <input type="text" id="search-input" placeholder="Search here.....">
         </form>
     </div>
-</div>
+</div> -->
 <!-- Search End -->
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script> -->
@@ -450,34 +450,4 @@
 </style>
 
 
-<!-- <script>
-    let currentPage = 1;
-const itemsPerPage = 10;
-const container = document.querySelector('#pagination-container');
-const paginationLinks = document.querySelectorAll('.pagination__option a');
 
-paginationLinks.forEach(link => {
-   link.addEventListener('click', event => {
-      event.preventDefault();
-
-      if (link.classList.contains('fa-angle-right')) {
-         // Next page
-         currentPage++;
-      } else {
-         // Specific page
-         currentPage = parseInt(link.innerText);
-      }
-
-      // Hide all items
-      container.querySelectorAll('*').forEach(item => {
-         item.style.display = 'none';
-      });
-
-      // Show current page's items
-      container.querySelectorAll(`*:nth-child(-n+${currentPage * itemsPerPage}):nth-child(n+${(currentPage - 1) * itemsPerPage + 1})`).forEach(item => {
-         item.style.display = 'block';
-      });
-   });
-});
-
-</script> -->

@@ -14,6 +14,14 @@
                 
                   <div id="sender">
                     <p class="text-white-50 mb-5">Please enter your Mobile number to Sign in</p>
+                    <% if(errormsg){%>
+                      <p id="login-error" class="error text-danger"><%=errormsg%></p>
+                  <% }%>
+                  <script>
+                     setTimeout(() => {
+                      document.querySelector('#login-error').style.display='none'
+                     },3000);
+                  </script>
                       <div class="form-outline form-white mb-4">
                         <input type="text" id="number" class="form-control form-control-lg" />
                         <label class="form-label" for="mobile">Mobile Number</label>

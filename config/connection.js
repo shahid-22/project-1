@@ -4,7 +4,8 @@ const state={
 }
 
 module.exports.connect=(done)=>{
-    const url = 'mongodb://127.0.0.1:27017';
+    // const url = 'mongodb://127.0.0.1:27017';
+    const url = process.env.MONGO_URL;
     const dbname = 'SHOEZONE';
 
     MongoClient.connect(url,(err,data)=>{          //connecting to mongodb

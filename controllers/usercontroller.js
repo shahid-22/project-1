@@ -122,7 +122,7 @@ module.exports={
   },
 
 
-  rendershopepage:async(req,res)=>{
+  rendershopepage:async(req,res,next)=>{
     try{
       const shopeclass="active"
       let  userName=req.session. userName
@@ -221,12 +221,13 @@ module.exports={
        }
       }catch(err){
         console.log(err);
+        next(err)
       }
   },
 
 
 
-  renderproductdetail:async(req,res)=>{
+  renderproductdetail:async(req,res,next)=>{
    try{
          let  userName=req.session. userName
          const productId=req.params.id
@@ -241,6 +242,7 @@ module.exports={
          res.render('user/productdetails',{product, userName,cartcount})
       }catch(err){
         console.log(err);
+        next(err)
       }
   },
 
@@ -445,6 +447,23 @@ orderdetais:async(req,res)=>{
     offer=offer.replace('₹','')
     offer= parseInt(offer)
     let userId=req.session.userId
+    let cart= await cartHelpers.findusercart(userId)
+    var outofstock=false;
+    cart.forEach(cart=>{
+      if(cart.products.quantity>cart.productdetails.quantity){
+        outofstock=true
+        outofstockproduct=cart.productdetails.productname
+        productquantity=cart.productdetails.quantity
+      }
+    })
+    if(outofstock){
+      res.json({
+        status:"out-of-stock",
+        product:outofstockproduct,
+        quantity:productquantity
+      })
+    }else{
+  
     let address=await userHelpers.findOneaddress(userId,addressid)
     userId=new ObjectId(userId)
     address=address[0].address
@@ -518,6 +537,7 @@ orderdetais:async(req,res)=>{
 
       }
       }
+    }
     }catch(err){
       console.log(err);
     } 
@@ -546,7 +566,7 @@ orderdetais:async(req,res)=>{
  },
 
 
-  renderorderdetailspage:async(req,res)=>{
+  renderorderdetailspage:async(req,res,next)=>{
     try{
           const orderId=new ObjectId(req.params.id)
           let orderdetails=await orderHelpers.Findalldetails(orderId)
@@ -572,6 +592,7 @@ orderdetais:async(req,res)=>{
            res.render("user/orderdetails",{orderdetails,userName,cartcount})
      }catch(err){
           console.log(err);
+          next(err)
      }
   },
 

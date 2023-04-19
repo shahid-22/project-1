@@ -322,6 +322,18 @@
         //-------------------------------------------
        if(res.data.status==="success"){
             location.assign("/success")
+       }else if(res.data.status=="out-of-stock"){
+        Toastify({
+                     text:`${res.data.product}not available only${res.data.quantity}available`,
+                     duration: 3000,
+                     // close: true,
+                     gravity: "top", // `top` or `bottom`
+                     position: "center", // `left`, `center` or `right`
+                     stopOnFocus: true, // Prevents dismissing of toast on hover
+                     style: {
+                        background: "red",
+                     },
+                 }).showToast()
        }else if(res.data.status=="failed"){
           //---------------------
           Toastify({

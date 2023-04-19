@@ -124,6 +124,39 @@ module.exports={
    const deletecart=await db.get().collection(collection.CART_COLLECTION).deleteOne({user:userId})
    console.log(deletecart);
  },
+ findusercart:async(userId)=>{
+  let usercart=await db.get().collection(collection.CART_COLLECTION).aggregate([
+    {
+      $match: {
+        user:new ObjectId(userId)
+      }
+    },
+    {
+      $unwind:{path:"$products"}
+  },
+  {
+   $lookup:{
+      from: "product",
+      localField: "products.productId",
+      foreignField:"_id",
+      as: "productdetails"
+   }
+  },
+  {
+     $unwind:{path:"$productdetails"}
+  },
+  {
+    $project:{
+      products:1,
+      productdetails:1,
+      subTotal:{$multiply:["$products.quantity","$productdetails.price"]}  
+    }
+  }
+  ]).toArray()
+  console.log("myyyy");
+  console.log(usercart);
+  return usercart
+ }
 
 
  

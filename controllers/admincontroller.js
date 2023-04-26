@@ -396,7 +396,10 @@ module.exports={
 
     changeorderstatus:async(req,res)=>{
         try{
+            console.log("hiiiiiiiiiiiiiiiiiiiii");
             let {orderId,status}=req.body
+            console.log(status);
+            console.log(orderId);
               if(status=="cancelled"){
                     let order=await orderHelpers.Findalldetails(new ObjectId(orderId))
                     order.forEach(async(order)=>{
@@ -566,7 +569,7 @@ module.exports={
         }
 
             totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-            res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount,salesreportclass})
+            res.render("admin/Sales-Report",{layout:"adminlayout",deliveredproduct,totalamount,salesreportclass})
         }catch(err){
             console.log(err);
         }
@@ -589,7 +592,7 @@ module.exports={
         }
 
           totalamount=totalamount.toLocaleString('en-IN', { style: "currency", currency: "INR" })
-          res.render("admin/Sales-Report",{layout:"adminLayout",deliveredproduct,totalamount})
+          res.render("admin/Sales-Report",{layout:"adminlayout",deliveredproduct,totalamount})
         }catch(err){
           console.log(err);
         }

@@ -89,7 +89,7 @@
      </div>
   <%}%>
 
-<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 <script>
   const changestatus=async(orderId,status)=>{
     console.log(orderId+status);
@@ -104,7 +104,7 @@
      }
 
   }
-</script>
+</script> -->
 
 <% for(var i=0; i < orders.length; i++) { %>
 <!------------modal-->
@@ -131,11 +131,27 @@
 <!---------end---modal-->
 
 
-<script>
+<!-- <script>
 
   $(function () {
     $('#productsTable').DataTable();
   });
-  </script>
+  </script> -->
   
- 
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    const changestatus=async(orderId,status)=>{
+      console.log("kkkkk");
+      console.log(orderId+status);
+      const res= await axios({
+        method:"post",
+        url:"/changeorderstatus",
+        data:{orderId,status}
+  
+      })
+      if(res.data.status ="status changed"){
+              location.reload()
+       }
+  
+    }
+  </script>

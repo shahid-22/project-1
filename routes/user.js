@@ -101,6 +101,8 @@ router.post("/edit-profile",userauth.userauth,usercontroller.editprofile)
 
 router.get("/wallet",userauth.userauth,usercontroller.renderwallet)
 
+router.post("/changeorderstatus",userauth.userauth,usercontroller.changeorderstatus)
+
 
 
 

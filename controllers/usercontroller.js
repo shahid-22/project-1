@@ -272,7 +272,7 @@ rendercartpage:async(req,res)=>{
 },
 
 
-addtocart:async(req,res)=>{
+addtocart:async(req,res,next)=>{
   try{
        const productId=req.params.id
        const userId= new ObjectId(req.session.userId)
@@ -299,6 +299,7 @@ addtocart:async(req,res)=>{
       }  
     }catch(err){
       console.log(err);
+      next(err)
     }
 },
 
@@ -354,7 +355,7 @@ changeproductquantity:async(req,res)=>{
 },
 
 
-removecart:async(req,res)=>{
+removecart:async(req,res,next)=>{
    try{
       const productId=req.params.id
       const userId=req.session.userId
@@ -362,6 +363,7 @@ removecart:async(req,res)=>{
       res.redirect("/cart")
     }catch(err){
       console.log(err);
+      next(err)
     }
 },
 
@@ -416,7 +418,7 @@ addnewaddress:async(req,res)=>{
 },
 
 
-editaddress:async(req,res)=>{
+editaddress:async(req,res,next)=>{
   try{
     const addressId=req.params.id
     const userId=req.session.userId
@@ -424,12 +426,13 @@ editaddress:async(req,res)=>{
     res.redirect("/profile")
   }catch(err){
     console.log(err);
+    next(err)
   }
 
 },
 
 
-deleteaddress:async(req,res)=>{
+deleteaddress:async(req,res,next)=>{
   try{
     const addressId=req.params.id
     const userId=req.session.userId
@@ -437,6 +440,7 @@ deleteaddress:async(req,res)=>{
     res.redirect("/profile")
   }catch(err){
     console.log(err);
+    next(err)
   }
 },
 
@@ -511,6 +515,8 @@ orderdetais:async(req,res)=>{
         total=total.replace('₹','')
         total = parseInt(total)
         let walletamount=await walletHelpers.findamount(userId)
+        console.log(walletamount);
+        if(walletamount){
         walletamount=parseInt(walletamount.amount)
         if(total>walletamount){
           res.json({
@@ -536,7 +542,13 @@ orderdetais:async(req,res)=>{
         })
 
       }
+      }else{
+        res.json({
+          status:"failed",
+          message:"order placed"
+        })
       }
+    }
     }
     }catch(err){
       console.log(err);
@@ -598,7 +610,8 @@ orderdetais:async(req,res)=>{
 
   rendersuccesspage:(req,res)=>{
    try{
-      res.render("user/success")
+      let  userName=req.session. userName
+      res.render("user/success",{userName})
      }catch(err){
         console.log(err);
    }
@@ -631,7 +644,7 @@ orderdetais:async(req,res)=>{
   },
 
 
-  addtowishlist:async(req,res)=>{
+  addtowishlist:async(req,res,next)=>{
     try{
       const proId= new ObjectId(req.params.id)
       const userId=new ObjectId(req.session.userId)
@@ -658,6 +671,7 @@ orderdetais:async(req,res)=>{
       }
     }catch(err){
       console.log(err);
+      next(err)
     }
 
   },
@@ -822,7 +836,46 @@ orderdetais:async(req,res)=>{
     }catch(err){
       console.log(err);
     }
-  }
+  },
+  changeorderstatus:async(req,res)=>{
+    try{
+        console.log("hiiiiiiiiiiiiiiiiiiiii");
+        let {orderId,status}=req.body
+        console.log(status);
+        console.log(orderId);
+          if(status=="cancelled"){
+                let order=await orderHelpers.Findalldetails(new ObjectId(orderId))
+                order.forEach(async(order)=>{
+                await productHelpers.changestock(order.products.productid,order.products.quantity)
+                });
+                await orderHelpers.changeorderstatus(orderId,status)
+                res.json({
+                status:"status changed"
+                })
+
+            }else if(status=="returned"){
+                let order=await orderHelpers.Findalldetails(new ObjectId(orderId))
+                order.forEach(async(order)=>{
+                    await productHelpers.changestock(order.products.productid,order.products.quantity)
+                    });
+                    await orderHelpers.changeorderstatus(orderId,status)
+                    await orderHelpers.changepaystatus(orderId)
+                    res.json({
+                    status:"status changed"
+                    })
+            
+            }else{
+                await orderHelpers.changeorderstatus(orderId,status)
+                res.json({
+                    status:"status changed"
+                })
+            }
+            
+
+    }catch(err){
+        console.log(err);
+    }
+},
 
 
 
